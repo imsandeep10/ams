@@ -228,9 +228,7 @@ function CreateAdminFormComponent({ mode }: props) {
     return <div className="p-8">Loading admin data...</div>;
   }
 
-  const togglePassword = () => {
-    setShowPassword(!showPassword);
-  };
+ 
   return (
     <>
       <Button
