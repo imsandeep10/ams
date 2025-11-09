@@ -1,0 +1,68 @@
+import type { studentTrackTypes } from "@/types/studentTrackTypes";
+
+export const attendanceRecords: studentTrackTypes[] = [
+  {
+    studentId: "STU001",
+    name: "Sudha Acharya",
+    phone: "9876543210",
+    classTime: "8:00 AM - 10:00 AM",
+    date: "2025-08-29",
+    attendance: "Absent",
+  },
+  {
+    studentId: "STU001",
+    name: "Sudha Acharya",
+    phone: "9876543210",
+    classTime: "8:00 AM - 10:00 AM",
+    date: "2025-08-28",
+    attendance: "Present",
+  },
+  {
+    studentId: "STU001",
+    name: "Sudha Acharya",
+    phone: "9876543210",
+    classTime: "8:00 AM - 10:00 AM",
+    date: "2025-08-27",
+    attendance: "Present",
+  },
+  {
+    studentId: "STU001",
+    name: "Sudha Acharya",
+    phone: "9876543210",
+    classTime: "8:00 AM - 10:00 AM",
+    date: "2025-08-26",
+    attendance: "Absent",
+  },
+  {
+    studentId: "STU001",
+    name: "Sudha Acharya",
+    phone: "9876543210",
+    classTime: "8:00 AM - 10:00 AM",
+    date: "2025-08-25",
+    attendance: "Absent",
+  },
+  {
+    studentId: "STU001",
+    name: "Sudha Acharya",
+    phone: "9876543210",
+    classTime: "8:00 AM - 10:00 AM",
+    date: "2025-08-24",
+    attendance: "Present",
+  },
+  {
+    studentId: "STU001",
+    name: "Sudha Acharya",
+    phone: "9876543210",
+    classTime: "8:00 AM - 10:00 AM",
+    date: "2025-08-23",
+    attendance: "Present",
+  },
+  {
+    studentId: "STU001",
+    name: "Sudha Acharya",
+    phone: "9876543210",
+    classTime: "8:00 AM - 10:00 AM",
+    date: "2025-08-22",
+    attendance: "Absent",
+  },
+];
