@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { TrackDataTable } from "@/components/students/studentTrack/TrackDataTable";
 import { trackColumns } from "@/components/students/studentTrack/TrackColumn";
 import { useGetStudentAttendanceTrack } from "@/lib/api/useStudents";
@@ -13,8 +13,18 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, Clock, User, TrendingUp, CheckCircle, XCircle, Calendar as CalendarIcon } from "lucide-react";
+import {
+  Calendar,
+  Clock,
+  User,
+  TrendingUp,
+  CheckCircle,
+  XCircle,
+  Calendar as CalendarIcon,
+  ArrowLeft,
+} from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 
 export const StudentTrack = React.memo(() => {
   const { id } = useParams();
@@ -24,6 +34,7 @@ export const StudentTrack = React.memo(() => {
   const currentMonth = currentDate.getMonth() + 1;
   const [year, setYear] = useState(currentYear.toString());
   const [month, setMonth] = useState(currentMonth.toString());
+  const navigate = useNavigate();
 
   const { data: attendanceRecord, isPending } = useGetStudentAttendanceTrack(
     id as string,
@@ -52,18 +63,29 @@ export const StudentTrack = React.memo(() => {
 
   return (
     <div className="container mx-auto p-4 md:p-6 space-y-6">
+      <Button
+        variant="ghost"
+        onClick={() => navigate(-1)}
+        className="mb-6 hover:bg-gray-200  cursor-pointer"
+      >
+        <ArrowLeft className="w-5 h-5 mr-2" />
+        Back
+      </Button>
       {/* Header Section */}
       {!isPending && attendanceRecord && (
         <Card className="border-none shadow-lg dark:from-gray-900 dark:to-gray-800">
           <CardContent className="p-6">
             <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
               <Avatar className="h-20 w-20 border-4 border-white shadow-lg">
-                <AvatarImage src={attendanceRecord.student.profileImage} alt={attendanceRecord.student.fullName} />
+                <AvatarImage
+                  src={attendanceRecord.student.profileImage}
+                  alt={attendanceRecord.student.fullName}
+                />
                 <AvatarFallback className="text-2xl font-bold bg-gradient-to-br from-blue-500 to-indigo-600 text-white">
                   attendanceRecord.student.fullName
                 </AvatarFallback>
               </Avatar>
-              
+
               <div className="flex-1 space-y-2">
                 <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
                   {attendanceRecord.student.fullName}
@@ -75,7 +97,8 @@ export const StudentTrack = React.memo(() => {
                   </div>
                   <div className="flex items-center gap-2">
                     <CalendarIcon className="h-4 w-4" />
-                    {attendanceRecord.period.monthName} {attendanceRecord.period.year}
+                    {attendanceRecord.period.monthName}{" "}
+                    {attendanceRecord.period.year}
                   </div>
                 </div>
               </div>
@@ -150,9 +173,11 @@ export const StudentTrack = React.memo(() => {
                 {attendanceRecord.summary.attendancePercentage.toFixed(1)}%
               </div>
               <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-2">
-                <div 
+                <div
                   className="bg-purple-600 h-2 rounded-full transition-all duration-500"
-                  style={{ width: `${attendanceRecord.summary.attendancePercentage}%` }}
+                  style={{
+                    width: `${attendanceRecord.summary.attendancePercentage}%`,
+                  }}
                 />
               </div>
             </CardContent>
@@ -171,7 +196,10 @@ export const StudentTrack = React.memo(() => {
         <CardContent>
           <div className="flex flex-wrap gap-4">
             <div className="flex flex-col gap-2 min-w-[200px]">
-              <Label htmlFor="month-select" className="flex items-center gap-2 text-sm font-medium">
+              <Label
+                htmlFor="month-select"
+                className="flex items-center gap-2 text-sm font-medium"
+              >
                 <Clock className="h-4 w-4" />
                 Month
               </Label>
@@ -190,7 +218,10 @@ export const StudentTrack = React.memo(() => {
             </div>
 
             <div className="flex flex-col gap-2 min-w-[150px]">
-              <Label htmlFor="year-select" className="flex items-center gap-2 text-sm font-medium">
+              <Label
+                htmlFor="year-select"
+                className="flex items-center gap-2 text-sm font-medium"
+              >
                 <Calendar className="h-4 w-4" />
                 Year
               </Label>
@@ -214,7 +245,9 @@ export const StudentTrack = React.memo(() => {
       {/* Data Table */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg font-semibold">Daily Attendance Records</CardTitle>
+          <CardTitle className="text-lg font-semibold">
+            Daily Attendance Records
+          </CardTitle>
         </CardHeader>
         <CardContent>
           {isPending ? (

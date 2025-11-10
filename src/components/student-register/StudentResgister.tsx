@@ -35,7 +35,7 @@ import {
   useUpdateStudent,
 } from "@/lib/api/useStudents";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-
+import { toast } from "sonner";
 
 interface props {
   mode: "edit" | "create";
@@ -142,8 +142,8 @@ function StudentRegister({ mode }: props) {
         }
 
         navigate("/success-message");
-      } catch (error) {
-        console.log(error);
+      } catch (error: any) {
+        toast.error(error?.response?.data?.message);
       }
     },
     [createStudents, updateStudent, mode, id, pathLanguage]
@@ -445,7 +445,7 @@ function StudentRegister({ mode }: props) {
                   <FormLabel>Interested Course</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="English / Nepali"
+                      placeholder="Enter your interested course"
                       {...field}
                       className="transition-colors focus:ring-2"
                     />

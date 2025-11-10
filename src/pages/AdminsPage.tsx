@@ -3,10 +3,12 @@ import { useGetAllAdmins } from "@/lib/api/useAdmin";
 import { DataTableSkeleton } from "@/components/common/DataTableSkeleton";
 import { AdminDataTable } from "@/admins/AdminDataTable";
 import { AdminColumn } from "@/admins/AdminColumn";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 const AdminPage: React.FC = () => {
   const { data: admins, isPending, error } = useGetAllAdmins();
-  console.log(admins)
+  const navigate = useNavigate();
   if (isPending) {
     return (
       <>
@@ -37,6 +39,14 @@ const AdminPage: React.FC = () => {
 
   return (
     <div className="container mx-auto py-2">
+      <div className="w-full flex items-end justify-end">
+        <Button
+          onClick={() => navigate("/Password-admin")}
+          className="cursor-pointer"
+        >
+          Change Admin Password
+        </Button>
+      </div>
       <AdminDataTable columns={AdminColumn} data={admins} />
     </div>
   );

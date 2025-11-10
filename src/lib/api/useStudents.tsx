@@ -119,9 +119,6 @@ export const useGetStudentById = (id: string) => {
   });
 };
 
-
-
-
 export const useGetStudentAttendance = (params: AttendanceParams = {}) => {
   const { page = 1, limit = 10 } = params;
 
@@ -132,7 +129,8 @@ export const useGetStudentAttendance = (params: AttendanceParams = {}) => {
         const res = await api.get(`/attendance?page=${page}&limit=${limit}`);
         return res.data;
       } catch (err) {
-        console.error("Failed to fetch attendance:", err);
+        const message = err instanceof Error ? err.message : String(err);
+        toast.error(`Failed to fetch attendance: ${message}`);
         throw err;
       }
     },
@@ -141,16 +139,21 @@ export const useGetStudentAttendance = (params: AttendanceParams = {}) => {
   });
 };
 
-export const useGetStudentAttendanceTrack = (studentId:string,year:number,month:number) => {
-
+export const useGetStudentAttendanceTrack = (
+  studentId: string,
+  year: number,
+  month: number
+) => {
   return useQuery({
     queryKey: ["attendance"],
     queryFn: async () => {
       try {
-        const res = await api.get(`/attendance-track/monthly/${studentId}?year=${year}&month=${month}`);
+        const res = await api.get(
+          `/attendance-track/monthly/${studentId}?year=${year}&month=${month}`
+        );
         return res.data;
-      } catch (err) {
-        console.error("Failed to fetch attendance:", err);
+      } catch (err: any) {
+        toast.error("Failed to fetch attendance:", err);
         throw err;
       }
     },
@@ -161,13 +164,13 @@ export const useGetStudentAttendanceTrack = (studentId:string,year:number,month:
 
 export const useStudentSearch = (query: string) => {
   return useQuery({
-    queryKey: ['student-search', query],
+    queryKey: ["student-search", query],
     queryFn: async () => {
-      const res = await api.get('/student/search', {
-        params: { term: query }
+      const res = await api.get("/student/search", {
+        params: { term: query },
       });
       return res.data;
     },
-    enabled: query.length > 0 || query==='',
+    enabled: query.length > 0 || query === "",
   });
-}
+};

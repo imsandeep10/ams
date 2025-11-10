@@ -8,7 +8,6 @@ import React from "react";
 
 const IeltsPage: React.FC = () => {
   const { data: students, isPending } = useGetStudentsByLanguage("IELTS");
-console.log(students)
   if (isPending) {
     return (
       <>
@@ -16,7 +15,7 @@ console.log(students)
       </>
     );
   }
- 
+
   return (
     <div className="container mx-auto py-2">
       <DataTable columns={columns} data={students || []} />

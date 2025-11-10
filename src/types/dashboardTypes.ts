@@ -10,3 +10,15 @@ export type GlobalQRCodeType = {
   url: string;
   qrCodeDataUrl: string;
 }
+
+export type StaticQRCodeType = {
+  message: string;
+  qrCodeDataUrl: string;
+  url: string;
+}
+
+export type MockTestRegistrationQRCodeType = {
+  message: string;
+  qrCodeDataUrl: string;
+  url: string;
+}

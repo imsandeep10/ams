@@ -1,8 +1,8 @@
 import type { SidBartypes } from "@/types/sidebarTypes";
 import {
+  BookCheck,
   BookOpen,
   FileText,
-  Key,
   LayoutDashboard,
   NotebookText,
   Radius,
@@ -49,15 +49,16 @@ export const sideBar: SidBartypes[] = [
     url: "/create-admin",
     icon: SquarePlus,
   },
-  {
-    title: "Change Admin Password",
-    url: "/password-admin",
-    icon: Key,
-  },
+
   {
     title: "Admins",
     url: "/admins",
     icon: UserStar,
+  },
+  {
+    title: "Mock Table",
+    url: "/mock-data-table",
+    icon: BookCheck,
   },
 ];
 
@@ -73,6 +74,7 @@ export const roleSidebars: Record<string, SidBartypes[]> = {
     { title: "Dashboard", url: "/ielts/dashboard", icon: LayoutDashboard },
     { title: "Students", url: "/ielts/students", icon: Users },
     { title: "Report", url: "/ielts/report", icon: FileText },
+    { title: "Mock", url: "/ielts/mock-data-table", icon: BookCheck },
   ],
   duolingoAdmin: [
     { title: "Dashboard", url: "/duolingo/dashboard", icon: LayoutDashboard },

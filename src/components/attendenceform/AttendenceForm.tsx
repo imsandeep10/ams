@@ -35,9 +35,8 @@ export function AttendenceForm() {
     defaultValues: { phone: "" },
   });
 
-  const onSubmit = async (data: PhoneFormData) => {
+  const onSubmit = async () => {
     try {
-      console.log(data);
       form.reset();
     } catch (error) {}
   };

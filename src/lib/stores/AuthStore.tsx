@@ -19,28 +19,35 @@ interface AuthState {
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
+  // Load initial state from localStorage
   accessToken: localStorage.getItem("accessToken"),
   refreshToken: localStorage.getItem("refreshToken"),
-  user: null,
-  role: null,
+  user: JSON.parse(localStorage.getItem("user") || "null"),
+  role: localStorage.getItem("role"),
 
   setTokens: (accessToken, refreshToken) => {
     localStorage.setItem("accessToken", accessToken);
     if (refreshToken) localStorage.setItem("refreshToken", refreshToken);
 
-    // Decode role immediately when setting tokens
     try {
       const decoded: any = jwtDecode(accessToken);
       const userRole = decoded?.role || decoded?.roles || null;
-      set({ accessToken, refreshToken, role: userRole });
+
+      // Save user and role in localStorage
+      localStorage.setItem("user", JSON.stringify(decoded));
+      localStorage.setItem("role", userRole);
+
+      set({ accessToken, refreshToken, role: userRole, user: decoded });
     } catch (e) {
-      set({ accessToken, refreshToken, role: null });
+      set({ accessToken, refreshToken, role: null, user: null });
     }
   },
 
   logout: () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
+    localStorage.removeItem("user");
+    localStorage.removeItem("role");
     set({ accessToken: null, refreshToken: null, user: null, role: null });
   },
 
@@ -48,11 +55,15 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     const token = get().accessToken || localStorage.getItem("accessToken");
     if (!token) return false;
 
-    // Verify token validity and get role
     try {
       const decoded: any = jwtDecode(token);
       const role = decoded?.role || decoded?.roles || null;
-      set({ role });
+      set({ role, user: decoded });
+
+      // Ensure localStorage is synced
+      localStorage.setItem("user", JSON.stringify(decoded));
+      localStorage.setItem("role", role);
+
       return true;
     } catch (e) {
       get().logout();
@@ -65,8 +76,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       const response = await api.post("/login/signin", { email, password });
       const { accessToken, refreshToken, user } = response.data;
 
+      // Save tokens & decoded info
       get().setTokens(accessToken, refreshToken);
-      set({ user });
+      set({ user }); // user object from API
 
       return { success: true };
     } catch (err: any) {

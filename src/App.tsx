@@ -15,7 +15,6 @@ import AppLayout from "./components/layouts/appLayout";
 import DashboardPage from "./pages/dashboardPage";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "./components/ui/sonner";
-import { SuperAdminProfile } from "./pages/SuperAdminProfile";
 import { StudentProfile } from "./pages/StudentProfile";
 import { StudentTrack } from "./pages/StudentTrack";
 import ProtectedRoute from "./components/common/protectedRoute";
@@ -25,11 +24,14 @@ import { AttendenceForm } from "./components/attendenceform/AttendenceForm";
 import AttendancePage from "./pages/AttendancePage";
 import AdminsPage from "./pages/AdminsPage";
 import { EditAdminPage } from "./pages/adminForm/EditAdminPage";
-import { AdminProfile } from "./pages/AdminProfile";
+import { Profile } from "./pages/Profile";
 import RoleLayout from "./components/layouts/roleLayout";
 import { StudentRegisterForm } from "./components/student-register/StudentResgister";
 import SuccessMessage from "./components/student-register/SuccessMessage";
 import AdminPasswordForm from "./pages/ChangeAdminPassword";
+import { AdminProfile } from "./pages/AdminProfile";
+import MockRegisterData from "./pages/MockRegisterData";
+import IeltsMockTestForm from "./components/mock-test/IeltsMockTestForm";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -107,6 +109,10 @@ const router = createBrowserRouter([
           { path: "students/create", element: <CreateStudent /> },
           { path: "students/edit/:id", element: <EditStudent /> },
           { path: "report", element: <Report /> },
+          {
+            path: "mock-data-table",
+            element: <MockRegisterData />,
+          },
         ],
       },
       {
@@ -159,10 +165,6 @@ const router = createBrowserRouter([
         element: <EditStudent />,
       },
       {
-        path: "super-admin-profile",
-        element: <SuperAdminProfile />,
-      },
-      {
         path: "student-profile/:id",
         element: <StudentProfile />,
       },
@@ -190,6 +192,14 @@ const router = createBrowserRouter([
         path: "admin-profile/:id",
         element: <AdminProfile />,
       },
+      {
+        path: "profile",
+        element: <Profile />,
+      },
+      {
+        path: "mock-data-table",
+        element: <MockRegisterData />,
+      },
     ],
   },
   {
@@ -199,6 +209,10 @@ const router = createBrowserRouter([
   {
     path: "register/newstudent",
     element: <StudentRegisterForm mode="create" />,
+  },
+  {
+    path: "mock-test/register",
+    element: <IeltsMockTestForm />,
   },
   {
     path: "/success-message",

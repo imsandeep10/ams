@@ -15,9 +15,7 @@ export interface Student {
   interestedCourse: string;
   preferredCountry: string;
   language: string;
-  qrCode?: {
-    qrCodeDataUrl: string;
-  };
+
   user?: {
     address: string;
     fullName: string;
@@ -25,5 +23,3 @@ export interface Student {
     email: string;
   }; // optional related user details
 }
-
-

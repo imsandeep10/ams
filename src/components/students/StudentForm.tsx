@@ -9,7 +9,6 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
@@ -36,6 +35,8 @@ import {
 } from "@/lib/api/useStudents";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
+import { toast } from "sonner";
+import { Label } from "../ui/label";
 
 interface props {
   mode: "edit" | "create";
@@ -146,7 +147,9 @@ function CreateStudentFormComponent({ mode }: props) {
         if (res) {
           router(`/${pathLanguage}`);
         }
-      } catch (error) {}
+      } catch (error: any) {
+        toast.error(error?.response?.data?.message);
+      }
     },
     [createStudents, updateStudent, mode, id, router, pathLanguage]
   );
@@ -180,7 +183,7 @@ function CreateStudentFormComponent({ mode }: props) {
             name="fullName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Full Name</FormLabel>
+                <Label>Full Name</Label>
                 <FormControl>
                   <Input
                     placeholder="John Doe"
@@ -198,7 +201,7 @@ function CreateStudentFormComponent({ mode }: props) {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <Label>Email</Label>
                 <FormControl>
                   <Input
                     type="email"
@@ -217,7 +220,7 @@ function CreateStudentFormComponent({ mode }: props) {
             name="phoneNumber"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Phone Number</FormLabel>
+                <Label>Phone Number</Label>
                 <FormControl>
                   <Input
                     type="tel"
@@ -236,7 +239,7 @@ function CreateStudentFormComponent({ mode }: props) {
             name="address"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Address</FormLabel>
+                <Label>Address</Label>
                 <FormControl>
                   <Input
                     placeholder="Enter your address"
@@ -254,30 +257,39 @@ function CreateStudentFormComponent({ mode }: props) {
             name="profileImageId"
             render={() => (
               <FormItem>
-                <FormLabel>Profile Image</FormLabel>
+                <Label>Profile Image</Label>
                 <FormControl>
-                  <Input
-                    id="picture"
-                    type="file"
-                    accept="image/png, image/jpeg"
-                    disabled={isUploading}
-                    onChange={async (e) => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        try {
-                          await handleImageUpload(file);
-                        } catch (error) {}
-                      }
-                    }}
-                    className="file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium transition-colors disabled:opacity-50"
-                  />
+                  <div className="flex flex-col gap-2">
+                    <div className="relative">
+                      <Input
+                        id="picture"
+                        type="file"
+                        accept="image/png, image/jpeg"
+                        disabled={isUploading}
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            try {
+                              await handleImageUpload(file);
+                            } catch (error) {}
+                          }
+                        }}
+                        className="cursor-pointer file:mr-4 file:pb-0.5 file:px-4 file:rounded-md file:border file:border-gray-300 file:text-sm file:font-semibold file:bg-white file:text-gray-700 hover:file:bg-gray-50 file:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+                      />
+                    </div>
+                    {isUploading && (
+                      <div className="flex items-center gap-2 text-sm text-blue-600">
+                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-blue-600 border-t-transparent"></div>
+                        <span>Uploading image...</span>
+                      </div>
+                    )}
+                    {uploadError && (
+                      <p className="text-sm text-red-600 font-medium">
+                        {uploadError}
+                      </p>
+                    )}
+                  </div>
                 </FormControl>
-                {isUploading && (
-                  <p className="text-sm text-blue-600">Uploading image...</p>
-                )}
-                {uploadError && (
-                  <p className="text-sm text-red-600">{uploadError}</p>
-                )}
                 <FormMessage />
               </FormItem>
             )}
@@ -295,7 +307,7 @@ function CreateStudentFormComponent({ mode }: props) {
             name="academicQualification"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Academic Qualification</FormLabel>
+                <Label>Academic Qualification</Label>
                 <FormControl>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <SelectTrigger className="w-full transition-colors focus:ring-2">
@@ -320,7 +332,7 @@ function CreateStudentFormComponent({ mode }: props) {
             name="yearOfCompletion"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Year of Completion</FormLabel>
+                <Label>Year of Completion</Label>
                 <FormControl>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <SelectTrigger className="w-full transition-colors focus:ring-2">
@@ -345,7 +357,7 @@ function CreateStudentFormComponent({ mode }: props) {
             name="gpaOrPercentage"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>GPA</FormLabel>
+                <Label>GPA</Label>
                 <FormControl>
                   <Input
                     placeholder="3.5 "
@@ -363,7 +375,7 @@ function CreateStudentFormComponent({ mode }: props) {
             name="preferredCountry"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Preferred Country</FormLabel>
+                <Label>Preferred Country</Label>
                 <FormControl>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <SelectTrigger className="w-full transition-colors focus:ring-2">
@@ -388,7 +400,7 @@ function CreateStudentFormComponent({ mode }: props) {
             name="faculty"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Faculty</FormLabel>
+                <Label>Faculty</Label>
                 <FormControl>
                   <Input
                     placeholder="Science, Management, etc."
@@ -406,10 +418,10 @@ function CreateStudentFormComponent({ mode }: props) {
             name="classTime"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Class Time</FormLabel>
+                <Label>Class Time</Label>
                 <FormControl>
                   <Input
-                    placeholder="Morning / Evening"
+                    placeholder="6-7 to 8-9"
                     {...field}
                     className="transition-colors focus:ring-2"
                   />
@@ -418,13 +430,12 @@ function CreateStudentFormComponent({ mode }: props) {
               </FormItem>
             )}
           />
-
           <FormField
             control={form.control}
             name="language"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Language</FormLabel>
+                <Label>Language</Label>
                 <FormControl>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <SelectTrigger className="w-full transition-colors focus:ring-2">
@@ -449,10 +460,10 @@ function CreateStudentFormComponent({ mode }: props) {
             name="interestedCourse"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Interested Course</FormLabel>
+                <Label>Interested Course</Label>
                 <FormControl>
                   <Input
-                    placeholder="English / Nepali"
+                    placeholder="Enter your interested course"
                     {...field}
                     className="transition-colors focus:ring-2"
                   />

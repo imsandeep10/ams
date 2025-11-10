@@ -7,7 +7,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { GaugeChart } from "@/components/dashboard/GaugeChart";
+// import { GaugeChart } from "@/components/dashboard/GaugeChart";
+import AttendancePieChart from "@/components/report/AttendancePieChart";
 import { DailyTrendChart } from "@/components/report/DailyTrendChart";
 import {
   useGetDailyTrend,
@@ -15,28 +16,11 @@ import {
   useGetReport,
   useGetStudentGrowth,
 } from "@/lib/api/useReport";
-import type { Language } from "@/types/languageType";
 import { StudentGrowthChart } from "@/components/report/StudentGrowthChart";
 import ReportChart from "@/components/report/ReportChart";
 
-// Constants moved outside component to prevent recreation
 const YEARS = [2023, 2024, 2025];
 const MONTHS = Array.from({ length: 12 }, (_, i) => i + 1);
-const DEPARTMENTS = ["All Departments", "IELTS", "PTE", "SAT", "DUOLINGO"];
-
-// Helper function moved outside component
-const getLanguageParam = (
-  department: string
-): Language["language"] | undefined => {
-  const languageMap: Record<string, Language["language"]> = {
-    DUOLINGO: "Duolingo",
-    IELTS: "IELTS",
-    PTE: "PTE",
-    SAT: "SAT",
-  };
-
-  return department === "All Departments" ? undefined : languageMap[department];
-};
 
 export const Report = React.memo(() => {
   const currentDate = useMemo(() => new Date(), []);
@@ -44,18 +28,11 @@ export const Report = React.memo(() => {
   const [selectedMonth, setSelectedMonth] = useState(
     currentDate.getMonth() + 1
   );
-  const [selectedDepartment, setSelectedDepartment] =
-    useState("All Departments");
 
-  // Memoize API parameters to prevent unnecessary refetches
+  // Memoized parameters
   const reportDate = useMemo(
     () => new Date(selectedYear, selectedMonth - 1),
     [selectedYear, selectedMonth]
-  );
-
-  const languageParam = useMemo(
-    () => getLanguageParam(selectedDepartment),
-    [selectedDepartment]
   );
 
   const growthParams = useMemo(
@@ -64,29 +41,28 @@ export const Report = React.memo(() => {
       startMonth: 1,
       endYear: selectedYear,
       endMonth: 12,
-      language: languageParam,
     }),
-    [selectedYear, languageParam]
+    [selectedYear]
   );
 
-  // API calls with memoized parameters
+  // API calls
   const {
     data: languagePrograms,
     isLoading: isReportLoading,
     isError: isReportError,
-  } = useGetReport(reportDate, languageParam);
+  } = useGetReport(reportDate);
 
-  const { 
+  const {
     data: attendenceOverview,
     isLoading: isDonutLoading,
-    isError: isDonutError
-  } = useGetDonutChart(selectedYear, selectedMonth, languageParam);
+    isError: isDonutError,
+  } = useGetDonutChart(selectedYear, selectedMonth);
 
   const {
     data: dailyTrendData,
     isLoading: isTrendLoading,
     isError: isTrendError,
-  } = useGetDailyTrend(selectedYear, selectedMonth, languageParam);
+  } = useGetDailyTrend(selectedYear, selectedMonth);
 
   const {
     data: studentGrowthData,
@@ -94,20 +70,20 @@ export const Report = React.memo(() => {
     isError: isGrowthError,
   } = useGetStudentGrowth(growthParams);
 
-  // Memoize transformed data
-  const chartData = useMemo(() => {
-    return (
+  // Memoized chart data
+  const chartData = useMemo(
+    () =>
       dailyTrendData?.data?.daily?.map((item: any) => ({
         date: item.date,
         present: item.present ?? 0,
         absent: item.absent ?? 0,
         attendanceRate: item.attendanceRate ?? 0,
-      })) || []
-    );
-  }, [dailyTrendData]);
+      })) || [],
+    [dailyTrendData]
+  );
 
-  const lines = useMemo(() => {
-    return (
+  const lines = useMemo(
+    () =>
       dailyTrendData?.data?.datasets?.map((dataset: any) => ({
         key:
           dataset.label === "Attendance Rate (%)"
@@ -117,9 +93,9 @@ export const Report = React.memo(() => {
         color: dataset.borderColor,
         yAxisID:
           dataset.label === "Attendance Rate (%)" ? "percentage" : "left",
-      })) || []
-    );
-  }, [dailyTrendData]);
+      })) || [],
+    [dailyTrendData]
+  );
 
   const growthChartData = useMemo(
     () => studentGrowthData?.data?.growth || [],
@@ -128,7 +104,7 @@ export const Report = React.memo(() => {
 
   return (
     <div className="p-5 space-y-5">
-      {/* Filters Section */}
+      {/* Filters */}
       <div className="flex items-center justify-between">
         <div className="flex gap-4">
           {/* Year Selector */}
@@ -177,31 +153,11 @@ export const Report = React.memo(() => {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-
-        {/* Department Filter */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button className="flex items-center py-2" variant="outline">
-              <span>{selectedDepartment}</span>
-              <ChevronDown className="ml-2 h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            {DEPARTMENTS.map((dept) => (
-              <DropdownMenuItem
-                key={dept}
-                onClick={() => setSelectedDepartment(dept)}
-              >
-                {dept}
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
       </div>
 
-      {/* Charts Grid */}
+      {/* Charts */}
       <div className="flex flex-col gap-5">
-        {/* Top Row Charts */}
+        {/* Top Charts */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <ReportChart
             data={languagePrograms?.data}
@@ -222,13 +178,12 @@ export const Report = React.memo(() => {
               </p>
             </div>
           ) : (
-            <GaugeChart
+            <AttendancePieChart
+              title={attendenceOverview?.title}
               labels={attendenceOverview?.data?.labels}
               values={attendenceOverview?.data?.values}
+              percentages={attendenceOverview?.data?.percentages}
               colors={attendenceOverview?.data?.colors}
-              title={attendenceOverview?.title}
-              description={`Year: ${attendenceOverview?.metadata?.year} | Month: ${attendenceOverview?.metadata?.month}`}
-              footerText={`Total Records: ${attendenceOverview?.metadata?.totalRecords}`}
             />
           )}
         </div>

@@ -1,13 +1,7 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import api from "../axiosInstance";
 import { AxiosError } from "axios";
-import type { GlobalQRCodeType } from "@/types/dashboardTypes";
-
-interface StaticQRCodeType {
-  message: string;
-  qrCodeDataUrl: string;
-  url: string;
-}
+import type { GlobalQRCodeType, StaticQRCodeType, MockTestRegistrationQRCodeType } from "@/types/dashboardTypes";
 
 interface AttendanceResponse {
   success: boolean;
@@ -37,7 +31,7 @@ export const useGetStaticQRCode = () => {
   return useQuery<StaticQRCodeType, AxiosError>({
     queryKey: ["staticQRCode"],
     queryFn: async (): Promise<StaticQRCodeType> => {
-      const res = await api.get<StaticQRCodeType>("/qr-code/static");
+      const res = await api.get<StaticQRCodeType>("/qr-code/static/attendance");
       
       if (!res?.data) {
         throw new Error("Failed to fetch static QR code");
@@ -65,6 +59,30 @@ export const useGetStudentRegistrationQRCode = () => {
       
       if (!res?.data) {
         throw new Error("Failed to fetch student registration QR code");
+      }
+
+      return res.data;
+    },
+    // Cache for 1 hour since static QR codes don't change
+    staleTime: 60 * 60 * 1000,
+    // Retry on failure
+    retry: 3,
+    retryDelay: 1000,
+  });
+};
+
+/**
+ * Custom hook to fetch static QR code for mock test registration
+ * @returns React Query result with mock test registration QR code data
+ */
+export const useGetMockTestRegistrationQRCode = () => {
+  return useQuery<MockTestRegistrationQRCodeType, AxiosError>({
+    queryKey: ["mockTestRegistrationQRCode"],
+    queryFn: async (): Promise<MockTestRegistrationQRCodeType> => {
+      const res = await api.get<MockTestRegistrationQRCodeType>("/qr-code/static/mock-test-register");
+      
+      if (!res?.data) {
+        throw new Error("Failed to fetch mock test registration QR code");
       }
 
       return res.data;

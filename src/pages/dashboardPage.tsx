@@ -3,6 +3,7 @@ import { TotalCard } from "@/components/dashboard/TotalCard";
 import { Calendar } from "@/components/ui/calendar";
 import StaticQRCode from "@/components/dashboard/GlobalQRCode";
 import StudentRegistrationQRCode from "@/components/dashboard/StudentRegistrationQRCode";
+import MockTestRegistrationQRCode from "@/components/dashboard/MockTestRegistrationQRCode";
 import TodayPresentTable from "@/components/dashboard/TodayPresentTable";
 
 const DashboardPage = React.memo(() => {
@@ -34,10 +35,11 @@ const DashboardPage = React.memo(() => {
         <TodayPresentTable />
       </div>
 
-      {/* QR Codes Section - Side by Side */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+      {/* QR Codes Section - Three QR Codes in a Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         <StaticQRCode />
         <StudentRegistrationQRCode />
+        <MockTestRegistrationQRCode />
       </div>
 
 

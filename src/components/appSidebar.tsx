@@ -1,20 +1,7 @@
-import { LogOut } from "lucide-react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useLocation, useNavigate, Link } from "react-router-dom";
-import { useAuthStore } from "@/lib/stores/AuthStore";
+import { useLocation, Link } from "react-router-dom";
 import { useState } from "react";
 import { roleSidebars, sideBar } from "@/constant/sideBar";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "./ui/alert-dialog";
 
 interface SidebarProps {
   children: React.ReactNode;
@@ -110,39 +97,12 @@ const SidebarMenuButton = ({
   </button>
 );
 
-interface ButtonProps {
-  children: React.ReactNode;
-  className?: string;
-  onClick?: () => void;
-  variant?: string;
-}
-
-const Button = ({ children, className, onClick, variant }: ButtonProps) => (
-  <button
-    onClick={onClick}
-    className={`${className} ${
-      variant === "ghost" ? "hover:bg-white" : ""
-    } transition-colors rounded-md px-4 py-2`}
-  >
-    {children}
-  </button>
-);
-
 const AppSidebar = ({ roleProp }: { roleProp?: string }) => {
   const [collapsed, setCollapsed] = useState(false);
-  const [openConfirmed, setOpenConfirmed] = useState(false);
-  const navigate = useNavigate();
   const location = useLocation();
-  const logout = useAuthStore((state) => state.logout);
 
   const toggleSidebar = () => {
     setCollapsed(!collapsed);
-  };
-
-  const handleLogout = () => {
-    logout();
-    setOpenConfirmed(false);
-    navigate("/", { replace: true });
   };
 
   const isActiveRoute = (url: string) => {
@@ -245,41 +205,6 @@ const AppSidebar = ({ roleProp }: { roleProp?: string }) => {
                 </SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
-          </div>
-          <div className="p-4">
-            <AlertDialog open={openConfirmed} onOpenChange={setOpenConfirmed}>
-              <AlertDialogTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className={`flex items-center hover:text-black cursor-pointer ${
-                    collapsed ? "justify-center px-2" : "gap-2"
-                  } w-full`}
-                >
-                  <LogOut size={20} className="flex-shrink-0" />
-                  {!collapsed && <span>Logout</span>}
-                </Button>
-              </AlertDialogTrigger>
-
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Confirm Logout</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Are you sure you want to log out from your account?
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel className="cursor-pointer">
-                    Cancel
-                  </AlertDialogCancel>
-                  <AlertDialogAction
-                    className="cursor-pointer"
-                    onClick={handleLogout}
-                  >
-                    Logout
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
           </div>
         </SidebarContent>
       </Sidebar>

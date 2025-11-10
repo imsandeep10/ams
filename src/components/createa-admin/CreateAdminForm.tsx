@@ -48,7 +48,6 @@ function CreateAdminFormComponent({ mode }: props) {
 
   const { id } = useParams<{ id: string }>();
   const { data: adminData, isLoading } = useGetAdminById(id || "");
-  console.log("Admin Data:", adminData);
 
   const [uploadError, setUploadError] = useState<string>("");
   const [previewImage, setPreviewImage] = useState<string>("");
@@ -74,13 +73,17 @@ function CreateAdminFormComponent({ mode }: props) {
   // Populate form with admin data when in edit mode - FIXED VERSION
   useEffect(() => {
     if (mode === "edit" && adminData && !isLoading && !isFormInitialized) {
-      console.log("Setting form values with:", adminData);
-      
       // Ensure we have valid role values
-      const validRoles = ["satAdmin", "duolingoAdmin", "ieltsAdmin", "pteAdmin"];
-      const adminRole = adminData.role && validRoles.includes(adminData.role) 
-        ? adminData.role 
-        : "satAdmin";
+      const validRoles = [
+        "satAdmin",
+        "duolingoAdmin",
+        "ieltsAdmin",
+        "pteAdmin",
+      ];
+      const adminRole =
+        adminData.role && validRoles.includes(adminData.role)
+          ? adminData.role
+          : "satAdmin";
 
       const formValues = {
         fullName: adminData.fullName || "",
@@ -92,8 +95,6 @@ function CreateAdminFormComponent({ mode }: props) {
         password: "", // Keep password empty in edit mode
       };
 
-      console.log("Form values to set:", formValues);
-      
       // Use setTimeout to ensure the reset happens after component mount
       setTimeout(() => {
         form.reset(formValues);
@@ -112,12 +113,16 @@ function CreateAdminFormComponent({ mode }: props) {
   // Alternative approach - set values individually
   useEffect(() => {
     if (mode === "edit" && adminData && !isLoading && !isFormInitialized) {
-      console.log("Setting individual form values");
-      
-      const validRoles = ["satAdmin", "duolingoAdmin", "ieltsAdmin", "pteAdmin"];
-      const adminRole = adminData.role && validRoles.includes(adminData.role) 
-        ? adminData.role 
-        : "satAdmin";
+      const validRoles = [
+        "satAdmin",
+        "duolingoAdmin",
+        "ieltsAdmin",
+        "pteAdmin",
+      ];
+      const adminRole =
+        adminData.role && validRoles.includes(adminData.role)
+          ? adminData.role
+          : "satAdmin";
 
       // Set values individually to avoid reset issues
       form.setValue("fullName", adminData.fullName || "");
@@ -140,17 +145,11 @@ function CreateAdminFormComponent({ mode }: props) {
 
   const { isSubmitting, isDirty } = form.formState;
 
-  // Watch form values to debug
-  const watchRole = form.watch("role");
-  const watchAll = form.watch();
-  console.log("Current role in form:", watchRole);
-  console.log("All form values:", watchAll);
-
   const handleImageUpload = useCallback(
     async (file: File) => {
       try {
         setUploadError("");
-        
+
         // Create preview URL
         const previewUrl = URL.createObjectURL(file);
         setPreviewImage(previewUrl);
@@ -188,11 +187,8 @@ function CreateAdminFormComponent({ mode }: props) {
     async (values: CreateAdminFormData) => {
       try {
         // For edit mode, remove password if it's empty
-        const submitData = mode === "edit" 
-          ? { ...values, password: undefined }
-          : values;
-
-        console.log("Submitting data:", submitData);
+        const submitData =
+          mode === "edit" ? { ...values, password: undefined } : values;
 
         if (mode === "edit" && id) {
           await updateAdmin({ id, data: submitData });
@@ -217,9 +213,9 @@ function CreateAdminFormComponent({ mode }: props) {
   // Get initials for avatar fallback
   const getInitials = (name: string): string => {
     return name
-      .split(' ')
-      .map(part => part.charAt(0))
-      .join('')
+      .split(" ")
+      .map((part) => part.charAt(0))
+      .join("")
       .toUpperCase()
       .slice(0, 2);
   };
@@ -228,7 +224,6 @@ function CreateAdminFormComponent({ mode }: props) {
     return <div className="p-8">Loading admin data...</div>;
   }
 
- 
   return (
     <>
       <Button
@@ -253,7 +248,8 @@ function CreateAdminFormComponent({ mode }: props) {
             </h3>
             {/* Debug info - remove in production */}
             <div className="text-xs text-muted-foreground mb-2">
-              Debug - Role in form: "{form.watch("role")}" | Expected: "duolingoAdmin"
+              Debug - Role in form: "{form.watch("role")}" | Expected:
+              "duolingoAdmin"
             </div>
           </div>
 
@@ -364,10 +360,7 @@ function CreateAdminFormComponent({ mode }: props) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Role</FormLabel>
-                <Select 
-                  onValueChange={field.onChange} 
-                  value={field.value}
-                >
+                <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger className="w-full transition-colors focus:ring-2">
                       <SelectValue placeholder="Select Role">
@@ -381,7 +374,9 @@ function CreateAdminFormComponent({ mode }: props) {
                   </FormControl>
                   <SelectContent>
                     <SelectItem value="satAdmin">SAT Admin</SelectItem>
-                    <SelectItem value="duolingoAdmin">Duolingo Admin</SelectItem>
+                    <SelectItem value="duolingoAdmin">
+                      Duolingo Admin
+                    </SelectItem>
                     <SelectItem value="ieltsAdmin">IELTS Admin</SelectItem>
                     <SelectItem value="pteAdmin">PTE Admin</SelectItem>
                   </SelectContent>
@@ -394,13 +389,13 @@ function CreateAdminFormComponent({ mode }: props) {
           {/* Profile Image */}
           <div className="md:col-span-2 space-y-4">
             <FormLabel>Profile Image</FormLabel>
-            
+
             {/* Image Preview */}
             {(previewImage || (mode === "edit" && adminData?.profileImage)) && (
               <div className="flex items-center gap-4 mb-4">
                 <Avatar className="h-16 w-16 border">
-                  <AvatarImage 
-                    src={previewImage || adminData?.profileImage?.url} 
+                  <AvatarImage
+                    src={previewImage || adminData?.profileImage?.url}
                     alt="Profile preview"
                   />
                   <AvatarFallback className="text-sm">
@@ -446,7 +441,9 @@ function CreateAdminFormComponent({ mode }: props) {
                     />
                   </FormControl>
                   {isUploading && (
-                    <p className="text-sm text-blue-600 mt-2">Uploading image...</p>
+                    <p className="text-sm text-blue-600 mt-2">
+                      Uploading image...
+                    </p>
                   )}
                   {uploadError && (
                     <p className="text-sm text-red-600 mt-2">{uploadError}</p>

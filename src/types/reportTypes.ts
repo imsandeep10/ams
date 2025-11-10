@@ -28,6 +28,8 @@ export type AttendanceOverviewData = {
   labels: string[];
   values: number[];
   colors: string[];
+  percentages?: number[];
+  dominant?: 'present' | 'absent';
   present: number;
   absent: number;
   total: number;

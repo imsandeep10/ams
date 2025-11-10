@@ -172,7 +172,7 @@ const ReportChart: React.FC<ReportChartProps> = ({
       <CardContent style={{ height }}>
         <ResponsiveContainer width="100%" height="100%">
           {isSingleProgramFormat ? (
-            // ✅ Single program format
+            //  Single program format
             <BarChart
               data={chartData}
               barSize={60}

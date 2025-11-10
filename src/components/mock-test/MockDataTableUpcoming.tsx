@@ -13,7 +13,6 @@ import {
 } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 
 import {
   Table,
@@ -23,15 +22,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Plus, Search } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
 
-export function DataTable<TData, TValue>({
+export function MockDataTableUpcoming<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
@@ -40,9 +37,6 @@ export function DataTable<TData, TValue>({
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
   const [globalFilter, setGlobalFilter] = useState("");
-  const pathname = window.location.pathname.split("/").filter(Boolean);
-
-  const navigate = useNavigate();
 
   const table = useReactTable({
     data,
@@ -73,32 +67,9 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="w-full space-y-4">
-      {/* Header Controls */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-2">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-            <Input
-              placeholder="Search students..."
-              value={globalFilter ?? ""}
-              onChange={(event) => setGlobalFilter(String(event.target.value))}
-              className="pl-10 max-w-sm"
-            />
-          </div>
-        </div>
-
-        <div>
-          <Button
-            className="cursor-pointer"
-            onClick={() => {
-              navigate(`/create-student?language=${pathname[0]}`);
-            }}
-          >
-            <span>Add Student</span>
-            <Plus />
-          </Button>
-        </div>
-      </div>
+      <h2 className="text-2xl font-semibold border-b pb-2  mb-4">
+        Upcoming Mock Test Students
+      </h2>
 
       {/* Table */}
       <div className="rounded-md border">

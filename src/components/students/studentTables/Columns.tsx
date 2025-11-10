@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import {
   Eye,
   Trash2,
-  Bell,
   Phone,
   Mail,
   Clock,
@@ -19,58 +18,9 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+
 import { useDeleteStudent } from "@/lib/api/useStudents";
 import { toast } from "sonner";
-
-// QR Code Component with Dialog
-const QRCodeDisplay = React.memo(
-  ({ qrCodeDataUrl }: { qrCodeDataUrl: string }) => {
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-    const handleQRClick = () => {
-      setIsDialogOpen(true);
-    };
-
-    return (
-      <>
-        <div
-          className="w-10 h-10 bg-gray-800 rounded flex items-center justify-center cursor-pointer hover:bg-gray-700 transition-colors"
-          onClick={handleQRClick}
-        >
-          <img src={qrCodeDataUrl} alt="QR Code" className="w-10 h-10" />
-        </div>
-
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogContent className="sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle className="text-center">Student QR Code</DialogTitle>
-            </DialogHeader>
-            <div className="flex flex-col items-center justify-center p-4">
-              <div className="bg-white p-4 rounded-lg">
-                <img
-                  src={qrCodeDataUrl}
-                  alt="QR Code"
-                  className="w-64 h-64 mx-auto"
-                />
-              </div>
-              <p className="text-sm text-gray-500 mt-4 text-center">
-                Scan this QR code to view student information
-              </p>
-            </div>
-          </DialogContent>
-        </Dialog>
-      </>
-    );
-  }
-);
-
-QRCodeDisplay.displayName = "QRCodeDisplay";
 
 // Status Badge Component
 const StatusBadge = React.memo<{ status: "Present" | "Absent" }>(
@@ -130,8 +80,6 @@ const ActionButtons = React.memo<ActionButtonsProps>(
     const handleDelete = () => {
       setIsOpen(true);
     };
-
-    const handleNotify = () => {};
 
     return (
       <div className="flex items-center gap-2">
@@ -200,10 +148,10 @@ const ActionButtons = React.memo<ActionButtonsProps>(
         </Tooltip>
 
         {isOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 w-full">
             <div className="bg-white rounded-lg p-6 w-80 max-w-full mx-4">
               <h2 className="text-lg font-semibold mb-4">Confirm Delete</h2>
-              <p className="mb-6">
+              <p className="mb-6 text-wrap">
                 Are you sure you want to delete this student? This action cannot
                 be undone.
               </p>
@@ -226,22 +174,6 @@ const ActionButtons = React.memo<ActionButtonsProps>(
             </div>
           </div>
         )}
-
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-8 w-8 p-0 text-orange-600 hover:bg-orange-50  cursor-pointer"
-              onClick={handleNotify}
-            >
-              <Bell className="w-4 h-4" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Notify</p>
-          </TooltipContent>
-        </Tooltip>
       </div>
     );
   }
@@ -277,21 +209,6 @@ export const columns: ColumnDef<Student>[] = [
         </div>
       );
     },
-  },
-  {
-    id: "qr",
-    header: "QR",
-    cell: ({ row }) => {
-      const qrCodeDataUrl = row.original.qrCode?.qrCodeDataUrl;
-      return qrCodeDataUrl ? (
-        <QRCodeDisplay qrCodeDataUrl={qrCodeDataUrl} />
-      ) : (
-        <div className="w-10 h-10 bg-gray-200 rounded flex items-center justify-center text-xs text-gray-500">
-          No QR
-        </div>
-      );
-    },
-    enableSorting: false,
   },
   {
     id: "classTime",
