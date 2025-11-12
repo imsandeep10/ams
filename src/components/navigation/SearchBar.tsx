@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react'
-import { Search, Loader2 } from 'lucide-react'
+import { Search } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import {
   Command,
@@ -72,7 +72,7 @@ const SearchBar: React.FC = () => {
   const [value, setValue] = useState<string>('')
   const navigate = useNavigate()
   
-  const { data: searchData, isPending, isError } = useStudentSearch(value)
+  const { data: searchData, isError } = useStudentSearch(value)
 
   // Transform API data with proper typing
   const transformedData: SearchItem[] = useMemo(() => {
