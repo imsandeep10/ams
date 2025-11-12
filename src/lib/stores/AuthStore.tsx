@@ -2,10 +2,19 @@ import { create } from "zustand";
 import api from "../axiosInstance";
 import { jwtDecode } from "jwt-decode";
 
+interface User {
+  id: string;
+  fullName: string;
+  email: string;
+  role: string;
+  profileImageUrl: string | null;
+  profileImageId: string | null;
+}
+
 interface AuthState {
   accessToken: string | null;
   refreshToken: string | null;
-  user: any | null;
+  user: User | null;
   role: string | null;
   setTokens: (accessToken: string, refreshToken?: string) => void;
   logout: () => void;
@@ -19,7 +28,6 @@ interface AuthState {
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
-  // Load initial state from localStorage
   accessToken: localStorage.getItem("accessToken"),
   refreshToken: localStorage.getItem("refreshToken"),
   user: JSON.parse(localStorage.getItem("user") || "null"),
@@ -33,13 +41,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       const decoded: any = jwtDecode(accessToken);
       const userRole = decoded?.role || decoded?.roles || null;
 
-      // Save user and role in localStorage
-      localStorage.setItem("user", JSON.stringify(decoded));
       localStorage.setItem("role", userRole);
-
-      set({ accessToken, refreshToken, role: userRole, user: decoded });
+      set({ accessToken, refreshToken, role: userRole });
     } catch (e) {
-      set({ accessToken, refreshToken, role: null, user: null });
+      set({ accessToken, refreshToken, role: null });
     }
   },
 
@@ -58,12 +63,16 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     try {
       const decoded: any = jwtDecode(token);
       const role = decoded?.role || decoded?.roles || null;
-      set({ role, user: decoded });
+      
+      // Check if we have user data in localStorage
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        set({ role, user: JSON.parse(storedUser) });
+      } else {
+        set({ role });
+      }
 
-      // Ensure localStorage is synced
-      localStorage.setItem("user", JSON.stringify(decoded));
       localStorage.setItem("role", role);
-
       return true;
     } catch (e) {
       get().logout();
@@ -76,9 +85,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       const response = await api.post("/login/signin", { email, password });
       const { accessToken, refreshToken, user } = response.data;
 
-      // Save tokens & decoded info
+      // Save tokens
       get().setTokens(accessToken, refreshToken);
-      set({ user }); // user object from API
+      
+      // Save user object from API response
+      localStorage.setItem("user", JSON.stringify(user));
+      set({ user });
 
       return { success: true };
     } catch (err: any) {

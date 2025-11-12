@@ -37,9 +37,11 @@ const LoginForm = () => {
     async (values: z.infer<typeof loginSchema>) => {
       setIsLoading(true);
       try {
-        // store email for forgot-password autofill
+        // Store email for forgot-password autofill
         localStorage.setItem("loginEmail", values.email);
+        
         const result = await login(values.email, values.password);
+        
         if (result.success) {
           toast.success("Logged in successfully!");
           navigate("/dashboard");

@@ -24,14 +24,7 @@ import {
 } from "../ui/alert-dialog";
 
 export const ProfileDropdown = React.memo(() => {
-  // Mock user data - replace with actual user data from your context/state
-  const userData = {
-    name: "Admin User",
-    email: "admin@example.com",
-    avatar: "", // Add actual avatar URL if available
-    role: "Super Admin",
-  };
-
+  const user = useAuthStore((state) => state.user);
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
   const navigate = useNavigate();
   const logout = useAuthStore((state) => state.logout);
@@ -42,7 +35,8 @@ export const ProfileDropdown = React.memo(() => {
     navigate("/", { replace: true });
   };
 
-  const getInitials = (name: string) => {
+  const getInitials = (name?: string) => {
+    if (!name) return "??";
     return name
       .split(" ")
       .map((part) => part.charAt(0))
@@ -50,6 +44,24 @@ export const ProfileDropdown = React.memo(() => {
       .toUpperCase()
       .slice(0, 2);
   };
+
+  // Format role for display
+  const formatRole = (role?: string) => {
+    if (!role) return "User";
+    const roleMap: Record<string, string> = {
+      superAdmin: "Super Admin",
+      pteAdmin: "PTE Admin",
+      ieltsAdmin: "IELTS Admin",
+      duolingoAdmin: "Duolingo Admin",
+      satAdmin: "SAT Admin",
+    };
+    return roleMap[role] || role;
+  };
+
+  // Don't render if user is not loaded
+  if (!user || !user.fullName || !user.email) {
+    return null;
+  }
 
   return (
     <>
@@ -61,9 +73,12 @@ export const ProfileDropdown = React.memo(() => {
               className="relative h-8 w-8 rounded-full cursor-pointer"
             >
               <Avatar className="h-8 w-8">
-                <AvatarImage src={userData.avatar} alt={userData.name} />
+                <AvatarImage 
+                  src={user.profileImageUrl || ""} 
+                  alt={user.fullName} 
+                />
                 <AvatarFallback className="bg-primary text-primary-foreground text-sm font-medium">
-                  {getInitials(userData.name)}
+                  {getInitials(user.fullName)}
                 </AvatarFallback>
               </Avatar>
             </Button>
@@ -72,13 +87,13 @@ export const ProfileDropdown = React.memo(() => {
             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col space-y-1">
                 <p className="text-sm font-medium leading-none">
-                  {userData.name}
+                  {user.fullName}
                 </p>
                 <p className="text-xs leading-none text-muted-foreground">
-                  {userData.email}
+                  {user.email}
                 </p>
                 <p className="text-xs text-primary font-semibold mt-1">
-                  {userData.role}
+                  {formatRole(user.role)}
                 </p>
               </div>
             </DropdownMenuLabel>

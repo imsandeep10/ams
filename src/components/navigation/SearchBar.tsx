@@ -147,13 +147,9 @@ const SearchBar: React.FC = () => {
             role="combobox"
             aria-expanded={open}
             className="w-full justify-start"
-            disabled={isPending}
           >
-            {isPending ? (
-              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-            ) : (
+          
               <Search className="h-4 w-4 mr-2 opacity-50" />
-            )}
             <span className="text-sm truncate">
               {selectedStudent
                 ? selectedStudent.label
