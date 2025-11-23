@@ -203,14 +203,28 @@ const AttendancePage: React.FC = () => {
       const data = await markAttendanceMutation.mutateAsync(requestData);
       
       if (data.success) {
+        // Use local time for consistent display
+        const now = new Date();
+        const localDate = now.toLocaleDateString('en-US', { 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric' 
+        });
+        const localTime = now.toLocaleTimeString('en-US', { 
+          hour: '2-digit', 
+          minute: '2-digit', 
+          second: '2-digit',
+          hour12: true 
+        });
+        
         setStatus({
           success: true,
           message: data.alreadyMarked 
             ? "You have already marked attendance for today" 
             : "You are attended today",
           studentName: data.studentName,
-          date: data.date || new Date().toLocaleDateString(),
-          time: data.time || new Date().toLocaleTimeString(),
+          date: localDate,
+          time: localTime,
           alreadyMarked: data.alreadyMarked
         });
 
@@ -532,7 +546,7 @@ const AttendancePage: React.FC = () => {
 
           <div className="mt-6 text-center text-xs text-gray-500 border-t pt-4 space-y-1">
             <p>
-              Your attendance will be marked for today ({new Date().toLocaleDateString()})
+              Your attendance will be marked for today ({new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })})
             </p>
             <p className="text-amber-600">
               ⚠️ You must be within 100 meters of the office location

@@ -9,9 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 // import { GaugeChart } from "@/components/dashboard/GaugeChart";
 import AttendancePieChart from "@/components/report/AttendancePieChart";
-import { DailyTrendChart } from "@/components/report/DailyTrendChart";
 import {
-  useGetDailyTrend,
   useGetDonutChart,
   useGetReport,
   useGetStudentGrowth,
@@ -58,11 +56,6 @@ export const Report = React.memo(() => {
     isError: isDonutError,
   } = useGetDonutChart(selectedYear, selectedMonth);
 
-  const {
-    data: dailyTrendData,
-    isLoading: isTrendLoading,
-    isError: isTrendError,
-  } = useGetDailyTrend(selectedYear, selectedMonth);
 
   const {
     data: studentGrowthData,
@@ -70,32 +63,6 @@ export const Report = React.memo(() => {
     isError: isGrowthError,
   } = useGetStudentGrowth(growthParams);
 
-  // Memoized chart data
-  const chartData = useMemo(
-    () =>
-      dailyTrendData?.data?.daily?.map((item: any) => ({
-        date: item.date,
-        present: item.present ?? 0,
-        absent: item.absent ?? 0,
-        attendanceRate: item.attendanceRate ?? 0,
-      })) || [],
-    [dailyTrendData]
-  );
-
-  const lines = useMemo(
-    () =>
-      dailyTrendData?.data?.datasets?.map((dataset: any) => ({
-        key:
-          dataset.label === "Attendance Rate (%)"
-            ? "attendanceRate"
-            : dataset.label.toLowerCase(),
-        label: dataset.label,
-        color: dataset.borderColor,
-        yAxisID:
-          dataset.label === "Attendance Rate (%)" ? "percentage" : "left",
-      })) || [],
-    [dailyTrendData]
-  );
 
   const growthChartData = useMemo(
     () => studentGrowthData?.data?.growth || [],
@@ -189,28 +156,7 @@ export const Report = React.memo(() => {
         </div>
 
         {/* Daily Trend Chart */}
-        <div className="w-full">
-          {isTrendLoading ? (
-            <div className="border bg-white shadow-md border-gray-200 rounded-md p-10 text-center">
-              <p className="text-muted-foreground animate-pulse">
-                Loading daily trend...
-              </p>
-            </div>
-          ) : isTrendError ? (
-            <div className="border bg-white shadow-md border-gray-200 rounded-md p-10 text-center">
-              <p className="text-destructive">
-                Failed to load daily trend data.
-              </p>
-            </div>
-          ) : (
-            <div className="border bg-white shadow-md border-gray-200 rounded-md">
-              <h2 className="p-4 text-muted-foreground text-xl">
-                {dailyTrendData?.title || "Daily Attendance Trend"}
-              </h2>
-              <DailyTrendChart data={chartData} lines={lines} height={300} />
-            </div>
-          )}
-        </div>
+        
 
         {/* Student Growth Chart */}
         <div className="w-full">
