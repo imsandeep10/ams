@@ -36,6 +36,7 @@ import {
 } from "@/lib/api/useStudents";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
+import { TimeSelector } from "../ui/time-selector";
 
 interface props {
   mode: "edit" | "create";
@@ -247,7 +248,7 @@ function StudentRegister({ mode }: props) {
               name="profileImageId"
               render={() => (
                 <FormItem>
-                  <FormLabel>Profile Image</FormLabel>
+                  <FormLabel>Profile Image <span className="text-gray-400 text-sm">(Optional)</span></FormLabel>
                   <FormControl>
                     <Input
                       id="picture"
@@ -338,10 +339,10 @@ function StudentRegister({ mode }: props) {
               name="gpaOrPercentage"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>GPA</FormLabel>
+                  <FormLabel>GPA <span className="text-gray-400 text-sm">(Optional)</span></FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="3.5 "
+                      placeholder="3.5"
                       {...field}
                       className="transition-colors focus:ring-2"
                     />
@@ -401,10 +402,10 @@ function StudentRegister({ mode }: props) {
                 <FormItem>
                   <FormLabel>Class Time</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="Morning / Evening"
-                      {...field}
-                      className="transition-colors focus:ring-2"
+                    <TimeSelector
+                      value={field.value}
+                      onValueChange={field.onChange}
+                      disabled={isSubmitting || isUploading}
                     />
                   </FormControl>
                   <FormMessage />
@@ -442,7 +443,7 @@ function StudentRegister({ mode }: props) {
               name="interestedCourse"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Interested Course</FormLabel>
+                  <FormLabel>Interested Course <span className="text-gray-400 text-sm">(Optional)</span></FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Enter your interested course"

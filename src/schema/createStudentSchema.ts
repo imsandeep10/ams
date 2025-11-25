@@ -11,12 +11,13 @@ export const createStudentFormSchema = z.object({
     .min(10, { message: "Phone number must be at least 7 digits" })
     .max(15, { message: "Phone number cannot exceed 15 digits" }),
   address: z.string().min(1, "Address is required"),
-  profileImageId: z.string().min(1, "Profile image is required"),
+  profileImageId: z.string().optional(),
   gpaOrPercentage: z
     .string()
-    .min(1, { message: "GPA or percentage is required" })
+    .optional()
     .refine(
       (val) => {
+        if (!val || val.trim() === "") return true; // Allow empty values
         const num = parseFloat(val);
         if (isNaN(num)) return false;
         // Accept GPA range (0.0 - 4.0) or Percentage range (0 - 100)
@@ -31,7 +32,7 @@ export const createStudentFormSchema = z.object({
   faculty: z.string().min(1, "Faculty is required"),
   classTime: z.string().min(1, "Class time is required"),
   language: z.string().min(1, "Language is required"),
-  interestedCourse: z.string().min(1, "Interested course is required"),
+  interestedCourse: z.string().optional(),
   academicQualification: z
     .string()
     .min(1, "Academic qualification is required"),

@@ -22,12 +22,12 @@ export default function SuccessMessage() {
         transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
         className="mt-4"
       >
-        <button
+        {/* <button
           className="px-5 py-2.5 bg-green-600 text-white rounded-full hover:bg-green-700 transition-all shadow-sm"
           onClick={() => window.location.href = "/login"}
         >
           Continue
-        </button>
+        </button> */}
       </motion.div>
     </motion.div>
   );

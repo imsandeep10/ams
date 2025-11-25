@@ -19,29 +19,16 @@ export const Languages=[
 
 
         export const academicQualifications=[
+            "Diploma",
             "+2",
             "Bachelor's",
             "Master's",
-            "PhD"]
+            "PhD"
+        ]
 
-export const qualificationYear=[
-    "2030",
-    "2029",
-    "2028",
-    "2027",
-    "2026",
-    "2025",
-    "2024",
-    "2023",
-    "2022",
-    "2021",
-    "2020",
-    "2019",
-    "2018",
-    "2017",
-    "2016",
-    "2015",
-    "2014",
-    "2013",
-    "2012",
-    "2011",]
+// Generate qualification years dynamically: current year + 1, then 10 years back
+const currentYear = new Date().getFullYear();
+export const qualificationYear = Array.from(
+    { length: 12 }, 
+    (_, i) => String(currentYear + 1 - i)
+);
