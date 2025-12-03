@@ -63,16 +63,13 @@ export function TrackDataTable<TData, TValue>({
     },
     initialState: {
       pagination: {
-        pageSize: 5,
+        pageSize: 15,
       },
     },
   });
 
   return (
     <div className="w-full space-y-4">
-      {/* Header Controls */}
-     
-
       {/* Table */}
       <div className="rounded-md border">
         <Table>

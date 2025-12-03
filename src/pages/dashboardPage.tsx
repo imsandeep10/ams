@@ -14,7 +14,7 @@ const DashboardPage = React.memo(() => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         {/* Left Column - Stats and Bar Chart */}
         <div className="lg:col-span-2 space-y-6">
-          <TotalCard />
+          <TotalCard selectedDate={date} />
         </div>
 
         {/* Right Column - Gauge and Calendar */}
@@ -32,7 +32,7 @@ const DashboardPage = React.memo(() => {
 
       {/* Bottom Section - Data Table */}
       <div className="w-full">
-        <TodayPresentTable />
+        <TodayPresentTable selectedDate={date} />
       </div>
 
       {/* QR Codes Section - Three QR Codes in a Row */}

@@ -50,7 +50,7 @@ export const StudentGrowthChart: React.FC<StudentGrowthChartProps> = ({
       <CardHeader>
         <CardTitle>Student Growth Over Time</CardTitle>
         <CardDescription>
-          Monthly trends in total, new, and left students
+          Monthly trends in total and new students
         </CardDescription>
       </CardHeader>
 
@@ -112,14 +112,6 @@ export const StudentGrowthChart: React.FC<StudentGrowthChartProps> = ({
                 dataKey="newStudents"
                 name="New Students"
                 stroke="#10B981" // Green
-                strokeWidth={2}
-                dot={false}
-              />
-              <Line
-                type="monotone"
-                dataKey="studentsLeft"
-                name="Students Left"
-                stroke="#EF4444" // Red
                 strokeWidth={2}
                 dot={false}
               />

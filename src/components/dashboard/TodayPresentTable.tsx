@@ -4,10 +4,17 @@ import { useMemo, useState } from 'react';
 import type { PresentStudent } from '@/lib/api/dashboard';
 import { useTodayPresentStudents } from '@/lib/api/dashboard';
 
-export default function TodayPresentTable() {
-  const { data = [], isLoading, error, isError } = useTodayPresentStudents();
+type Props = { selectedDate?: Date };
+
+export default function TodayPresentTable({ selectedDate }: Props) {
+  const { data = [], isLoading, error, isError } = useTodayPresentStudents(selectedDate);
   const [page, setPage] = useState(1);
-  const limit = 10;
+  const [limit, setLimit] = useState(10);
+
+  const handlePageSizeChange = (newLimit: number) => {
+    setLimit(newLimit);
+    setPage(1); // Reset to first page when changing page size
+  };
 
   const columns = useMemo<ColumnDef<PresentStudent>[]>(
     () => [
@@ -43,6 +50,7 @@ export default function TodayPresentTable() {
         data={pageRows}
         pagination={{ page, limit, total, totalPages }}
         onPageChange={setPage}
+        onPageSizeChange={handlePageSizeChange}
         isLoading={isLoading}
         emptyMessage={emptyFallback ? 'No one is Present' : undefined}
       />

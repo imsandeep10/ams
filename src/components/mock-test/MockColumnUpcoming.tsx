@@ -90,7 +90,7 @@ const ActionButtons = React.memo<ActionButtonsProps>(({ studentId }) => {
 
 ActionButtons.displayName = "ActionButtons";
 
-export const MockColumnUpcoming: ColumnDef<Mock>[] = [
+export const getMockColumnUpcoming = (): ColumnDef<Mock>[] => [
   {
     id: "fullName",
     header: ({ column }) => {

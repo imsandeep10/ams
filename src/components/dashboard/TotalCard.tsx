@@ -1,6 +1,7 @@
 import { useDashboardStats } from "@/lib/api/dashboard";
 import { useAuthStore } from "@/lib/stores/AuthStore";
 import React, { useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 
 type CardData = {
   subtitle: string;
@@ -8,9 +9,18 @@ type CardData = {
   color?: string;
 };
 
-export const TotalCard = React.memo(() => {
-  const { data: stats, isLoading } = useDashboardStats();
+type TotalCardProps = { selectedDate?: Date };
+
+export const TotalCard = React.memo(({ selectedDate }: TotalCardProps) => {
+  const { data: stats, isLoading } = useDashboardStats(selectedDate);
   const role = useAuthStore((state) => state.role);
+  const navigate = useNavigate();
+
+  const handleCardClick = (subtitle: string) => {
+    if (role === 'superAdmin' && subtitle === 'Total Enrolled Students') {
+      navigate('/students');
+    }
+  };
 
   const cards = useMemo<CardData[]>(() => {
     if (!stats) return [];
@@ -163,7 +173,12 @@ export const TotalCard = React.memo(() => {
         {cards.map((item, index) => (
           <div
             key={index}
-            className="border flex flex-col bg-primary p-6 py-8 rounded-md hover:shadow-md transition-shadow"
+            className={`border flex flex-col bg-primary p-6 py-8 rounded-md hover:shadow-md transition-shadow ${
+              role === 'superAdmin' && item.subtitle === 'Total Enrolled Students' 
+                ? 'cursor-pointer hover:bg-primary/90' 
+                : ''
+            }`}
+            onClick={() => handleCardClick(item.subtitle)}
           >
             <h2 className="font-semibold text-lg md:text-xl pb-4 text-white">
               {item.subtitle}

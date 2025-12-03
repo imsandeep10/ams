@@ -14,6 +14,7 @@ interface MockTestRegistrationQRCodeProps {
 }
 
 const MockTestRegistrationQRCode: React.FC<MockTestRegistrationQRCodeProps> = ({ data: propData }) => {
+  const [showModal, setShowModal] = React.useState(false);
   const { 
     data: fetchedData, 
     isLoading, 
@@ -137,7 +138,10 @@ const MockTestRegistrationQRCode: React.FC<MockTestRegistrationQRCodeProps> = ({
       <CardContent className="space-y-4">
         {/* QR Code Image */}
         <div className="flex justify-center">
-          <div className="p-4 bg-white border-2 border-blue-200 rounded-lg">
+          <div 
+            className="p-4 bg-white border-2 border-blue-200 rounded-lg cursor-pointer hover:border-blue-400 transition-colors"
+            onClick={() => setShowModal(true)}
+          >
             <img
               src={data.qrCodeDataUrl}
               alt="Mock Test Registration QR Code"
@@ -145,6 +149,34 @@ const MockTestRegistrationQRCode: React.FC<MockTestRegistrationQRCodeProps> = ({
             />
           </div>
         </div>
+
+        {/* Modal for enlarged QR Code */}
+        {showModal && (
+          <div 
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
+            onClick={() => setShowModal(false)}
+          >
+            <div 
+              className="relative bg-white p-8 rounded-lg shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setShowModal(false)}
+                className="absolute -top-3 -right-3 bg-white rounded-full p-2 shadow-lg hover:bg-gray-100 transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+              <img
+                src={data.qrCodeDataUrl}
+                alt="Mock Test Registration QR Code - Enlarged"
+                className="w-96 h-96 object-contain"
+              />
+              <p className="text-center mt-4 text-sm text-gray-600">Mock Test Registration QR Code</p>
+            </div>
+          </div>
+        )}
 
         {/* QR Code Details */}
         <div className="space-y-3">

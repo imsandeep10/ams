@@ -34,6 +34,7 @@ interface DataTableProps<TData, TValue> {
     totalPages: number;
   };
   onPageChange: (page: number) => void;
+  onPageSizeChange?: (pageSize: number) => void;
   isLoading?: boolean;
   emptyMessage?: string;
 }
@@ -43,6 +44,7 @@ function DashboardTable<TData, TValue>({
   data,
   pagination,
   onPageChange,
+  onPageSizeChange,
   isLoading = false,
   emptyMessage,
 }: DataTableProps<TData, TValue>) {
@@ -90,7 +92,7 @@ function DashboardTable<TData, TValue>({
   return (
     <div className="w-full space-y-4">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <h3 className="text-2xl font-semibold">Recent Attendance</h3>
+        <h3 className="text-2xl font-semibold">Today Attendance</h3>
       </div>
       
       {/* Table */}
@@ -163,13 +165,33 @@ function DashboardTable<TData, TValue>({
 
       {/* Pagination */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4">
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-4">
           <p className="text-sm text-muted-foreground">
             Showing{" "}
             <span className="font-medium">{startIndex}</span> to{" "}
             <span className="font-medium">{endIndex}</span> of{" "}
             <span className="font-medium">{pagination.total}</span> results
           </p>
+          
+          {onPageSizeChange && (
+            <div className="flex items-center space-x-2">
+              <label htmlFor="pageSize" className="text-sm text-muted-foreground">
+                Show:
+              </label>
+              <select
+                id="pageSize"
+                value={pagination.limit}
+                onChange={(e) => onPageSizeChange(Number(e.target.value))}
+                disabled={isLoading}
+                className="h-8 rounded-md border border-input bg-background px-3 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <option value={10}>10</option>
+                <option value={30}>30</option>
+                <option value={50}>50</option>
+                <option value={100}>100</option>
+              </select>
+            </div>
+          )}
         </div>
 
         <div className="flex items-center space-x-2">

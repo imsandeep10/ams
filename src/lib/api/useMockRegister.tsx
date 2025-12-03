@@ -41,11 +41,10 @@ export const useGetMockPast = () => {
     queryKey: ["mock-tests", "past"],
     queryFn: async () => {
       const res = await api.get("mock-test/past");
-      console.log("response is", res);
       if (!res || !res.data) {
         throw new Error("Failed to fetch admins");
       }
-      return Array.isArray(res.data) ? res.data : res.data.mock || [];
+      return Array.isArray(res.data) ? res.data : res.data.data || [];
     },
   });
 };

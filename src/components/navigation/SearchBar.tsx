@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react'
-import { Search } from 'lucide-react'
+import React, { useState, useMemo, useEffect } from 'react'
+import { Search, } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import {
   Command,
@@ -70,9 +70,24 @@ type GroupedData = Record<string, SearchItem[]>
 const SearchBar: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false)
   const [value, setValue] = useState<string>('')
+  const [debouncedValue, setDebouncedValue] = useState<string>('')
   const navigate = useNavigate()
   
-  const { data: searchData, isError } = useStudentSearch(value)
+  // Debounce the search value by 500ms
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedValue(value)
+    }, 500)
+    
+    return () => clearTimeout(timer)
+  }, [value])
+  
+  // Only search when debounced value has at least 2 characters
+  const shouldSearch = debouncedValue.trim().length >= 2
+  const { data: searchData, isError } = useStudentSearch(
+    shouldSearch ? debouncedValue : '',
+    { enabled: shouldSearch }
+  )
 
   // Transform API data with proper typing
   const transformedData: SearchItem[] = useMemo(() => {

@@ -20,21 +20,35 @@ export type DashboardStats = {
   totalAbsentToday: number;
 };
 
-async function fetchTodayPresentStudents(): Promise<PresentStudent[]> {
-  const response = await api.get<PresentStudent[]>('/dashboard/today/present');
+function toYMD(date?: Date): string | undefined {
+  if (!date) return undefined;
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
+async function fetchPresentStudentsByDate(date?: Date): Promise<PresentStudent[]> {
+  const ymd = toYMD(date);
+  const response = await api.get<PresentStudent[]>('/dashboard/today/present', {
+    params: ymd ? { date: ymd } : undefined,
+  });
   const data = response.data ?? [];
   return data;
 }
 
-async function fetchDashboardStats(): Promise<DashboardStats> {
-  const response = await api.get<DashboardStats>('/dashboard/stats');
+async function fetchDashboardStats(date?: Date): Promise<DashboardStats> {
+  const ymd = toYMD(date);
+  const response = await api.get<DashboardStats>('/dashboard/stats', {
+    params: ymd ? { date: ymd } : undefined,
+  });
   return response.data;
 }
 
-export function useTodayPresentStudents() {
+export function useTodayPresentStudents(date?: Date) {
   return useQuery({
-    queryKey: ['dashboard', 'todayPresent'],
-    queryFn: fetchTodayPresentStudents,
+    queryKey: ['dashboard', 'presentByDate', toYMD(date)],
+    queryFn: () => fetchPresentStudentsByDate(date),
     staleTime: 60_000, // 1 minute cache
     gcTime: 5 * 60_000, // 5 minutes
     refetchOnMount: true,
@@ -42,10 +56,10 @@ export function useTodayPresentStudents() {
   });
 }
 
-export function useDashboardStats() {
+export function useDashboardStats(date?: Date) {
   return useQuery({
-    queryKey: ['dashboard', 'stats'],
-    queryFn: fetchDashboardStats,
+    queryKey: ['dashboard', 'stats', toYMD(date)],
+    queryFn: () => fetchDashboardStats(date),
     staleTime: 60_000, // 1 minute cache
     gcTime: 5 * 60_000, // 5 minutes
     refetchOnMount: true,

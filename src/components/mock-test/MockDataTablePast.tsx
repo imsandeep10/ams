@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   type ColumnDef,
   type ColumnFiltersState,
@@ -11,8 +11,17 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import * as XLSX from "xlsx";
 
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Download } from "lucide-react";
 
 import {
   Table,
@@ -37,9 +46,61 @@ export function MockDataTablePast<TData, TValue>({
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
   const [globalFilter, setGlobalFilter] = useState("");
+  const [selectedMonth, setSelectedMonth] = useState<string>("all");
+
+  // Generate month options (last 12 months)
+  const monthOptions = useMemo(() => {
+    const options = [{ value: "all", label: "All Months" }];
+    const currentDate = new Date();
+    
+    for (let i = 0; i < 12; i++) {
+      const date = new Date(currentDate.getFullYear(), currentDate.getMonth() - i, 1);
+      const value = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+      const label = date.toLocaleDateString("en-US", { year: "numeric", month: "long" });
+      options.push({ value, label });
+    }
+    
+    return options;
+  }, []);
+
+  // Filter data by selected month
+  const filteredData = useMemo(() => {
+    if (selectedMonth === "all") return data;
+    
+    return data.filter((row: any) => {
+      if (!row.mockTestDate) return false;
+      const rowMonth = row.mockTestDate.substring(0, 7); // Extract YYYY-MM
+      return rowMonth === selectedMonth;
+    });
+  }, [data, selectedMonth]);
+
+  // Excel export function
+  const handleExportToExcel = () => {
+    const exportData = filteredData.map((row: any) => ({
+      "Full Name": row.fullName || "",
+      "Mock Test Date": row.mockTestDate || "",
+      "Time Slot": row.timeSlot || "",
+      "WhatsApp Number": row.whatsappNumber || "",
+      "Modules Completed": Array.isArray(row.modulesCompleted) 
+        ? row.modulesCompleted.join(", ") 
+        : "",
+      "Test Type": row.testType || "",
+      "Exam Date": row.examDate || "",
+      "Destination Country": row.destinationCountry || "",
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Past Mock Tests");
+
+    const monthLabel = monthOptions.find(opt => opt.value === selectedMonth)?.label || "All";
+    const fileName = `Past_Mock_Tests_${monthLabel.replace(/\s+/g, "_")}_${new Date().toISOString().split("T")[0]}.xlsx`;
+    
+    XLSX.writeFile(workbook, fileName);
+  };
 
   const table = useReactTable({
-    data,
+    data: filteredData,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -60,16 +121,40 @@ export function MockDataTablePast<TData, TValue>({
     },
     initialState: {
       pagination: {
-        pageSize: 5,
+        pageSize: 25,
       },
     },
   });
 
   return (
     <div className="w-full space-y-4">
-      <h2 className="text-2xl font-semibold border-b pb-2 mt-6 mb-4">
-        Past Mock Test Students
-      </h2>
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-semibold border-b pb-2 mt-6 mb-4">
+          Past Mock Test Students
+        </h2>
+        <div className="flex items-center gap-3">
+          <Select value={selectedMonth} onValueChange={setSelectedMonth}>
+            <SelectTrigger className="w-[200px]">
+              <SelectValue placeholder="Select month" />
+            </SelectTrigger>
+            <SelectContent>
+              {monthOptions.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Button
+            onClick={handleExportToExcel}
+            disabled={filteredData.length === 0}
+            className="flex items-center gap-2"
+          >
+            <Download className="w-4 h-4" />
+            Export to Excel
+          </Button>
+        </div>
+      </div>
       {/* Table */}
       <div className="rounded-md border">
         <Table>

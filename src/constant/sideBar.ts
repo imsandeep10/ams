@@ -20,6 +20,11 @@ export const sideBar: SidBartypes[] = [
     icon: LayoutDashboard,
   },
   {
+    title: "Students",
+    url: "/students",
+    icon: Users,
+  },
+  {
     title: "IELTS",
     url: "/ielts",
     icon: NotebookText,
@@ -45,7 +50,7 @@ export const sideBar: SidBartypes[] = [
     icon: FileText,
   },
   {
-    title: "Create-Admin",
+    title: "Add Admin",
     url: "/create-admin",
     icon: SquarePlus,
   },

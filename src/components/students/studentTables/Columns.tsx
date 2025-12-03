@@ -199,8 +199,17 @@ export const columns: ColumnDef<Student>[] = [
     accessorKey: "name",
     cell: ({ row }) => {
       const student = row.original;
+      const navigate = useNavigate();
+      
+      const handleRowClick = () => {
+        navigate(`/student-profile/${student.id}`);
+      };
+      
       return (
-        <div className="flex flex-col gap-1">
+        <div 
+          className="flex flex-col gap-1 cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors"
+          onClick={handleRowClick}
+        >
           <div className="font-semibold">{student.name}</div>
           <div className="text-xs text-gray-500">ID: {student.studentId}</div>
           <div className="text-xs text-gray-500">
@@ -227,8 +236,17 @@ export const columns: ColumnDef<Student>[] = [
     accessorKey: "classTime",
     cell: ({ row }) => {
       const student = row.original;
+      const navigate = useNavigate();
+      
+      const handleRowClick = () => {
+        navigate(`/student-profile/${student.id}`);
+      };
+      
       return (
-        <div className="flex items-center gap-2">
+        <div 
+          className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors"
+          onClick={handleRowClick}
+        >
           <Clock className="w-4 h-4 text-gray-400" />
           <span className="text-sm">{student.classTime}</span>
         </div>
@@ -242,8 +260,17 @@ export const columns: ColumnDef<Student>[] = [
     accessorKey: "email",
     cell: ({ row }) => {
       const student = row.original;
+      const navigate = useNavigate();
+      
+      const handleRowClick = () => {
+        navigate(`/student-profile/${student.id}`);
+      };
+      
       return (
-        <div className="flex flex-col gap-2">
+        <div 
+          className="flex flex-col gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors"
+          onClick={handleRowClick}
+        >
           <div className="flex items-center gap-2">
             <Phone className="w-4 h-4 text-gray-400" />
             <span className="text-sm">{student.phone}</span>
@@ -273,8 +300,17 @@ export const columns: ColumnDef<Student>[] = [
     accessorKey: "interestedCourse",
     cell: ({ row }) => {
       const student = row.original;
+      const navigate = useNavigate();
+      
+      const handleRowClick = () => {
+        navigate(`/student-profile/${student.id}`);
+      };
+      
       return (
-        <div className="flex flex-col gap-2">
+        <div 
+          className="flex flex-col gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors"
+          onClick={handleRowClick}
+        >
           <div className="text-sm font-medium">{student.language}</div>
 
           <div className="text-xs text-gray-500">

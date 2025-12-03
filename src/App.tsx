@@ -32,6 +32,7 @@ import AdminPasswordForm from "./pages/ChangeAdminPassword";
 import { AdminProfile } from "./pages/AdminProfile";
 import MockRegisterData from "./pages/MockRegisterData";
 import IeltsMockTestForm from "./components/mock-test/IeltsMockTestForm";
+import AllStudentsPage from "./pages/AllStudentsPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -151,6 +152,14 @@ const router = createBrowserRouter([
           { path: "students/edit/:id", element: <EditStudent /> },
           { path: "report", element: <Report /> },
         ],
+      },
+      {
+        path: "students",
+        element: (
+          <RoleProtected allowedRoles={["superAdmin"]}>
+            <AllStudentsPage />
+          </RoleProtected>
+        ),
       },
       {
         path: "report",

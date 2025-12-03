@@ -1,3 +1,5 @@
+export type ReportPeriodType = 'daily' | 'weekly' | 'monthly';
+
 export type ReportChartProps = {
   year: number;
   month: number;
@@ -77,6 +79,49 @@ export interface ReportDataResponse {
   title: string;
   chartType: "bar" | "line" | "pie";
   data: ReportChartData;
+  metadata: {
+    year: number;
+    month: number;
+    totalRecords: number;
+    generatedAt: string;
+  };
+}
+
+export interface DailyReportData {
+  date: string;
+  present: number;
+  absent: number;
+  total: number;
+  attendanceRate: number;
+  labels: string[];
+  datasets: Dataset[];
+}
+
+export interface WeeklyReportData {
+  weekStart: string;
+  weekEnd: string;
+  dailyData: Array<{
+    date: string;
+    dayName: string;
+    present: number;
+    absent: number;
+    total: number;
+    attendanceRate: number;
+  }>;
+  summary: {
+    totalPresent: number;
+    totalAbsent: number;
+    averageAttendanceRate: number;
+  };
+  labels: string[];
+  datasets: Dataset[];
+}
+
+export interface PeriodReportResponse {
+  message: string;
+  title: string;
+  chartType: "bar" | "line" | "pie";
+  data: DailyReportData | WeeklyReportData | AttendanceOverviewData;
   metadata: {
     year: number;
     month: number;

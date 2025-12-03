@@ -73,42 +73,62 @@ export const StudentTrack = React.memo(() => {
       </Button>
       {/* Header Section */}
       {!isPending && attendanceRecord && (
-        <Card className="border-none shadow-lg dark:from-gray-900 dark:to-gray-800">
-          <CardContent className="p-6">
-            <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
-              <Avatar className="h-20 w-20 border-4 border-white shadow-lg">
-                <AvatarImage
-                  src={attendanceRecord.student.profileImage}
-                  alt={attendanceRecord.student.fullName}
-                />
-                <AvatarFallback className="text-2xl font-bold bg-gradient-to-br from-blue-500 to-indigo-600 text-white">
-                  attendanceRecord.student.fullName
-                </AvatarFallback>
-              </Avatar>
+        <>
+          <Card className="border-none shadow-lg dark:from-gray-900 dark:to-gray-800">
+            <CardContent className="p-6">
+              <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
+                <Avatar className="h-20 w-20 border-4 border-white shadow-lg">
+                  <AvatarImage
+                    src={attendanceRecord.student.profileImage}
+                    alt={attendanceRecord.student.fullName}
+                  />
+                  <AvatarFallback className="text-2xl font-bold bg-gradient-to-br from-blue-500 to-indigo-600 text-white">
+                    {attendanceRecord.student.fullName.charAt(0)}
+                  </AvatarFallback>
+                </Avatar>
 
-              <div className="flex-1 space-y-2">
-                <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
-                  {attendanceRecord.student.fullName}
-                </h1>
-                <div className="flex flex-wrap gap-4 text-sm text-gray-600 dark:text-gray-300">
-                  <div className="flex items-center gap-2">
-                    <User className="h-4 w-4" />
-                    {attendanceRecord.student.email}
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CalendarIcon className="h-4 w-4" />
-                    {attendanceRecord.period.monthName}{" "}
-                    {attendanceRecord.period.year}
+                <div className="flex-1 space-y-2">
+                  <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
+                    {attendanceRecord.student.fullName}
+                  </h1>
+                  <div className="flex flex-wrap gap-4 text-sm text-gray-600 dark:text-gray-300">
+                    <div className="flex items-center gap-2">
+                      <User className="h-4 w-4" />
+                      {attendanceRecord.student.email}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CalendarIcon className="h-4 w-4" />
+                      Joined: {attendanceRecord.student.joinDate}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CalendarIcon className="h-4 w-4" />
+                      {attendanceRecord.period.monthName}{" "}
+                      {attendanceRecord.period.year}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+          
+          {/* Join Date Message */}
+          {/* {attendanceRecord.message && (
+            <Card className="border-l-4 border-l-amber-500 bg-amber-50 dark:bg-amber-950">
+              <CardContent className="p-4">
+                <div className="flex items-start gap-3">
+                  <CalendarIcon className="h-5 w-5 text-amber-600 dark:text-amber-400 mt-0.5" />
+                  <p className="text-sm text-amber-800 dark:text-amber-200 font-medium">
+                    {attendanceRecord.message}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          )} */}
+        </>
       )}
 
       {/* Stats Cards */}
-      {!isPending && attendanceRecord && (
+      {!isPending && attendanceRecord && attendanceRecord.dailyRecords.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <Card className="border-l-4 border-l-blue-500 hover:shadow-lg transition-shadow">
             <CardHeader className="pb-3">
@@ -185,12 +205,12 @@ export const StudentTrack = React.memo(() => {
         </div>
       )}
 
-      {/* Filters Card */}
+      {/* Month/Year Selector */}
       <Card>
         <CardHeader>
           <CardTitle className="text-lg font-semibold flex items-center gap-2">
             <Calendar className="h-5 w-5" />
-            Filter Attendance Records
+            Select Month & Year
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -259,14 +279,14 @@ export const StudentTrack = React.memo(() => {
                 </p>
               </div>
             </div>
-          ) : attendanceRecord && attendanceRecord.dailyRecords ? (
+          ) : attendanceRecord && attendanceRecord.dailyRecords && attendanceRecord.dailyRecords.length > 0 ? (
             <TrackDataTable
               columns={trackColumns}
               data={attendanceRecord.dailyRecords}
             />
           ) : (
             <div className="text-center py-8 text-gray-500">
-              No attendance records found for this period.
+              {attendanceRecord?.message || "No attendance records found for this period."}
             </div>
           )}
         </CardContent>

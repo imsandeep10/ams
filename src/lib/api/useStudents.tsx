@@ -73,16 +73,18 @@ export const useUpdateStudent = () => {
   });
 };
 
-export const useGetStudentsByLanguage = (language: string) => {
+export const useGetStudentsByLanguage = (language: string, page: number = 1, limit: number = 10) => {
   return useQuery({
-    queryKey: ["students", language],
-    queryFn: async (): Promise<Student[]> => {
-      const res = await api.get(`/students/language/${language}`);
+    queryKey: ["students", language, page, limit],
+    queryFn: async (): Promise<{ students: Student[], pagination: { page: number, limit: number, total: number, totalPages: number } }> => {
+      const res = await api.get(`/students/language/${language}`, {
+        params: { page, limit }
+      });
       if (!res?.data?.students) {
         throw new Error("Failed to fetch students");
       }
 
-      return res.data.students.map((apiStudent: any) => ({
+      const students = res.data.students.map((apiStudent: any) => ({
         id: apiStudent.id,
         name: apiStudent.user.fullName,
         studentId: apiStudent.id.slice(0, 8).toUpperCase(),
@@ -99,8 +101,50 @@ export const useGetStudentsByLanguage = (language: string) => {
         qrCode: apiStudent.qrCode,
         user: apiStudent.user,
       }));
+
+      return {
+        students,
+        pagination: res.data.pagination || { page, limit, total: students.length, totalPages: 1 }
+      };
     },
     enabled: !!language,
+  });
+};
+
+export const useGetAllStudents = (page: number = 1, limit: number = 10) => {
+  return useQuery({
+    queryKey: ["all-students", page, limit],
+    queryFn: async (): Promise<{ students: Student[], pagination: { page: number, limit: number, total: number, totalPages: number } }> => {
+      const res = await api.get(`/student`, {
+        params: { page, limit }
+      });
+      if (!res?.data?.students) {
+        throw new Error("Failed to fetch students");
+      }
+
+      const students = res.data.students.map((apiStudent: any) => ({
+        id: apiStudent.id,
+        name: apiStudent.user.fullName,
+        studentId: apiStudent.id.slice(0, 8).toUpperCase(),
+        faculty: apiStudent.faculty,
+        phone: apiStudent.user.phoneNumber,
+        email: apiStudent.user.email,
+        classTime: apiStudent.classTime,
+        academicQualification: apiStudent.academicQualification,
+        gpaOrPercentage: apiStudent.gpaOrPercentage,
+        yearOfCompletion: apiStudent.yearOfCompletion,
+        interestedCourse: apiStudent.interestedCourse,
+        language: apiStudent.language,
+        preferredCountry: apiStudent.preferredCountry,
+        qrCode: apiStudent.qrCode,
+        user: apiStudent.user,
+      }));
+
+      return {
+        students,
+        pagination: res.data.pagination || { page, limit, total: students.length, totalPages: 1 }
+      };
+    },
   });
 };
 
@@ -162,7 +206,7 @@ export const useGetStudentAttendanceTrack = (
   });
 };
 
-export const useStudentSearch = (query: string) => {
+export const useStudentSearch = (query: string, options?: { enabled?: boolean }) => {
   return useQuery({
     queryKey: ["student-search", query],
     queryFn: async () => {
@@ -171,6 +215,6 @@ export const useStudentSearch = (query: string) => {
       });
       return res.data;
     },
-    enabled: query.length > 0 || query === "",
+    enabled: options?.enabled !== undefined ? options.enabled : (query.trim().length >= 2),
   });
 };

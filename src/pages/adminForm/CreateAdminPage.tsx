@@ -1,4 +1,4 @@
-import { CreateAdminForm } from "@/components/createa-admin/CreateAdminForm";
+import { CreateAdminForm } from "@/components/create-admin/CreateAdminForm";
 import React from "react";
 
 export const CreateAdminPage = React.memo(() => {

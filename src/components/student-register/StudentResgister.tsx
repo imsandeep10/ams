@@ -22,6 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { TimeSelector } from "../ui/time-selector";
 import {
   academicQualifications,
   Countries,
@@ -36,7 +37,6 @@ import {
 } from "@/lib/api/useStudents";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
-import { TimeSelector } from "../ui/time-selector";
 
 interface props {
   mode: "edit" | "create";
@@ -248,7 +248,7 @@ function StudentRegister({ mode }: props) {
               name="profileImageId"
               render={() => (
                 <FormItem>
-                  <FormLabel>Profile Image <span className="text-gray-400 text-sm">(Optional)</span></FormLabel>
+                  <FormLabel>Profile Image (Optional)</FormLabel>
                   <FormControl>
                     <Input
                       id="picture"
@@ -456,7 +456,7 @@ function StudentRegister({ mode }: props) {
               )}
             />
 
-            <div className="md:col-span-2">
+            <div className="md:col-span-2 mb-5">
               <Button
                 type="submit"
                 className="w-full py-3 cursor-pointer font-medium transition-all duration-200 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"

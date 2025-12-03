@@ -29,24 +29,39 @@ import { useNavigate } from "react-router-dom";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  pageCount?: number;
+  pageIndex?: number;
+  pageSize?: number;
+  totalRows?: number;
+  onPaginationChange?: (page: number, pageSize: number) => void;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  pageCount = 1,
+  pageIndex: externalPageIndex = 0,
+  pageSize: externalPageSize = 10,
+  totalRows = 0,
+  onPaginationChange,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
   const [globalFilter, setGlobalFilter] = useState("");
+  const [pageIndex, setPageIndex] = useState(externalPageIndex);
+  const [pageSize, setPageSize] = useState(externalPageSize);
   const pathname = window.location.pathname.split("/").filter(Boolean);
+  const isServerSidePagination = !!onPaginationChange;
 
   const navigate = useNavigate();
 
   const table = useReactTable({
     data,
     columns,
+    pageCount: isServerSidePagination ? pageCount : undefined,
+    manualPagination: isServerSidePagination,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -63,13 +78,43 @@ export function DataTable<TData, TValue>({
       columnVisibility,
       rowSelection,
       globalFilter,
-    },
-    initialState: {
       pagination: {
-        pageSize: 5,
+        pageIndex: pageIndex,
+        pageSize: pageSize,
       },
     },
   });
+
+  // Update page size handler
+  const handlePageSizeChange = (newSize: number) => {
+    setPageSize(newSize);
+    setPageIndex(0); // Reset to first page when changing page size
+    table.setPageSize(newSize);
+    if (isServerSidePagination && onPaginationChange) {
+      onPaginationChange(1, newSize); // Server uses 1-based page indexing
+    }
+  };
+
+  // Handle page navigation
+  const handlePreviousPage = () => {
+    const newPageIndex = pageIndex - 1;
+    setPageIndex(newPageIndex);
+    if (isServerSidePagination && onPaginationChange) {
+      onPaginationChange(newPageIndex + 1, pageSize); // Server uses 1-based page indexing
+    } else {
+      table.previousPage();
+    }
+  };
+
+  const handleNextPage = () => {
+    const newPageIndex = pageIndex + 1;
+    setPageIndex(newPageIndex);
+    if (isServerSidePagination && onPaginationChange) {
+      onPaginationChange(newPageIndex + 1, pageSize); // Server uses 1-based page indexing
+    } else {
+      table.nextPage();
+    }
+  };
 
   return (
     <div className="w-full space-y-4">
@@ -87,7 +132,20 @@ export function DataTable<TData, TValue>({
           </div>
         </div>
 
-        <div>
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground">Rows per page:</span>
+            <select
+              value={pageSize}
+              onChange={(e) => handlePageSizeChange(Number(e.target.value))}
+              className="border rounded px-2 py-1 text-sm cursor-pointer"
+            >
+              <option value={10}>10</option>
+              <option value={25}>25</option>
+              <option value={50}>50</option>
+              <option value={100}>100</option>
+            </select>
+          </div>
           <Button
             className="cursor-pointer"
             onClick={() => {
@@ -165,41 +223,52 @@ export function DataTable<TData, TValue>({
           <p className="text-sm text-muted-foreground">
             Showing{" "}
             <span className="font-medium">
-              {table.getState().pagination.pageIndex *
-                table.getState().pagination.pageSize +
-                1}
+              {isServerSidePagination
+                ? pageIndex * pageSize + 1
+                : table.getState().pagination.pageIndex *
+                  table.getState().pagination.pageSize +
+                  1}
             </span>{" "}
             to{" "}
             <span className="font-medium">
-              {Math.min(
-                (table.getState().pagination.pageIndex + 1) *
-                  table.getState().pagination.pageSize,
-                table.getFilteredRowModel().rows.length
-              )}
+              {isServerSidePagination
+                ? Math.min((pageIndex + 1) * pageSize, totalRows)
+                : Math.min(
+                    (table.getState().pagination.pageIndex + 1) *
+                      table.getState().pagination.pageSize,
+                    table.getFilteredRowModel().rows.length
+                  )}
             </span>{" "}
             of{" "}
             <span className="font-medium">
-              {table.getFilteredRowModel().rows.length}
+              {isServerSidePagination
+                ? totalRows
+                : table.getFilteredRowModel().rows.length}
             </span>{" "}
             results
           </p>
         </div>
 
         <div className="flex items-center space-x-2">
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center gap-2">
+            {isServerSidePagination && (
+              <span className="text-sm text-muted-foreground">
+                Page {pageIndex + 1} of {pageCount}
+              </span>
+            )}
             <Button
               variant="outline"
               size="sm"
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
+              onClick={handlePreviousPage}
+              disabled={isServerSidePagination ? pageIndex === 0 : !table.getCanPreviousPage()}
             >
               Previous
             </Button>
             <Button
               variant="outline"
               size="sm"
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
+              onClick={handleNextPage}
+              disabled={isServerSidePagination ? pageIndex >= pageCount - 1 : !table.getCanNextPage()}
             >
               Next
             </Button>
