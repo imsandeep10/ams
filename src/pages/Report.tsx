@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { ChevronDown, Download } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -16,12 +16,10 @@ import {
   useGetReport,
   useGetStudentGrowth,
   useGetPeriodReport,
-  downloadPdfReport,
 } from "@/lib/api/useReport";
 import { StudentGrowthChart } from "@/components/report/StudentGrowthChart";
 import ReportChart from "@/components/report/ReportChart";
 import type { ReportPeriodType } from "@/types/reportTypes";
-import { toast } from "sonner";
 import { useAuthStore } from "@/lib/stores/AuthStore";
 
 
@@ -39,7 +37,6 @@ export const Report = React.memo(() => {
   const [periodType, setPeriodType] = useState<ReportPeriodType>('monthly');
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedWeek, setSelectedWeek] = useState<number>(1);
-  const [isDownloading, setIsDownloading] = useState(false);
 
   // Determine program name based on role
   const programName = useMemo(() => {
@@ -107,24 +104,7 @@ export const Report = React.memo(() => {
     [studentGrowthData]
   );
 
-  const handleDownload = async () => {
-    setIsDownloading(true);
-    try {
-      await downloadPdfReport({
-        year: selectedYear,
-        month: selectedMonth,
-        periodType,
-        date: periodType === 'daily' ? selectedDate : undefined,
-        week: periodType === 'weekly' ? selectedWeek : undefined,
-      });
-      toast.success('Report downloaded successfully!');
-    } catch (error: any) {
-      console.error('Download error:', error);
-      toast.error(`Failed to download report: ${error?.message || 'Unknown error'}`);
-    } finally {
-      setIsDownloading(false);
-    }
-  };
+
 
 
   return (
