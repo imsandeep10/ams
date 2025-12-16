@@ -220,7 +220,7 @@ export const downloadPdfReport = async ({
   if (week) params.append("week", String(week));
   if (language) params.append("language", language);
 
-  const res = await api.get(`/reports/download/pdf?${params.toString()}`, {
+  const res = await api.get(`/reports/download/csv`, {
     responseType: 'blob',
   });
 

@@ -192,14 +192,7 @@ export const Report = React.memo(() => {
             </DropdownMenu>
           </div>
 
-          <Button
-            onClick={handleDownload}
-            disabled={isDownloading}
-            className="flex items-center gap-2"
-          >
-            <Download className="h-4 w-4" />
-            {isDownloading ? 'Downloading...' : 'Download Report'}
-          </Button>
+         
         </div>
 
         {/* Period Type Selector */}
