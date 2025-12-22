@@ -36,15 +36,18 @@ export const useGetMockUpcoming = () => {
   });
 };
 
-export const useGetMockPast = () => {
+// Server-side paginated past mock tests
+export const useGetMockPast = (page: number, limit: number) => {
   return useQuery({
-    queryKey: ["mock-tests", "past"],
+    queryKey: ["mock-tests", "past", page, limit],
     queryFn: async () => {
-      const res = await api.get("mock-test/past");
+      const res = await api.get("mock-test/past", {
+        params: { page, limit },
+      });
       if (!res || !res.data) {
         throw new Error("Failed to fetch admins");
       }
-      return Array.isArray(res.data) ? res.data : res.data.data || [];
+      return res.data;
     },
   });
 };

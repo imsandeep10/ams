@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { useGetMockPast, useGetMockUpcoming } from "@/lib/api/useMockRegister";
 import { getMockColumnUpcoming } from "@/components/mock-test/MockColumnUpcoming";
 import { MockDataTableUpcoming } from "@/components/mock-test/MockDataTableUpcoming";
@@ -8,10 +8,14 @@ import { MockDataTablePast } from "@/components/mock-test/MockDataTablePast";
 import { getMockColumnPast } from "@/components/mock-test/MockColumnPast";
 
 const MockRegisterData: React.FC = () => {
-  const { data: mockUpcoming, isPending, error } = useGetMockUpcoming();
-  const { data: mockPast, isLoading, isError } = useGetMockPast();
+  const [pastPage, setPastPage] = useState(1);
+  const pastLimit = 10;
 
-  // Call hooks before any conditional returns
+  const { data: mockUpcoming, isPending, error } = useGetMockUpcoming();
+  const { data: mockPast, isLoading, isError } = useGetMockPast(pastPage, pastLimit);
+  
+  console.log("MockRegisterData render", mockPast);
+
   const columnsUpcoming = useMemo(() => getMockColumnUpcoming(), []);
   const columnsPast = useMemo(() => getMockColumnPast(), []);
 
@@ -29,8 +33,20 @@ const MockRegisterData: React.FC = () => {
     );
   }
 
-  const mockArrayUpcoming = Array.isArray(mockUpcoming) ? mockUpcoming : [];
-  const mockArrayPast = Array.isArray(mockPast) ? mockPast : [];
+  // Extract the data array from the paginated response
+  const mockArrayUpcoming = Array.isArray(mockUpcoming) 
+    ? mockUpcoming 
+    : (mockUpcoming?.data && Array.isArray(mockUpcoming.data)) 
+      ? mockUpcoming.data 
+      : [];
+      
+  const mockArrayPast = Array.isArray(mockPast)
+    ? mockPast
+    : (mockPast?.data && Array.isArray(mockPast.data))
+      ? mockPast.data
+      : [];
+
+  const pastPagination = !Array.isArray(mockPast) ? mockPast?.pagination : undefined;
 
   return (
     <div className="container mx-auto py-6 space-y-10">
@@ -56,10 +72,23 @@ const MockRegisterData: React.FC = () => {
         )}
       </section>
 
-      {/* Past Section */}
       <section>
         {mockArrayPast.length > 0 ? (
-          <MockDataTablePast columns={columnsPast} data={mockArrayPast} />
+          <MockDataTablePast
+            columns={columnsPast}
+            data={mockArrayPast}
+            pagination={
+              pastPagination
+                ? {
+                    total: pastPagination.total ?? mockArrayPast.length,
+                    totalPages: pastPagination.totalPages ?? 1,
+                    page: pastPagination.page ?? pastPage,
+                    limit: pastPagination.limit ?? pastLimit,
+                  }
+                : undefined
+            }
+            onPageChange={setPastPage}
+          />
         ) : (
           <div className="bg-white rounded-lg border border-gray-200 p-12 text-center">
             <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
