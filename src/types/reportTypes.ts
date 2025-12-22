@@ -1,4 +1,4 @@
-export type ReportPeriodType = 'daily' | 'weekly' | 'monthly';
+export type ReportPeriodType = 'daily' | 'weekly' | 'monthly' | 'yearly';
 
 export type ReportChartProps = {
   year: number;

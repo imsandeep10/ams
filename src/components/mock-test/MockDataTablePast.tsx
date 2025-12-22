@@ -291,19 +291,17 @@ export function MockDataTablePast<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-
-      {/* Pagination */}
       <div className="flex items-center justify-between space-x-2 py-4">
         <div className="flex items-center space-x-2">
           <p className="text-sm text-muted-foreground">
-            Showing{" "}
-            <span className="font-medium">{startItem}</span>{" "}
-            to{" "}
-            <span className="font-medium">{endItem}</span>{" "}
-            of{" "}
+            Showing
+            <span className="font-medium">{startItem}</span>
+            to
+            <span className="font-medium">{endItem}</span>
+            of
             <span className="font-medium">
               {serverPagination?.total ?? sortedData.length}
-            </span>{" "}
+            </span>
             results
             {selectedMonth !== "all" && (
               <span className="text-xs text-gray-500 ml-2">

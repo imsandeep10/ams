@@ -7,7 +7,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import AttendancePieChart from "@/components/report/AttendancePieChart";
@@ -35,10 +34,7 @@ export const Report = React.memo(() => {
     currentDate.getMonth() + 1
   );
   const [periodType, setPeriodType] = useState<ReportPeriodType>('monthly');
-  const [selectedDate, setSelectedDate] = useState('');
-  const [selectedWeek, setSelectedWeek] = useState<number>(1);
 
-  // Determine program name based on role
   const programName = useMemo(() => {
     switch (role) {
       case 'ieltsAdmin': return 'IELTS';
@@ -50,7 +46,6 @@ export const Report = React.memo(() => {
     }
   }, [role]);
 
-  // Memoized parameters
   const reportDate = useMemo(
     () => new Date(selectedYear, selectedMonth - 1),
     [selectedYear, selectedMonth]
@@ -66,7 +61,6 @@ export const Report = React.memo(() => {
     [selectedYear]
   );
 
-  // API calls
   const {
     data: languagePrograms,
     isLoading: isReportLoading,
@@ -94,8 +88,6 @@ export const Report = React.memo(() => {
     year: selectedYear,
     month: selectedMonth,
     periodType,
-    date: periodType === 'daily' ? selectedDate : undefined,
-    week: periodType === 'weekly' ? selectedWeek : undefined,
   });
 
 
@@ -175,7 +167,6 @@ export const Report = React.memo(() => {
          
         </div>
 
-        {/* Period Type Selector */}
         <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm">
           <Label className="text-sm font-semibold mb-3 block">Report Period</Label>
           <div className="flex flex-wrap items-center gap-6">
@@ -185,137 +176,17 @@ export const Report = React.memo(() => {
               className="flex gap-4"
             >
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="daily" id="daily" />
-                <Label htmlFor="daily" className="cursor-pointer font-normal">Daily</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="weekly" id="weekly" />
-                <Label htmlFor="weekly" className="cursor-pointer font-normal">Weekly</Label>
-              </div>
-              <div className="flex items-center space-x-2">
                 <RadioGroupItem value="monthly" id="monthly" />
                 <Label htmlFor="monthly" className="cursor-pointer font-normal">Monthly</Label>
               </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="yearly" id="yearly" />
+                <Label htmlFor="yearly" className="cursor-pointer font-normal">Yearly</Label>
+              </div>
             </RadioGroup>
-
-            {/* Date Picker for Daily */}
-            {periodType === 'daily' && (
-              <div className="flex items-center gap-2">
-                <Label htmlFor="date" className="text-sm">Date:</Label>
-                <Input
-                  id="date"
-                  type="date"
-                  value={selectedDate}
-                  onChange={(e) => setSelectedDate(e.target.value)}
-                  max={new Date().toISOString().split('T')[0]}
-                  className="w-40"
-                />
-              </div>
-            )}
-
-            {/* Week Selector for Weekly */}
-            {periodType === 'weekly' && (
-              <div className="flex items-center gap-2">
-                <Label htmlFor="week" className="text-sm">Week:</Label>
-                <Input
-                  id="week"
-                  type="number"
-                  min="1"
-                  max="52"
-                  value={selectedWeek}
-                  onChange={(e) => setSelectedWeek(Number(e.target.value))}
-                  className="w-20"
-                />
-              </div>
-            )}
           </div>
         </div>
       </div>
-
-
-      {/* Period-Based Report */}
-      {periodType !== 'monthly' && (
-        <div className="bg-white border border-gray-200 rounded-md p-6 shadow-md">
-          {isPeriodLoading ? (
-            <div className="text-center py-10">
-              <p className="text-muted-foreground animate-pulse">
-                Loading {periodType} report...
-              </p>
-            </div>
-          ) : isPeriodError ? (
-            <div className="text-center py-10">
-              <p className="text-destructive">
-                Failed to load {periodType} report.
-              </p>
-            </div>
-          ) : (
-            <div>
-              <h3 className="text-lg font-semibold mb-4">{periodReportData?.title}</h3>
-              {periodType === 'daily' && periodReportData?.data && 'date' in periodReportData.data && (
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="p-4 bg-blue-50 rounded-lg">
-                    <p className="text-sm text-gray-600">Date</p>
-                    <p className="text-2xl font-bold">{periodReportData.data.date}</p>
-                  </div>
-                  <div className="p-4 bg-green-50 rounded-lg">
-                    <p className="text-sm text-gray-600">Present</p>
-                    <p className="text-2xl font-bold text-green-600">{periodReportData.data.present}</p>
-                  </div>
-                  <div className="p-4 bg-red-50 rounded-lg">
-                    <p className="text-sm text-gray-600">Absent</p>
-                    <p className="text-2xl font-bold text-red-600">{periodReportData.data.absent}</p>
-                  </div>
-                  <div className="p-4 bg-purple-50 rounded-lg">
-                    <p className="text-sm text-gray-600">Attendance Rate</p>
-                    <p className="text-2xl font-bold text-purple-600">{periodReportData.data.attendanceRate}%</p>
-                  </div>
-                </div>
-              )}
-              {periodType === 'weekly' && periodReportData?.data && 'dailyData' in periodReportData.data && (
-                <div>
-                  <div className="mb-4 p-4 bg-gray-50 rounded-lg">
-                    <p className="text-sm text-gray-600">Week Period: {periodReportData.data.weekStart} - {periodReportData.data.weekEnd}</p>
-                  </div>
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
-                      <thead className="bg-gray-50">
-                        <tr>
-                          <th className="p-2 text-left">Date</th>
-                          <th className="p-2 text-left">Day</th>
-                          <th className="p-2 text-right">Present</th>
-                          <th className="p-2 text-right">Absent</th>
-                          <th className="p-2 text-right">Total</th>
-                          <th className="p-2 text-right">Rate (%)</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {periodReportData.data.dailyData.map((day: any) => (
-                          <tr key={day.date} className="border-t">
-                            <td className="p-2">{day.date}</td>
-                            <td className="p-2">{day.dayName}</td>
-                            <td className="p-2 text-right text-green-600 font-medium">{day.present}</td>
-                            <td className="p-2 text-right text-red-600 font-medium">{day.absent}</td>
-                            <td className="p-2 text-right">{day.total}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                      <tfoot className="bg-gray-50 font-semibold">
-                        <tr className="border-t-2">
-                          <td className="p-2" colSpan={2}>Summary</td>
-                          <td className="p-2 text-right text-green-600">{periodReportData.data.summary.totalPresent}</td>
-                          <td className="p-2 text-right text-red-600">{periodReportData.data.summary.totalAbsent}</td>
-                          <td className="p-2 text-right">{periodReportData.data.summary.totalPresent + periodReportData.data.summary.totalAbsent}</td>
-                          <td className="p-2 text-right">{periodReportData.data.summary.averageAttendanceRate}%</td>
-                        </tr>
-                      </tfoot>
-                    </table>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      )}
 
       {/* Charts */}
       <div className="flex flex-col gap-5">
