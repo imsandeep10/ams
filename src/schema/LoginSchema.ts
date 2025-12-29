@@ -7,4 +7,4 @@ export const loginSchema = z.object({
     .max(128, "Password must be at most 128 characters")
     .refine((p) => !/\s/.test(p), "Password must not contain spaces"),
 });
-export type loginSchema = z.infer<typeof loginSchema>;
+export type LoginFormData = z.infer<typeof loginSchema>;

@@ -1,10 +1,12 @@
+import type { Role } from "./userTypes";
+
 export type createStudentTypes = {
   user: {
     fullName: string;
     email: string;
     phoneNumber: string;
     address: string;
-    role: "superAdmin" | "admin" | "student" | string;
+    role: Role;
     profileImageId: string;
   };
   student: {

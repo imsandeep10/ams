@@ -18,7 +18,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Download, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
+import {
+  Download,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
+} from "lucide-react";
 import {
   Table,
   TableBody,
@@ -27,6 +33,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import api from "@/lib/axiosInstance";
+import { toast } from "sonner";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -59,21 +67,30 @@ export function MockDataTablePast<TData, TValue>({
   const monthOptions = useMemo(() => {
     const options = [{ value: "all", label: "All Months" }];
     const currentDate = new Date();
-    
+
     for (let i = 0; i < 12; i++) {
-      const date = new Date(currentDate.getFullYear(), currentDate.getMonth() - i, 1);
-      const value = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
-      const label = date.toLocaleDateString("en-US", { year: "numeric", month: "long" });
+      const date = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth() - i,
+        1
+      );
+      const value = `${date.getFullYear()}-${String(
+        date.getMonth() + 1
+      ).padStart(2, "0")}`;
+      const label = date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+      });
       options.push({ value, label });
     }
-    
+
     return options;
   }, []);
 
   // Filter data based on selected month
   const filteredData = useMemo(() => {
     if (selectedMonth === "all") return initialData;
-    
+
     return initialData.filter((row: any) => {
       if (!row.mockTestDate) return false;
       const rowMonth = row.mockTestDate.substring(0, 7); // Extract YYYY-MM
@@ -91,21 +108,25 @@ export function MockDataTablePast<TData, TValue>({
       sorted.sort((a: any, b: any) => {
         const aValue = a[id];
         const bValue = b[id];
-        
+
         // Handle null/undefined values
         if (aValue == null) return desc ? -1 : 1;
         if (bValue == null) return desc ? 1 : -1;
-        
+
         // Handle string comparison
-        if (typeof aValue === 'string' && typeof bValue === 'string') {
-          return desc ? bValue.localeCompare(aValue) : aValue.localeCompare(bValue);
+        if (typeof aValue === "string" && typeof bValue === "string") {
+          return desc
+            ? bValue.localeCompare(aValue)
+            : aValue.localeCompare(bValue);
         }
-        
+
         // Handle array (modulesCompleted)
         if (Array.isArray(aValue) && Array.isArray(bValue)) {
-          return desc ? bValue.length - aValue.length : aValue.length - bValue.length;
+          return desc
+            ? bValue.length - aValue.length
+            : aValue.length - bValue.length;
         }
-        
+
         // Handle numeric comparison
         return desc ? bValue - aValue : aValue - bValue;
       });
@@ -123,12 +144,12 @@ export function MockDataTablePast<TData, TValue>({
 
   // Total pages from server
   const totalPages = serverPagination?.totalPages ?? 1;
-  
+
   // Generate page numbers to display
   const getPageNumbers = () => {
     const pages = [];
     const maxVisiblePages = 5;
-    
+
     if (totalPages <= maxVisiblePages) {
       for (let i = 0; i < totalPages; i++) {
         pages.push(i);
@@ -136,42 +157,29 @@ export function MockDataTablePast<TData, TValue>({
     } else {
       let start = Math.max(0, currentPage - Math.floor(maxVisiblePages / 2));
       let end = start + maxVisiblePages;
-      
+
       if (end > totalPages) {
         end = totalPages;
         start = Math.max(0, end - maxVisiblePages);
       }
-      
+
       for (let i = start; i < end; i++) {
         pages.push(i);
       }
     }
-    
+
     return pages;
   };
 
-  const handleExportToExcel = () => {
-    const exportData = filteredData.map((row: any) => ({
-      "Full Name": row.fullName || "",
-      "Mock Test Date": row.mockTestDate || "",
-      "Time Slot": row.timeSlot || "",
-      "WhatsApp Number": row.whatsappNumber || "",
-      "Modules Completed": Array.isArray(row.modulesCompleted) 
-        ? row.modulesCompleted.join(", ") 
-        : "",
-      "Test Type": row.testType || "",
-      "Exam Date": row.examDate || "",
-      "Destination Country": row.destinationCountry || "",
-    }));
+  const handleExportToExcel = async () => {
+    try {
+      const res = await api.get("/mock-test/past/export");
 
-    const worksheet = XLSX.utils.json_to_sheet(exportData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Past Mock Tests");
-
-    const monthLabel = monthOptions.find(opt => opt.value === selectedMonth)?.label || "All";
-    const fileName = `Past_Mock_Tests_${monthLabel.replace(/\s+/g, "_")}_${new Date().toISOString().split("T")[0]}.xlsx`;
-    
-    XLSX.writeFile(workbook, fileName);
+      if (!res.data) return;
+      toast.success("Exported successfully");
+    } catch (error) {
+      toast.error("Failed to export data");
+    }
   };
 
   const table = useReactTable({
@@ -232,7 +240,7 @@ export function MockDataTablePast<TData, TValue>({
           </Button>
         </div>
       </div>
-      
+
       {/* Table */}
       <div className="rounded-md border">
         <Table>
@@ -322,7 +330,7 @@ export function MockDataTablePast<TData, TValue>({
             >
               <ChevronsLeft className="h-4 w-4" />
             </Button>
-            
+
             <Button
               variant="outline"
               size="sm"
@@ -334,7 +342,7 @@ export function MockDataTablePast<TData, TValue>({
             >
               <ChevronLeft className="h-4 w-4" />
             </Button>
-            
+
             <div className="flex items-center gap-1 mx-2">
               {getPageNumbers().map((pageNum) => (
                 <Button
@@ -348,19 +356,20 @@ export function MockDataTablePast<TData, TValue>({
                 </Button>
               ))}
             </div>
-            
+
             <Button
               variant="outline"
               size="sm"
               onClick={() =>
-                onPageChange && onPageChange(Math.min(currentPage + 1, totalPages))
+                onPageChange &&
+                onPageChange(Math.min(currentPage + 1, totalPages))
               }
               disabled={currentPage >= totalPages}
               className="h-8 w-8 p-0"
             >
               <ChevronRight className="h-4 w-4" />
             </Button>
-            
+
             <Button
               variant="outline"
               size="sm"
@@ -371,7 +380,7 @@ export function MockDataTablePast<TData, TValue>({
               <ChevronsRight className="h-4 w-4" />
             </Button>
           </div>
-          
+
           <div className="flex items-center gap-2">
             <span className="text-sm text-muted-foreground">
               Page {currentPage} of {totalPages}

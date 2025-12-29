@@ -1,6 +1,6 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
-import useRole from "@/hooks/useRole";
+import { useCurrentUser } from "@/lib/api/useUser";
 
 interface RoleProtectedProps {
   allowedRoles: string[];
@@ -13,9 +13,9 @@ interface RoleIndexRedirectProps {
 
 // Component for protecting routes based on role
 export function RoleProtected({ allowedRoles, children }: RoleProtectedProps) {
-  const { role } = useRole();
+  const { data: currentUser } = useCurrentUser();
 
-  if (!role || !allowedRoles.includes(role)) {
+  if (!currentUser || !allowedRoles.includes(currentUser.role)) {
     return <Navigate to="/dashboard" replace />;
   }
 
@@ -24,15 +24,14 @@ export function RoleProtected({ allowedRoles, children }: RoleProtectedProps) {
 
 // Component for role-based index redirection
 export function RoleIndexRedirect({ adminRole }: RoleIndexRedirectProps) {
-  const { role } = useRole();
-
-  // If current user is superAdmin, show the students listing for this role.
-  if (role === "superAdmin") {
+  const { data: currentUser } = useCurrentUser();
+  // If current currentUser is superAdmin, show the students listing for this role.
+  if (currentUser?.role === "superAdmin") {
     return <Navigate to="students" replace />;
   }
 
-  // If the user is the admin for this role, show the role dashboard.
-  if (role === adminRole) {
+  // If the currentUser is the admin for this role, show the role dashboard.
+  if (currentUser?.role === adminRole) {
     return <Navigate to="dashboard" replace />;
   }
 

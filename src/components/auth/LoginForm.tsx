@@ -1,6 +1,6 @@
 // LoginForm.tsx - Responsive version
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   Form,
@@ -12,20 +12,16 @@ import {
 } from "../ui/form";
 import { Button } from "../ui/button";
 import { Input } from "@/components/ui/input";
-import type z from "zod";
 import { Lock, UserRound, Loader2, Eye, EyeOff } from "lucide-react";
-import { useAuthStore } from "@/lib/stores/AuthStore";
-import { Link, useNavigate } from "react-router-dom";
-import { toast } from "sonner";
-import { loginSchema } from "@/schema/LoginSchema";
+import { Link } from "react-router-dom";
+import { loginSchema, type LoginFormData } from "@/schema/LoginSchema";
+import { useAuth } from "@/provider/authProvider";
 
 const LoginForm = () => {
-  const login = useAuthStore((state) => state.login);
-  const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const form = useForm<z.infer<typeof loginSchema>>({
+  const { login, logging: isLoading } = useAuth();
+  const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
@@ -33,29 +29,9 @@ const LoginForm = () => {
     },
   });
 
-  const onSubmit = useCallback(
-    async (values: z.infer<typeof loginSchema>) => {
-      setIsLoading(true);
-      try {
-        // Store email for forgot-password autofill
-        localStorage.setItem("loginEmail", values.email);
-        
-        const result = await login(values.email, values.password);
-        
-        if (result.success) {
-          toast.success("Logged in successfully!");
-          navigate("/dashboard");
-        } else {
-          toast.error(result.error || "Invalid credentials");
-        }
-      } catch (error) {
-        toast.error("An unexpected error occurred");
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [login, navigate]
-  );
+  const onSubmit = (data: LoginFormData) => {
+    login(data);
+  };
 
   const togglePassword = () => {
     setShowPassword(!showPassword);

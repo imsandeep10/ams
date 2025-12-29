@@ -33,6 +33,7 @@ import { AdminProfile } from "./pages/AdminProfile";
 import MockRegisterData from "./pages/MockRegisterData";
 import IeltsMockTestForm from "./components/mock-test/IeltsMockTestForm";
 import AllStudentsPage from "./pages/AllStudentsPage";
+import RootLayout from "./components/layouts/RootLayout";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -45,71 +46,169 @@ const queryClient = new QueryClient({
 
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: <AuthLayout />,
+    element: <RootLayout />,
     children: [
       {
-        index: true,
-        element: <LoginForm />,
-      },
-      {
-        path: "forgot-password",
-        element: <ForgotPasswordPage />,
-      },
-      {
-        path: "attendence-student",
-        element: <AttendenceForm />,
-      },
-    ],
-  },
-  {
-    path: "/",
-    element: (
-      <ProtectedRoute>
-        <AppLayout />
-      </ProtectedRoute>
-    ),
-    children: [
-      {
-        path: "dashboard",
-        element: <DashboardPage />,
-      },
-      {
-        path: "pte",
-        element: (
-          <RoleProtected allowedRoles={["pteAdmin", "superAdmin"]}>
-            <RoleLayout />
-          </RoleProtected>
-        ),
+        path: "/",
+        element: <AuthLayout />,
         children: [
           {
             index: true,
-            element: <RoleIndexRedirect adminRole={"pteAdmin"} />,
+            element: <LoginForm />,
           },
-          { path: "dashboard", element: <DashboardPage /> },
-          { path: "students", element: <PtePage /> },
-          { path: "students/create", element: <CreateStudent /> },
-          { path: "students/edit/:id", element: <EditStudent /> },
-          { path: "report", element: <Report /> },
+          {
+            path: "forgot-password",
+            element: <ForgotPasswordPage />,
+          },
+          {
+            path: "attendence-student",
+            element: <AttendenceForm />,
+          },
         ],
       },
       {
-        path: "ielts",
+        path: "/",
         element: (
-          <RoleProtected allowedRoles={["ieltsAdmin", "superAdmin"]}>
-            <RoleLayout />
-          </RoleProtected>
+          <ProtectedRoute>
+            <AppLayout />
+          </ProtectedRoute>
         ),
         children: [
           {
-            index: true,
-            element: <RoleIndexRedirect adminRole={"ieltsAdmin"} />,
+            path: "dashboard",
+            element: <DashboardPage />,
           },
-          { path: "dashboard", element: <DashboardPage /> },
-          { path: "students", element: <IeltsPage /> },
-          { path: "students/create", element: <CreateStudent /> },
-          { path: "students/edit/:id", element: <EditStudent /> },
-          { path: "report", element: <Report /> },
+          {
+            path: "pte",
+            element: (
+              <RoleProtected allowedRoles={["pteAdmin", "superAdmin"]}>
+                <RoleLayout />
+              </RoleProtected>
+            ),
+            children: [
+              {
+                index: true,
+                element: <RoleIndexRedirect adminRole={"pteAdmin"} />,
+              },
+              { path: "dashboard", element: <DashboardPage /> },
+              { path: "students", element: <PtePage /> },
+              { path: "students/create", element: <CreateStudent /> },
+              { path: "students/edit/:id", element: <EditStudent /> },
+              { path: "report", element: <Report /> },
+            ],
+          },
+          {
+            path: "ielts",
+            element: (
+              <RoleProtected allowedRoles={["ieltsAdmin", "superAdmin"]}>
+                <RoleLayout />
+              </RoleProtected>
+            ),
+            children: [
+              {
+                index: true,
+                element: <RoleIndexRedirect adminRole={"ieltsAdmin"} />,
+              },
+              { path: "dashboard", element: <DashboardPage /> },
+              { path: "students", element: <IeltsPage /> },
+              { path: "students/create", element: <CreateStudent /> },
+              { path: "students/edit/:id", element: <EditStudent /> },
+              { path: "report", element: <Report /> },
+              {
+                path: "mock-data-table",
+                element: <MockRegisterData />,
+              },
+            ],
+          },
+          {
+            path: "duolingo",
+            element: (
+              <RoleProtected allowedRoles={["duolingoAdmin", "superAdmin"]}>
+                <RoleLayout />
+              </RoleProtected>
+            ),
+            children: [
+              {
+                index: true,
+                element: <RoleIndexRedirect adminRole={"duolingoAdmin"} />,
+              },
+              { path: "dashboard", element: <DashboardPage /> },
+              { path: "students", element: <DuolingoPage /> },
+              { path: "students/edit/:id", element: <EditStudent /> },
+              { path: "report", element: <Report /> },
+            ],
+          },
+          {
+            path: "sat",
+            element: (
+              <RoleProtected allowedRoles={["satAdmin", "superAdmin"]}>
+                <RoleLayout />
+              </RoleProtected>
+            ),
+            children: [
+              {
+                index: true,
+                element: <RoleIndexRedirect adminRole={"satAdmin"} />,
+              },
+              { path: "dashboard", element: <DashboardPage /> },
+              { path: "students", element: <SatPage /> },
+              { path: "students/create", element: <CreateStudent /> },
+              { path: "students/edit/:id", element: <EditStudent /> },
+              { path: "report", element: <Report /> },
+            ],
+          },
+          {
+            path: "students",
+            element: (
+              <RoleProtected allowedRoles={["superAdmin"]}>
+                <AllStudentsPage />
+              </RoleProtected>
+            ),
+          },
+          {
+            path: "report",
+            element: <Report />,
+          },
+          {
+            path: "create-student",
+            element: <CreateStudent />,
+          },
+          {
+            path: "edit-student/:id",
+            element: <EditStudent />,
+          },
+          {
+            path: "student-profile/:id",
+            element: <StudentProfile />,
+          },
+          {
+            path: "student-track/:id",
+            element: <StudentTrack />,
+          },
+          {
+            path: "create-admin",
+            element: <CreateAdminPage />,
+          },
+          {
+            path: "Password-admin",
+            element: <AdminPasswordForm />,
+          },
+          {
+            path: "edit-admin/:id",
+            element: <EditAdminPage />,
+          },
+          {
+            path: "admins",
+            element: <AdminsPage />,
+          },
+          {
+            path: "admin-profile/:id",
+            element: <AdminProfile />,
+          },
+          {
+            path: "profile",
+            element: <Profile />,
+          },
           {
             path: "mock-data-table",
             element: <MockRegisterData />,
@@ -117,115 +216,22 @@ const router = createBrowserRouter([
         ],
       },
       {
-        path: "duolingo",
-        element: (
-          <RoleProtected allowedRoles={["duolingoAdmin", "superAdmin"]}>
-            <RoleLayout />
-          </RoleProtected>
-        ),
-        children: [
-          {
-            index: true,
-            element: <RoleIndexRedirect adminRole={"duolingoAdmin"} />,
-          },
-          { path: "dashboard", element: <DashboardPage /> },
-          { path: "students", element: <DuolingoPage /> },
-          { path: "students/edit/:id", element: <EditStudent /> },
-          { path: "report", element: <Report /> },
-        ],
+        path: "/attendance",
+        element: <AttendancePage />,
       },
       {
-        path: "sat",
-        element: (
-          <RoleProtected allowedRoles={["satAdmin", "superAdmin"]}>
-            <RoleLayout />
-          </RoleProtected>
-        ),
-        children: [
-          {
-            index: true,
-            element: <RoleIndexRedirect adminRole={"satAdmin"} />,
-          },
-          { path: "dashboard", element: <DashboardPage /> },
-          { path: "students", element: <SatPage /> },
-          { path: "students/create", element: <CreateStudent /> },
-          { path: "students/edit/:id", element: <EditStudent /> },
-          { path: "report", element: <Report /> },
-        ],
+        path: "register/newstudent",
+        element: <StudentRegisterForm mode="create" />,
       },
       {
-        path: "students",
-        element: (
-          <RoleProtected allowedRoles={["superAdmin"]}>
-            <AllStudentsPage />
-          </RoleProtected>
-        ),
+        path: "mock-test/register",
+        element: <IeltsMockTestForm />,
       },
       {
-        path: "report",
-        element: <Report />,
-      },
-      {
-        path: "create-student",
-        element: <CreateStudent />,
-      },
-      {
-        path: "edit-student/:id",
-        element: <EditStudent />,
-      },
-      {
-        path: "student-profile/:id",
-        element: <StudentProfile />,
-      },
-      {
-        path: "student-track/:id",
-        element: <StudentTrack />,
-      },
-      {
-        path: "create-admin",
-        element: <CreateAdminPage />,
-      },
-      {
-        path: "Password-admin",
-        element: <AdminPasswordForm />,
-      },
-      {
-        path: "edit-admin/:id",
-        element: <EditAdminPage />,
-      },
-      {
-        path: "admins",
-        element: <AdminsPage />,
-      },
-      {
-        path: "admin-profile/:id",
-        element: <AdminProfile />,
-      },
-      {
-        path: "profile",
-        element: <Profile />,
-      },
-      {
-        path: "mock-data-table",
-        element: <MockRegisterData />,
+        path: "/success-message",
+        element: <SuccessMessage />,
       },
     ],
-  },
-  {
-    path: "/attendance",
-    element: <AttendancePage />,
-  },
-  {
-    path: "register/newstudent",
-    element: <StudentRegisterForm mode="create" />,
-  },
-  {
-    path: "mock-test/register",
-    element: <IeltsMockTestForm />,
-  },
-  {
-    path: "/success-message",
-    element: <SuccessMessage />,
   },
 ]);
 

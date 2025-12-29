@@ -63,7 +63,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     try {
       const decoded: any = jwtDecode(token);
       const role = decoded?.role || decoded?.roles || null;
-      
+
       // Check if we have user data in localStorage
       const storedUser = localStorage.getItem("user");
       if (storedUser) {
@@ -87,7 +87,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
       // Save tokens
       get().setTokens(accessToken, refreshToken);
-      
+
       // Save user object from API response
       localStorage.setItem("user", JSON.stringify(user));
       set({ user });

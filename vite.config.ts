@@ -12,15 +12,16 @@ export default defineConfig({
     },
   },
   server: {
-    host: "0.0.0.0", // ✅ Required for Render to detect open port
-    port: parseInt(process.env.PORT || "5173"), // ✅ Use Render's assigned PORT or fallback locally
+    port: 5173,
+    host: true,
+    strictPort: true,
   },
   preview: {
     host: "0.0.0.0", // ✅ Required for Render production preview
     port: parseInt(process.env.PORT || "4173"), // ✅ Use Render PORT dynamically
     allowedHosts: [
       "attendence-system-grace.onrender.com", // ✅ Your Render domain
-      "localhost" // optional: allow local testing too
+      "localhost", // optional: allow local testing too
     ],
   },
   build: {
