@@ -1,7 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import api from "../axiosInstance";
 import type { Language } from "@/types/languageType";
-import type { DonutChartResponse, ReportPeriodType, PeriodReportResponse } from "@/types/reportTypes";
+import type {
+  DonutChartResponse,
+  ReportPeriodType,
+  PeriodReportResponse,
+} from "@/types/reportTypes";
 
 type UseGetStudentGrowthParams = {
   startYear?: number;
@@ -25,7 +29,7 @@ export const useGetReport = (date?: Date, language?: Language["language"]) => {
       if (language) params.append("language", language);
 
       const res = await api.get(
-        `/reports/charts/language-programs?${params.toString()}`
+        `/api/reports/charts/language-programs?${params.toString()}`
       );
 
       if (!res?.data) {
@@ -39,7 +43,11 @@ export const useGetReport = (date?: Date, language?: Language["language"]) => {
   });
 };
 
-export const useGetDonutChart = (year?: number, month?: number, language?: Language["language"]) => {
+export const useGetDonutChart = (
+  year?: number,
+  month?: number,
+  language?: Language["language"]
+) => {
   return useQuery<DonutChartResponse>({
     queryKey: ["donutChart", year, month, language],
     queryFn: async () => {
@@ -50,7 +58,7 @@ export const useGetDonutChart = (year?: number, month?: number, language?: Langu
       if (language) params.append("language", language);
 
       const res = await api.get<DonutChartResponse>(
-        `/reports/charts/attendance-overview?${params.toString()}`
+        `/api/reports/charts/attendance-overview?${params.toString()}`
       );
 
       if (!res?.data) {
@@ -64,7 +72,6 @@ export const useGetDonutChart = (year?: number, month?: number, language?: Langu
   });
 };
 
-
 export const useGetStudentGrowth = ({
   startYear,
   startMonth,
@@ -73,7 +80,14 @@ export const useGetStudentGrowth = ({
   language,
 }: UseGetStudentGrowthParams) => {
   return useQuery({
-    queryKey: ["studentGrowth", startYear, startMonth, endYear, endMonth, language],
+    queryKey: [
+      "studentGrowth",
+      startYear,
+      startMonth,
+      endYear,
+      endMonth,
+      language,
+    ],
     queryFn: async () => {
       const params = new URLSearchParams({
         startYear: String(startYear),
@@ -86,7 +100,7 @@ export const useGetStudentGrowth = ({
         params.append("language", language);
       }
 
-      const res = await api.get(`/reports/charts/student-growth?${params}`);
+      const res = await api.get(`/api/reports/charts/student-growth?${params}`);
 
       if (!res?.data) {
         throw new Error("Student growth data not found");
@@ -103,7 +117,6 @@ export const useGetStudentGrowth = ({
   });
 };
 
-
 export const useGetTodayAttendance = (language?: Language["language"]) => {
   return useQuery({
     queryKey: ["todayAttendance", language],
@@ -111,7 +124,7 @@ export const useGetTodayAttendance = (language?: Language["language"]) => {
       const params = new URLSearchParams();
       if (language) params.append("language", language);
 
-      const res = await api.get(`/reports/today?${params.toString()}`);
+      const res = await api.get(`/api/reports/today?${params.toString()}`);
 
       if (!res?.data) {
         throw new Error("Today's attendance data not found");
@@ -136,7 +149,7 @@ type UseGetPeriodReportParams = {
 export const useGetPeriodReport = ({
   year,
   month,
-  periodType = 'monthly' as ReportPeriodType,
+  periodType = "monthly" as ReportPeriodType,
   date,
   week,
   language,
@@ -155,7 +168,7 @@ export const useGetPeriodReport = ({
       if (language) params.append("language", language);
 
       const res = await api.get<PeriodReportResponse>(
-        `/reports/period?${params.toString()}`
+        `/api/reports/period?${params.toString()}`
       );
 
       if (!res?.data) {
@@ -172,7 +185,7 @@ export const useGetPeriodReport = ({
 export const downloadReport = async ({
   year,
   month,
-  periodType = 'monthly' as ReportPeriodType,
+  periodType = "monthly" as ReportPeriodType,
   date,
   week,
   language,
@@ -187,15 +200,18 @@ export const downloadReport = async ({
   if (week) params.append("week", String(week));
   if (language) params.append("language", language);
 
-  const res = await api.get(`/reports/download/csv?${params.toString()}`, {
-    responseType: 'blob',
+  const res = await api.get(`/api/reports/download/csv?${params.toString()}`, {
+    responseType: "blob",
   });
 
   // Create download link
   const url = window.URL.createObjectURL(new Blob([res.data]));
-  const link = document.createElement('a');
+  const link = document.createElement("a");
   link.href = url;
-  link.setAttribute('download', `attendance-report-${periodType}-${year}-${month}.csv`);
+  link.setAttribute(
+    "download",
+    `attendance-report-${periodType}-${year}-${month}.csv`
+  );
   document.body.appendChild(link);
   link.click();
   link.remove();
@@ -205,7 +221,7 @@ export const downloadReport = async ({
 export const downloadPdfReport = async ({
   year,
   month,
-  periodType = 'monthly' as ReportPeriodType,
+  periodType = "monthly" as ReportPeriodType,
   date,
   week,
   language,
@@ -220,18 +236,26 @@ export const downloadPdfReport = async ({
   if (week) params.append("week", String(week));
   if (language) params.append("language", language);
 
-  const res = await api.get(`/reports/download/csv`, {
-    responseType: 'blob',
+  const res = await api.get(`/api/reports/download/csv`, {
+    responseType: "blob",
   });
 
   // Create download link
-  const periodLabel = periodType === 'daily' ? date : 
-                     periodType === 'weekly' ? `week-${week}` : 
-                     `${year}-${month}`;
-  const url = window.URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }));
-  const link = document.createElement('a');
+  const periodLabel =
+    periodType === "daily"
+      ? date
+      : periodType === "weekly"
+      ? `week-${week}`
+      : `${year}-${month}`;
+  const url = window.URL.createObjectURL(
+    new Blob([res.data], { type: "application/pdf" })
+  );
+  const link = document.createElement("a");
   link.href = url;
-  link.setAttribute('download', `attendance-report-${periodType}-${periodLabel}.pdf`);
+  link.setAttribute(
+    "download",
+    `attendance-report-${periodType}-${periodLabel}.pdf`
+  );
   document.body.appendChild(link);
   link.click();
   link.remove();

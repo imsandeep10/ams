@@ -13,7 +13,7 @@ export const useCreateAdmins = () => {
   const queryClient = useQueryClient();
   return useMutation<CreateAdminResponse, AxiosError, CreateAdminFormData>({
     mutationFn: async (data: CreateAdminFormData) => {
-      const res = await api.post<CreateAdminResponse>("/user", data);
+      const res = await api.post<CreateAdminResponse>("/api/user", data);
       return res.data;
     },
     onSuccess: () => {
@@ -30,10 +30,13 @@ export const useCreateAdmins = () => {
 // useAdmin.tsx
 export const useChangeAdminPw = () => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: async (data: { email: string; newPassword: string }) => {
-      const res = await api.post(`/reset-password/admin/change-password`, data);
+      const res = await api.post(
+        `/api/reset-password/admin/change-password`,
+        data
+      );
       return res.data;
     },
     onSuccess: () => {
@@ -42,7 +45,8 @@ export const useChangeAdminPw = () => {
       queryClient.invalidateQueries({ queryKey: ["admin"] });
     },
     onError: (error: AxiosError) => {
-      const errorMessage = (error.response?.data as any)?.message || "Failed to change password";
+      const errorMessage =
+        (error.response?.data as any)?.message || "Failed to change password";
       toast.error(`Error: ${errorMessage}`);
     },
   });
@@ -53,7 +57,7 @@ export const useUpdateAdmin = () => {
 
   return useMutation({
     mutationFn: async ({ id, data }: UpdateAdminPayload) => {
-      const res = await api.patch(`/user/${id}`, data);
+      const res = await api.patch(`/api/user/${id}`, data);
       return res.data;
     },
     onSuccess: () => {
@@ -72,7 +76,7 @@ export const useGetAdminById = (id: string) => {
     queryKey: ["admin", id],
     queryFn: async ({ queryKey }) => {
       const [, adminId] = queryKey;
-      const res = await api.get(`/user/admin/${adminId}`);
+      const res = await api.get(`/api/user/admin/${adminId}`);
       if (!res?.data) throw new Error("Admins not found");
 
       return res.data;
@@ -85,7 +89,7 @@ export const useGetAllAdmins = () => {
   return useQuery({
     queryKey: ["admins"],
     queryFn: async () => {
-      const res = await api.get("/user/admins");
+      const res = await api.get("/api/user/admins");
       if (!res || !res.data) {
         throw new Error("Failed to fetch admins");
       }
@@ -98,7 +102,7 @@ export const useDeleteAdmin = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
-      const res = await api.delete(`/user/${id}`);
+      const res = await api.delete(`/api/user/${id}`);
       return res.data;
     },
     onSuccess: () => {
@@ -113,5 +117,3 @@ export const useDeleteAdmin = () => {
     },
   });
 };
-
-

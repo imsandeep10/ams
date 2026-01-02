@@ -13,7 +13,7 @@ export const NavBar = React.memo(() => {
         </h1>
       </div>
       <div className="flex flex-row items-center gap-8 pr-5">
-        <SearchBar/>
+        <SearchBar />
         <ProfileDropdown />
       </div>
     </div>

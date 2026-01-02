@@ -1,5 +1,5 @@
 import { useDashboardStats } from "@/lib/api/dashboard";
-import { useAuthStore } from "@/lib/stores/AuthStore";
+import { useCurrentUser } from "@/lib/api/useUser";
 import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -13,20 +13,23 @@ type TotalCardProps = { selectedDate?: Date };
 
 export const TotalCard = React.memo(({ selectedDate }: TotalCardProps) => {
   const { data: stats, isLoading } = useDashboardStats(selectedDate);
-  const role = useAuthStore((state) => state.role);
+  const { data: currentUser } = useCurrentUser();
   const navigate = useNavigate();
 
   const handleCardClick = (subtitle: string) => {
-    if (role === 'superAdmin' && subtitle === 'Total Enrolled Students') {
-      navigate('/students');
+    if (
+      currentUser?.role === "superAdmin" &&
+      subtitle === "Total Enrolled Students"
+    ) {
+      navigate("/students");
     }
   };
 
   const cards = useMemo<CardData[]>(() => {
     if (!stats) return [];
-    
+
     // For SuperAdmin: show all cards
-    if (role === 'superAdmin') {
+    if (currentUser?.role === "superAdmin") {
       return [
         {
           subtitle: "Total Enrolled Students",
@@ -58,9 +61,9 @@ export const TotalCard = React.memo(({ selectedDate }: TotalCardProps) => {
         },
       ];
     }
-    
+
     // For IELTS Admin: show only IELTS-related cards
-    if (role === 'ieltsAdmin') {
+    if (currentUser?.role === "ieltsAdmin") {
       return [
         {
           subtitle: "Total IELTS Enrolled",
@@ -76,9 +79,9 @@ export const TotalCard = React.memo(({ selectedDate }: TotalCardProps) => {
         },
       ];
     }
-    
+
     // For PTE Admin: show only PTE-related cards
-    if (role === 'pteAdmin') {
+    if (currentUser?.role === "pteAdmin") {
       return [
         {
           subtitle: "Total PTE Enrolled",
@@ -94,9 +97,9 @@ export const TotalCard = React.memo(({ selectedDate }: TotalCardProps) => {
         },
       ];
     }
-    
+
     // For SAT Admin: show only SAT-related cards
-    if (role === 'satAdmin') {
+    if (currentUser?.role === "satAdmin") {
       return [
         {
           subtitle: "Total SAT Enrolled",
@@ -112,9 +115,9 @@ export const TotalCard = React.memo(({ selectedDate }: TotalCardProps) => {
         },
       ];
     }
-    
+
     // For Duolingo Admin: show only Duolingo-related cards
-    if (role === 'duolingoAdmin') {
+    if (currentUser?.role === "duolingoAdmin") {
       return [
         {
           subtitle: "Total Duolingo Enrolled",
@@ -130,7 +133,7 @@ export const TotalCard = React.memo(({ selectedDate }: TotalCardProps) => {
         },
       ];
     }
-    
+
     // Default fallback (shouldn't reach here)
     return [
       {
@@ -146,10 +149,10 @@ export const TotalCard = React.memo(({ selectedDate }: TotalCardProps) => {
         total: stats.totalAbsentToday,
       },
     ];
-  }, [stats, role]);
+  }, [stats, currentUser?.role]);
 
-  // Determine number of skeleton cards based on role
-  const skeletonCount = role === 'superAdmin' ? 7 : 3;
+  // Determine number of skeleton cards based on currentUser?.role
+  const skeletonCount = currentUser?.role === "superAdmin" ? 7 : 3;
 
   if (isLoading) {
     return (
@@ -174,9 +177,10 @@ export const TotalCard = React.memo(({ selectedDate }: TotalCardProps) => {
           <div
             key={index}
             className={`border flex flex-col bg-primary p-6 py-8 rounded-md hover:shadow-md transition-shadow ${
-              role === 'superAdmin' && item.subtitle === 'Total Enrolled Students' 
-                ? 'cursor-pointer hover:bg-primary/90' 
-                : ''
+              currentUser?.role === "superAdmin" &&
+              item.subtitle === "Total Enrolled Students"
+                ? "cursor-pointer hover:bg-primary/90"
+                : ""
             }`}
             onClick={() => handleCardClick(item.subtitle)}
           >

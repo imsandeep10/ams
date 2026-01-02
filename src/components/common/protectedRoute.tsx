@@ -8,8 +8,12 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  const { data: currentUser } = useCurrentUser();
+  const { data: currentUser, isPending: isLoading } = useCurrentUser();
+  console.log("currentUser", currentUser);
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
   if (!currentUser) {
     return <Navigate to="/" replace />;
   }

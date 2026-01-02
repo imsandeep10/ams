@@ -1,39 +1,40 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { Report } from "./pages/Report";
-import IeltsPage from "./pages/ieltsPage";
-import DuolingoPage from "./pages/duolingoPage";
-import SatPage from "./pages/satPage";
-import PtePage from "./pages/ptePage";
 import RoleProtected, {
   RoleIndexRedirect,
 } from "./components/common/RoleProtected";
-import { CreateStudent } from "./pages/common/CreateStudent";
 import AuthLayout from "./components/layouts/authLayout";
-import LoginForm from "./components/auth/LoginForm";
-import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import AppLayout from "./components/layouts/appLayout";
-import DashboardPage from "./pages/dashboardPage";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "./components/ui/sonner";
-import { StudentProfile } from "./pages/StudentProfile";
-import { StudentTrack } from "./pages/StudentTrack";
 import ProtectedRoute from "./components/common/protectedRoute";
-import { EditStudent } from "./pages/common/EditStudent";
-import { CreateAdminPage } from "./pages/adminForm/CreateAdminPage";
-import { AttendenceForm } from "./components/attendenceform/AttendenceForm";
-import AttendancePage from "./pages/AttendancePage";
-import AdminsPage from "./pages/AdminsPage";
-import { EditAdminPage } from "./pages/adminForm/EditAdminPage";
-import { Profile } from "./pages/Profile";
 import RoleLayout from "./components/layouts/roleLayout";
-import { StudentRegisterForm } from "./components/student-register/StudentResgister";
 import SuccessMessage from "./components/student-register/SuccessMessage";
-import AdminPasswordForm from "./pages/ChangeAdminPassword";
-import { AdminProfile } from "./pages/AdminProfile";
-import MockRegisterData from "./pages/MockRegisterData";
-import IeltsMockTestForm from "./components/mock-test/IeltsMockTestForm";
-import AllStudentsPage from "./pages/AllStudentsPage";
 import RootLayout from "./components/layouts/RootLayout";
+import {
+  AdminPageRoute,
+  AdminPasswordFormRoute,
+  AdminProfileRoute,
+  AllStudentPageRoute,
+  AttendacneRoute,
+  CreateAdminRoute,
+  CreateStudentRoute,
+  DashboardPageRoute,
+  DuolingoPageRoute,
+  EditAdminPageRoute,
+  EditStudentRoute,
+  ForgotPasswordRoute,
+  IeltsMockTestFormRoute,
+  IeltsPageRoute,
+  LoginRoute,
+  MockRegisterDataRoute,
+  ProfileRoute,
+  PtePageRoute,
+  ReportRoute,
+  SatPageRoute,
+  StudentProfileRoute,
+  StudentRegisterRoute,
+  StudentTrackRoute,
+} from "./lazyRoutes/route";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -54,15 +55,15 @@ const router = createBrowserRouter([
         children: [
           {
             index: true,
-            element: <LoginForm />,
+            element: <LoginRoute />,
           },
           {
             path: "forgot-password",
-            element: <ForgotPasswordPage />,
+            element: <ForgotPasswordRoute />,
           },
           {
             path: "attendence-student",
-            element: <AttendenceForm />,
+            element: <AttendacneRoute />,
           },
         ],
       },
@@ -76,7 +77,7 @@ const router = createBrowserRouter([
         children: [
           {
             path: "dashboard",
-            element: <DashboardPage />,
+            element: <DashboardPageRoute />,
           },
           {
             path: "pte",
@@ -90,11 +91,11 @@ const router = createBrowserRouter([
                 index: true,
                 element: <RoleIndexRedirect adminRole={"pteAdmin"} />,
               },
-              { path: "dashboard", element: <DashboardPage /> },
-              { path: "students", element: <PtePage /> },
-              { path: "students/create", element: <CreateStudent /> },
-              { path: "students/edit/:id", element: <EditStudent /> },
-              { path: "report", element: <Report /> },
+              { path: "dashboard", element: <DashboardPageRoute /> },
+              { path: "students", element: <PtePageRoute /> },
+              { path: "students/create", element: <CreateStudentRoute /> },
+              { path: "students/edit/:id", element: <EditStudentRoute /> },
+              { path: "report", element: <ReportRoute /> },
             ],
           },
           {
@@ -109,14 +110,14 @@ const router = createBrowserRouter([
                 index: true,
                 element: <RoleIndexRedirect adminRole={"ieltsAdmin"} />,
               },
-              { path: "dashboard", element: <DashboardPage /> },
-              { path: "students", element: <IeltsPage /> },
-              { path: "students/create", element: <CreateStudent /> },
-              { path: "students/edit/:id", element: <EditStudent /> },
-              { path: "report", element: <Report /> },
+              { path: "dashboard", element: <DashboardPageRoute /> },
+              { path: "students", element: <IeltsPageRoute /> },
+              { path: "students/create", element: <CreateStudentRoute /> },
+              { path: "students/edit/:id", element: <EditStudentRoute /> },
+              { path: "report", element: <ReportRoute /> },
               {
                 path: "mock-data-table",
-                element: <MockRegisterData />,
+                element: <MockRegisterDataRoute />,
               },
             ],
           },
@@ -132,10 +133,10 @@ const router = createBrowserRouter([
                 index: true,
                 element: <RoleIndexRedirect adminRole={"duolingoAdmin"} />,
               },
-              { path: "dashboard", element: <DashboardPage /> },
-              { path: "students", element: <DuolingoPage /> },
-              { path: "students/edit/:id", element: <EditStudent /> },
-              { path: "report", element: <Report /> },
+              { path: "dashboard", element: <DashboardPageRoute /> },
+              { path: "students", element: <DuolingoPageRoute /> },
+              { path: "students/edit/:id", element: <EditStudentRoute /> },
+              { path: "report", element: <ReportRoute /> },
             ],
           },
           {
@@ -150,82 +151,82 @@ const router = createBrowserRouter([
                 index: true,
                 element: <RoleIndexRedirect adminRole={"satAdmin"} />,
               },
-              { path: "dashboard", element: <DashboardPage /> },
-              { path: "students", element: <SatPage /> },
-              { path: "students/create", element: <CreateStudent /> },
-              { path: "students/edit/:id", element: <EditStudent /> },
-              { path: "report", element: <Report /> },
+              { path: "dashboard", element: <DashboardPageRoute /> },
+              { path: "students", element: <SatPageRoute /> },
+              { path: "students/create", element: <CreateStudentRoute /> },
+              { path: "students/edit/:id", element: <EditStudentRoute /> },
+              { path: "report", element: <ReportRoute /> },
             ],
           },
           {
             path: "students",
             element: (
               <RoleProtected allowedRoles={["superAdmin"]}>
-                <AllStudentsPage />
+                <AllStudentPageRoute />
               </RoleProtected>
             ),
           },
           {
             path: "report",
-            element: <Report />,
+            element: <ReportRoute />,
           },
           {
             path: "create-student",
-            element: <CreateStudent />,
+            element: <CreateStudentRoute />,
           },
           {
             path: "edit-student/:id",
-            element: <EditStudent />,
+            element: <EditStudentRoute />,
           },
           {
             path: "student-profile/:id",
-            element: <StudentProfile />,
+            element: <StudentProfileRoute />,
           },
           {
             path: "student-track/:id",
-            element: <StudentTrack />,
+            element: <StudentTrackRoute />,
           },
           {
             path: "create-admin",
-            element: <CreateAdminPage />,
+            element: <CreateAdminRoute />,
           },
           {
             path: "Password-admin",
-            element: <AdminPasswordForm />,
+            element: <AdminPasswordFormRoute />,
           },
           {
             path: "edit-admin/:id",
-            element: <EditAdminPage />,
+            element: <EditAdminPageRoute />,
           },
           {
             path: "admins",
-            element: <AdminsPage />,
+            element: <AdminPageRoute />,
           },
           {
             path: "admin-profile/:id",
-            element: <AdminProfile />,
+            element: <AdminProfileRoute />,
           },
           {
             path: "profile",
-            element: <Profile />,
+            element: <ProfileRoute />,
           },
           {
             path: "mock-data-table",
-            element: <MockRegisterData />,
+            element: <MockRegisterDataRoute />,
           },
         ],
       },
       {
         path: "/attendance",
-        element: <AttendancePage />,
+        element: <AttendacneRoute />,
       },
       {
         path: "register/newstudent",
-        element: <StudentRegisterForm mode="create" />,
+        element: <StudentRegisterRoute mode="create" />,
       },
       {
         path: "mock-test/register",
-        element: <IeltsMockTestForm />,
+        element: <IeltsMockTestFormRoute />,
       },
       {
         path: "/success-message",

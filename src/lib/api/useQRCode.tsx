@@ -1,7 +1,11 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import api from "../axiosInstance";
-import { AxiosError } from "axios";
-import type { GlobalQRCodeType, StaticQRCodeType, MockTestRegistrationQRCodeType } from "@/types/dashboardTypes";
+import axios, { AxiosError } from "axios";
+import type {
+  GlobalQRCodeType,
+  StaticQRCodeType,
+  MockTestRegistrationQRCodeType,
+} from "@/types/dashboardTypes";
 
 interface AttendanceResponse {
   success: boolean;
@@ -22,7 +26,6 @@ interface MarkAttendanceRequest {
   };
 }
 
-
 /**
  * Custom hook to fetch static QR code for wall mounting
  * @returns React Query result with static QR code data
@@ -31,8 +34,18 @@ export const useGetStaticQRCode = () => {
   return useQuery<StaticQRCodeType, AxiosError>({
     queryKey: ["staticQRCode"],
     queryFn: async (): Promise<StaticQRCodeType> => {
-      const res = await api.get<StaticQRCodeType>("/qr-code/static/attendance");
-      
+      const res = await axios.get<StaticQRCodeType>(
+        "/api/qr-code/static/attendance",
+        {
+          withCredentials: true,
+          headers: {
+            "content-type": "application/json",
+            "ngrok-skip-browser-warning": "true",
+            "x-internal-access": import.meta.env.VITE_INTERNAL_ACCESS_KEY,
+          },
+        }
+      );
+
       if (!res?.data) {
         throw new Error("Failed to fetch static QR code");
       }
@@ -55,8 +68,18 @@ export const useGetStudentRegistrationQRCode = () => {
   return useQuery<StaticQRCodeType, AxiosError>({
     queryKey: ["studentRegistrationQRCode"],
     queryFn: async (): Promise<StaticQRCodeType> => {
-      const res = await api.get<StaticQRCodeType>("/qr-code/static/student-register");
-      
+      const res = await axios.get<StaticQRCodeType>(
+        "/api/qr-code/static/student-register",
+        {
+          withCredentials: true,
+          headers: {
+            "content-type": "application/json",
+            "ngrok-skip-browser-warning": "true",
+            "x-internal-access": import.meta.env.VITE_INTERNAL_ACCESS_KEY,
+          },
+        }
+      );
+
       if (!res?.data) {
         throw new Error("Failed to fetch student registration QR code");
       }
@@ -79,8 +102,18 @@ export const useGetMockTestRegistrationQRCode = () => {
   return useQuery<MockTestRegistrationQRCodeType, AxiosError>({
     queryKey: ["mockTestRegistrationQRCode"],
     queryFn: async (): Promise<MockTestRegistrationQRCodeType> => {
-      const res = await api.get<MockTestRegistrationQRCodeType>("/qr-code/static/mock-test-register");
-      
+      const res = await axios.get<MockTestRegistrationQRCodeType>(
+        "/api/qr-code/static/mock-test-register",
+        {
+          withCredentials: true,
+          headers: {
+            "content-type": "application/json",
+            "ngrok-skip-browser-warning": "true",
+            "x-internal-access": import.meta.env.VITE_INTERNAL_ACCESS_KEY,
+          },
+        }
+      );
+
       if (!res?.data) {
         throw new Error("Failed to fetch mock test registration QR code");
       }
@@ -103,8 +136,14 @@ export const useGetGlobalQRCode = () => {
   return useQuery<GlobalQRCodeType, AxiosError>({
     queryKey: ["globalQRCode"],
     queryFn: async (): Promise<GlobalQRCodeType> => {
-      const res = await api.get<GlobalQRCodeType>("/qr-code/global");
-      
+      const res = await axios.get<GlobalQRCodeType>("/api/qr-code/global", {
+        withCredentials: true,
+        headers: {
+          "content-type": "application/json",
+          "x-internal-access": import.meta.env.VITE_INTERNAL_ACCESS_KEY,
+        },
+      });
+
       if (!res?.data) {
         throw new Error("Failed to fetch global QR code");
       }
@@ -126,19 +165,26 @@ export const useGetGlobalQRCode = () => {
  */
 export const useMarkAttendance = () => {
   return useMutation<AttendanceResponse, AxiosError, MarkAttendanceRequest>({
-    mutationFn: async ({ token, phoneNumber, location }: MarkAttendanceRequest): Promise<AttendanceResponse> => {
-      const payload: any = { 
+    mutationFn: async ({
+      token,
+      phoneNumber,
+      location,
+    }: MarkAttendanceRequest): Promise<AttendanceResponse> => {
+      const payload: any = {
         phoneNumber,
-        location
+        location,
       };
-      
+
       // Add token only if provided (for dynamic QR codes)
       if (token) {
         payload.token = token;
       }
-      
-      const res = await api.post<AttendanceResponse>("/attendance/mark", payload);
-      
+
+      const res = await api.post<AttendanceResponse>(
+        "/api/attendance/mark",
+        payload
+      );
+
       if (!res?.data) {
         throw new Error("Failed to mark attendance");
       }

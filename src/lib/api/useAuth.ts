@@ -9,7 +9,7 @@ export const useLogin = () => {
   const navigate = useNavigate();
   return useMutation<AxiosResponse, AxiosError, LoginFormData>({
     mutationFn: async (data) => {
-      const res = await api.post("/login/signin", data);
+      const res = await api.post("/api/login/signin", data);
       return res.data;
     },
     onSuccess: () => {
@@ -26,7 +26,7 @@ export const useLogout = () => {
   return useMutation({
     mutationKey: ["logout"],
     mutationFn: async () => {
-      const res = await api.post("/signout");
+      const res = await api.post("/api/login/signout");
       return res.data;
     },
     onSuccess: () => {
@@ -43,7 +43,7 @@ export const useForgotPassword = () => {
   return useMutation<AxiosResponse, AxiosError, { email: string }>({
     mutationKey: ["forgotPassword"],
     mutationFn: async (data) => {
-      const res = await api.post("/reset-password/request-otp", data);
+      const res = await api.post("/api/reset-password/request-otp", data);
       return res.data;
     },
     onSuccess: () => {
@@ -62,7 +62,7 @@ export const useVerifyOtp = () => {
     {
       mutationKey: ["verifyOtp"],
       mutationFn: async (data) => {
-        const res = await api.post("/reset-password/verify-otp", data);
+        const res = await api.post("/api/reset-password/verify-otp", data);
         return res.data;
       },
       onSuccess: () => {
@@ -85,7 +85,7 @@ export const useResetPassword = () => {
   >({
     mutationKey: ["resetPassword"],
     mutationFn: async (data) => {
-      const res = await api.post("/reset-password/new-password", data);
+      const res = await api.post("/api/reset-password/new-password", data);
       return res.data;
     },
     onSuccess: () => {

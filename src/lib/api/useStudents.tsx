@@ -20,7 +20,7 @@ export const useCreateStudents = () => {
   return useMutation<CreateStudentResponse, AxiosError, CreateStudentFormData>({
     mutationFn: async (data: CreateStudentFormData) => {
       const res = await api.post<CreateStudentResponse>(
-        "/student/initiate",
+        "/api/student/initiate",
         data
       );
       return res.data;
@@ -40,7 +40,7 @@ export const useDeleteStudent = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
-      const res = await api.delete(`/student/${id}`);
+      const res = await api.delete(`/api/student/${id}`);
       return res.data;
     },
     onSuccess: () => {
@@ -59,7 +59,7 @@ export const useUpdateStudent = () => {
 
   return useMutation({
     mutationFn: async ({ id, data }: UpdateStudentPayload) => {
-      const res = await api.patch(`/student/${id}`, data);
+      const res = await api.patch(`/api/student/${id}`, data);
       return res.data;
     },
     onSuccess: () => {
@@ -73,12 +73,24 @@ export const useUpdateStudent = () => {
   });
 };
 
-export const useGetStudentsByLanguage = (language: string, page: number = 1, limit: number = 10) => {
+export const useGetStudentsByLanguage = (
+  language: string,
+  page: number = 1,
+  limit: number = 10
+) => {
   return useQuery({
     queryKey: ["students", language, page, limit],
-    queryFn: async (): Promise<{ students: Student[], pagination: { page: number, limit: number, total: number, totalPages: number } }> => {
-      const res = await api.get(`/students/language/${language}`, {
-        params: { page, limit }
+    queryFn: async (): Promise<{
+      students: Student[];
+      pagination: {
+        page: number;
+        limit: number;
+        total: number;
+        totalPages: number;
+      };
+    }> => {
+      const res = await api.get(`/api/students/language/${language}`, {
+        params: { page, limit },
       });
       if (!res?.data?.students) {
         throw new Error("Failed to fetch students");
@@ -104,7 +116,12 @@ export const useGetStudentsByLanguage = (language: string, page: number = 1, lim
 
       return {
         students,
-        pagination: res.data.pagination || { page, limit, total: students.length, totalPages: 1 }
+        pagination: res.data.pagination || {
+          page,
+          limit,
+          total: students.length,
+          totalPages: 1,
+        },
       };
     },
     enabled: !!language,
@@ -114,9 +131,17 @@ export const useGetStudentsByLanguage = (language: string, page: number = 1, lim
 export const useGetAllStudents = (page: number = 1, limit: number = 10) => {
   return useQuery({
     queryKey: ["all-students", page, limit],
-    queryFn: async (): Promise<{ students: Student[], pagination: { page: number, limit: number, total: number, totalPages: number } }> => {
-      const res = await api.get(`/student`, {
-        params: { page, limit }
+    queryFn: async (): Promise<{
+      students: Student[];
+      pagination: {
+        page: number;
+        limit: number;
+        total: number;
+        totalPages: number;
+      };
+    }> => {
+      const res = await api.get(`/api/student`, {
+        params: { page, limit },
       });
       if (!res?.data?.students) {
         throw new Error("Failed to fetch students");
@@ -142,7 +167,12 @@ export const useGetAllStudents = (page: number = 1, limit: number = 10) => {
 
       return {
         students,
-        pagination: res.data.pagination || { page, limit, total: students.length, totalPages: 1 }
+        pagination: res.data.pagination || {
+          page,
+          limit,
+          total: students.length,
+          totalPages: 1,
+        },
       };
     },
   });
@@ -153,7 +183,7 @@ export const useGetStudentById = (id: string) => {
     queryKey: ["student", id],
     queryFn: async ({ queryKey }) => {
       const [, studentId] = queryKey;
-      const res = await api.get(`/student/${studentId}`);
+      const res = await api.get(`/api/student/${studentId}`);
       if (!res || !res.data) {
         throw new Error("Student Not Found");
       }
@@ -170,7 +200,9 @@ export const useGetStudentAttendance = (params: AttendanceParams = {}) => {
     queryKey: ["attendance", page, limit],
     queryFn: async () => {
       try {
-        const res = await api.get(`/attendance?page=${page}&limit=${limit}`);
+        const res = await api.get(
+          `/api/attendance?page=${page}&limit=${limit}`
+        );
         return res.data;
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err);
@@ -193,7 +225,7 @@ export const useGetStudentAttendanceTrack = (
     queryFn: async () => {
       try {
         const res = await api.get(
-          `/attendance-track/monthly/${studentId}?year=${year}&month=${month}`
+          `/api/attendance-track/monthly/${studentId}?year=${year}&month=${month}`
         );
         return res.data;
       } catch (err: any) {
@@ -206,15 +238,21 @@ export const useGetStudentAttendanceTrack = (
   });
 };
 
-export const useStudentSearch = (query: string, options?: { enabled?: boolean }) => {
+export const useStudentSearch = (
+  query: string,
+  options?: { enabled?: boolean }
+) => {
   return useQuery({
     queryKey: ["student-search", query],
     queryFn: async () => {
-      const res = await api.get("/student/search", {
+      const res = await api.get("/api/student/search", {
         params: { term: query },
       });
       return res.data;
     },
-    enabled: options?.enabled !== undefined ? options.enabled : (query.trim().length >= 2),
+    enabled:
+      options?.enabled !== undefined
+        ? options.enabled
+        : query.trim().length >= 2,
   });
 };

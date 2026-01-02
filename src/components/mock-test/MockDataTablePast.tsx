@@ -9,7 +9,6 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import * as XLSX from "xlsx";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -173,7 +172,7 @@ export function MockDataTablePast<TData, TValue>({
 
   const handleExportToExcel = async () => {
     try {
-      const res = await api.get("/mock-test/past/export");
+      const res = await api.get("/api/mock-test/past/export");
 
       if (!res.data) return;
       toast.success("Exported successfully");

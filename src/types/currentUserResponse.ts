@@ -3,4 +3,6 @@ export interface CurrentUserResponse {
   fullName: string;
   email: string;
   role: string;
+  phoneNumber: string;
+  profileImage: string | null;
 }

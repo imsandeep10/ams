@@ -11,7 +11,6 @@ import { User, LogOut } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
-import { useAuthStore } from "@/lib/stores/AuthStore";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -22,12 +21,15 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "../ui/alert-dialog";
+import { useCurrentUser } from "@/lib/api/useUser";
+import { useLogout } from "@/lib/api/useAuth";
 
 export const ProfileDropdown = React.memo(() => {
-  const user = useAuthStore((state) => state.user);
+  const { data: currentUser } = useCurrentUser();
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
   const navigate = useNavigate();
-  const logout = useAuthStore((state) => state.logout);
+
+  const { mutate: logout } = useLogout();
 
   const handleLogout = () => {
     logout();
@@ -59,7 +61,7 @@ export const ProfileDropdown = React.memo(() => {
   };
 
   // Don't render if user is not loaded
-  if (!user || !user.fullName || !user.email) {
+  if (!currentUser || !currentUser.fullName || !currentUser.email) {
     return null;
   }
 
@@ -73,12 +75,12 @@ export const ProfileDropdown = React.memo(() => {
               className="relative h-8 w-8 rounded-full cursor-pointer"
             >
               <Avatar className="h-8 w-8">
-                <AvatarImage 
-                  src={user.profileImageUrl || ""} 
-                  alt={user.fullName} 
+                <AvatarImage
+                  src={currentUser.profileImage || ""}
+                  alt={currentUser.fullName}
                 />
                 <AvatarFallback className="bg-primary text-primary-foreground text-sm font-medium">
-                  {getInitials(user.fullName)}
+                  {getInitials(currentUser.fullName)}
                 </AvatarFallback>
               </Avatar>
             </Button>
@@ -87,13 +89,13 @@ export const ProfileDropdown = React.memo(() => {
             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col space-y-1">
                 <p className="text-sm font-medium leading-none">
-                  {user.fullName}
+                  {currentUser.fullName}
                 </p>
                 <p className="text-xs leading-none text-muted-foreground">
-                  {user.email}
+                  {currentUser.email}
                 </p>
                 <p className="text-xs text-primary font-semibold mt-1">
-                  {formatRole(user.role)}
+                  {formatRole(currentUser.role)}
                 </p>
               </div>
             </DropdownMenuLabel>

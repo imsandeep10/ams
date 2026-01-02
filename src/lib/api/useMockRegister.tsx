@@ -9,7 +9,7 @@ export const useMockRegister = () => {
 
   return useMutation<AxiosResponse, AxiosError, IELTSMockTestFormData>({
     mutationFn: async (data: IELTSMockTestFormData) => {
-      const res = await api.post("mock-test/register", data);
+      const res = await api.post("/api/mock-test/register", data);
       return res;
     },
     onSuccess: () => {
@@ -27,7 +27,7 @@ export const useGetMockUpcoming = () => {
   return useQuery({
     queryKey: ["mock-tests", "upcoming"],
     queryFn: async () => {
-      const res = await api.get("mock-test/upcoming");
+      const res = await api.get("/api/mock-test/upcoming");
       if (!res || !res.data) {
         throw new Error("Failed to fetch admins");
       }
@@ -41,7 +41,7 @@ export const useGetMockPast = (page: number, limit: number) => {
   return useQuery({
     queryKey: ["mock-tests", "past", page, limit],
     queryFn: async () => {
-      const res = await api.get("mock-test/past", {
+      const res = await api.get("/api/mock-test/past", {
         params: { page, limit },
       });
       if (!res || !res.data) {
@@ -56,7 +56,7 @@ export const useDeleteMock = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
-      const res = await api.delete(`/mock-test/${id}`);
+      const res = await api.delete(`/api/mock-test/${id}`);
       return res.data;
     },
     onSuccess: (data) => {

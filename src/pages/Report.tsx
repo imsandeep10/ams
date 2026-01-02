@@ -19,32 +19,37 @@ import {
 import { StudentGrowthChart } from "@/components/report/StudentGrowthChart";
 import ReportChart from "@/components/report/ReportChart";
 import type { ReportPeriodType } from "@/types/reportTypes";
-import { useAuthStore } from "@/lib/stores/AuthStore";
-
+import { useCurrentUser } from "@/lib/api/useUser";
 
 const YEARS = [2023, 2024, 2025];
 const MONTHS = Array.from({ length: 12 }, (_, i) => i + 1);
 
 export const Report = React.memo(() => {
-  const role = useAuthStore((state) => state.role);
-  
+  const { data: currentUser } = useCurrentUser();
+
   const currentDate = useMemo(() => new Date(), []);
   const [selectedYear, setSelectedYear] = useState(currentDate.getFullYear());
   const [selectedMonth, setSelectedMonth] = useState(
     currentDate.getMonth() + 1
   );
-  const [periodType, setPeriodType] = useState<ReportPeriodType>('monthly');
+  const [periodType, setPeriodType] = useState<ReportPeriodType>("monthly");
 
   const programName = useMemo(() => {
-    switch (role) {
-      case 'ieltsAdmin': return 'IELTS';
-      case 'pteAdmin': return 'PTE';
-      case 'satAdmin': return 'SAT';
-      case 'duolingoAdmin': return 'Duolingo';
-      case 'superAdmin': return 'All Programs';
-      default: return 'Program';
+    switch (currentUser?.role) {
+      case "ieltsAdmin":
+        return "IELTS";
+      case "pteAdmin":
+        return "PTE";
+      case "satAdmin":
+        return "SAT";
+      case "duolingoAdmin":
+        return "Duolingo";
+      case "superAdmin":
+        return "All Programs";
+      default:
+        return "Program";
     }
-  }, [role]);
+  }, [currentUser]);
 
   const reportDate = useMemo(
     () => new Date(selectedYear, selectedMonth - 1),
@@ -73,7 +78,6 @@ export const Report = React.memo(() => {
     isError: isDonutError,
   } = useGetDonutChart(selectedYear, selectedMonth);
 
-
   const {
     data: studentGrowthData,
     isLoading: isGrowthLoading,
@@ -90,19 +94,15 @@ export const Report = React.memo(() => {
     periodType,
   });
 
-
   const growthChartData = useMemo(
     () => studentGrowthData?.data?.growth || [],
     [studentGrowthData]
   );
 
-
-
-
   return (
     <div className="p-5 space-y-5">
       {/* Role-based Header */}
-      {role !== 'superAdmin' && (
+      {currentUser?.role !== "superAdmin" && (
         <div className="bg-blue-50 border border-blue-200 rounded-md p-4">
           <div className="flex items-center gap-2">
             <div className="h-2 w-2 rounded-full bg-blue-500"></div>
@@ -112,7 +112,7 @@ export const Report = React.memo(() => {
           </div>
         </div>
       )}
-      
+
       {/* Filters */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
@@ -142,9 +142,12 @@ export const Report = React.memo(() => {
               <DropdownMenuTrigger asChild>
                 <Button className="flex items-center py-2" variant="outline">
                   <span>
-                    {new Date(2000, selectedMonth - 1).toLocaleString("default", {
-                      month: "long",
-                    })}
+                    {new Date(2000, selectedMonth - 1).toLocaleString(
+                      "default",
+                      {
+                        month: "long",
+                      }
+                    )}
                   </span>
                   <ChevronDown className="ml-2 h-4 w-4" />
                 </Button>
@@ -163,25 +166,31 @@ export const Report = React.memo(() => {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-
-         
         </div>
 
         <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm">
-          <Label className="text-sm font-semibold mb-3 block">Report Period</Label>
+          <Label className="text-sm font-semibold mb-3 block">
+            Report Period
+          </Label>
           <div className="flex flex-wrap items-center gap-6">
             <RadioGroup
               value={periodType}
-              onValueChange={(value) => setPeriodType(value as ReportPeriodType)}
+              onValueChange={(value) =>
+                setPeriodType(value as ReportPeriodType)
+              }
               className="flex gap-4"
             >
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="monthly" id="monthly" />
-                <Label htmlFor="monthly" className="cursor-pointer font-normal">Monthly</Label>
+                <Label htmlFor="monthly" className="cursor-pointer font-normal">
+                  Monthly
+                </Label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="yearly" id="yearly" />
-                <Label htmlFor="yearly" className="cursor-pointer font-normal">Yearly</Label>
+                <Label htmlFor="yearly" className="cursor-pointer font-normal">
+                  Yearly
+                </Label>
               </div>
             </RadioGroup>
           </div>
@@ -193,16 +202,22 @@ export const Report = React.memo(() => {
         {/* Top Charts */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <ReportChart
-            data={periodType !== 'monthly' ? (periodReportData?.data ?? null) : (languagePrograms?.data ?? null)}
-            title={
-              periodType !== 'monthly' 
-                ? (periodReportData?.title ?? 'Daily/Weekly Report')
-                : role === 'superAdmin' 
-                  ? (languagePrograms?.title ?? 'Program Comparison')
-                  : `${programName} Program Report`
+            data={
+              periodType !== "monthly"
+                ? periodReportData?.data ?? null
+                : languagePrograms?.data ?? null
             }
-            isLoading={periodType !== 'monthly' ? isPeriodLoading : isReportLoading}
-            isError={periodType !== 'monthly' ? isPeriodError : isReportError}
+            title={
+              periodType !== "monthly"
+                ? periodReportData?.title ?? "Daily/Weekly Report"
+                : currentUser?.role === "superAdmin"
+                ? languagePrograms?.title ?? "Program Comparison"
+                : `${programName} Program Report`
+            }
+            isLoading={
+              periodType !== "monthly" ? isPeriodLoading : isReportLoading
+            }
+            isError={periodType !== "monthly" ? isPeriodError : isReportError}
           />
           {isDonutLoading ? (
             <div className="border bg-white shadow-md border-gray-200 rounded-md p-10 text-center">
@@ -216,14 +231,33 @@ export const Report = React.memo(() => {
                 Failed to load attendance overview.
               </p>
             </div>
-          ) : periodType !== 'monthly' && periodReportData?.data && 'present' in periodReportData.data ? (
+          ) : periodType !== "monthly" &&
+            periodReportData?.data &&
+            "present" in periodReportData.data ? (
             <AttendancePieChart
               title={periodReportData?.title}
-              labels={['Present', 'Absent']}
-              values={[periodReportData.data.present || 0, periodReportData.data.absent || 0]}
+              labels={["Present", "Absent"]}
+              values={[
+                periodReportData.data.present || 0,
+                periodReportData.data.absent || 0,
+              ]}
               percentages={[
-                Number(((periodReportData.data.present || 0) / ((periodReportData.data.present || 0) + (periodReportData.data.absent || 0)) * 100).toFixed(1)),
-                Number(((periodReportData.data.absent || 0) / ((periodReportData.data.present || 0) + (periodReportData.data.absent || 0)) * 100).toFixed(1))
+                Number(
+                  (
+                    ((periodReportData.data.present || 0) /
+                      ((periodReportData.data.present || 0) +
+                        (periodReportData.data.absent || 0))) *
+                    100
+                  ).toFixed(1)
+                ),
+                Number(
+                  (
+                    ((periodReportData.data.absent || 0) /
+                      ((periodReportData.data.present || 0) +
+                        (periodReportData.data.absent || 0))) *
+                    100
+                  ).toFixed(1)
+                ),
               ]}
             />
           ) : (
@@ -236,7 +270,6 @@ export const Report = React.memo(() => {
             />
           )}
         </div>
-        
 
         {/* Student Growth Chart */}
         <div className="w-full">

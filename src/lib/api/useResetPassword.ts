@@ -6,7 +6,7 @@ import api from "../axiosInstance";
 export const useRequestOtp = () =>
   useMutation<{ message: string }, AxiosError, { email: string }>({
     mutationFn: async (payload) => {
-      const res = await api.post("/reset-password/request-otp", payload);
+      const res = await api.post("/api/reset-password/request-otp", payload);
       return res.data;
     },
     onSuccess: (data) => {
@@ -21,7 +21,7 @@ export const useRequestOtp = () =>
 export const useVerifyOtp = () =>
   useMutation<{ message: string }, AxiosError, { email: string; otp: string }>({
     mutationFn: async (payload) => {
-      const res = await api.post("/reset-password/verify-otp", payload);
+      const res = await api.post("/api/reset-password/verify-otp", payload);
       return res.data;
     },
     onSuccess: (data) => {
@@ -34,9 +34,13 @@ export const useVerifyOtp = () =>
   });
 
 export const useResetPasswordMutation = () =>
-  useMutation<{ message: string }, AxiosError, { email: string; newPassword: string }>({
+  useMutation<
+    { message: string },
+    AxiosError,
+    { email: string; newPassword: string }
+  >({
     mutationFn: async (payload) => {
-      const res = await api.post("/reset-password/new-password", payload);
+      const res = await api.post("/api/reset-password/new-password", payload);
       return res.data;
     },
     onSuccess: (data) => {
