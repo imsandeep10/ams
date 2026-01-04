@@ -12,15 +12,14 @@ export default defineConfig({
     },
   },
   server: {
+    host: true,
     proxy: {
       "/api": {
-        target: "https://shenita-dynamometrical-lory.ngrok-free.dev/", // Replace with your ngrok URL
+        target: "https://shenita-dynamometrical-lory.ngrok-free.dev", // Replace with your ngrok URL
         changeOrigin: true,
         secure: false,
       },
     },
-    // cors: true,
-    // strictPort: true,
   },
   preview: {
     host: "0.0.0.0", // ✅ Required for Render production preview
