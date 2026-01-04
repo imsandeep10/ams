@@ -172,11 +172,22 @@ export function MockDataTablePast<TData, TValue>({
 
   const handleExportToExcel = async () => {
     try {
-      const res = await api.get("/api/mock-test/past/export");
+      const res = await api.get("/api/mock-test/past/export",{
+        responseType: "blob",
+      });
 
-      if (!res.data) return;
+      const url = window.URL.createObjectURL(new Blob([res.data]));//wrap the backend response by blob
+      const link = document.createElement("a"); // creating invisible a tag
+      link.href = url; //href open blob url
+      link.setAttribute("download", "past_mock_test_students.xlsx"); // type download and file name
+      document.body.appendChild(link); // yo chai birsiye
+      link.click(); // invisible link open directly by js
+      link.parentNode?.removeChild(link);// link clicked now remove the a tag
+      window.URL.revokeObjectURL(url); // cleaning ram prevent memory leak
+
       toast.success("Exported successfully");
     } catch (error) {
+      console.log("Export error:", error);
       toast.error("Failed to export data");
     }
   };

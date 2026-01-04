@@ -14,7 +14,7 @@ const MockRegisterData: React.FC = () => {
   const { data: mockUpcoming, isPending, error } = useGetMockUpcoming();
   const { data: mockPast, isLoading, isError } = useGetMockPast(pastPage, pastLimit);
   
-  console.log("MockRegisterData render", mockPast);
+  // console.log("MockRegisterData render", mockPast);
 
   const columnsUpcoming = useMemo(() => getMockColumnUpcoming(), []);
   const columnsPast = useMemo(() => getMockColumnPast(), []);

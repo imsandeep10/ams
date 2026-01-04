@@ -434,6 +434,7 @@ function CreateAdminFormComponent({ mode }: props) {
                             await handleImageUpload(file);
                           } catch (error) {
                             // Error handled in handleImageUpload
+                            console.log("Image upload error:", error);
                           }
                         }
                       }}
