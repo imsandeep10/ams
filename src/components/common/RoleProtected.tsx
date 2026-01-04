@@ -15,7 +15,7 @@ interface RoleIndexRedirectProps {
 export function RoleProtected({ allowedRoles, children }: RoleProtectedProps) {
   const { data: currentUser } = useCurrentUser();
 
-  console.log("Current User:", currentUser);
+  // console.log("Current User:", currentUser);
 
   if (!currentUser || !allowedRoles.includes(currentUser.role)) {
     return <Navigate to="/dashboard" replace />;
