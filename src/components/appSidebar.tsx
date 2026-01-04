@@ -178,19 +178,19 @@ const AppSidebar = ({ roleProp }: { roleProp?: string }) => {
                 <SidebarMenu>
                   {items.map((item: any) => (
                     <SidebarMenuItem key={item.title}>
-                      <SidebarMenuButton
-                        className={`w-full py-3 px-4 rounded-md flex items-center ${
-                          collapsed ? "justify-center" : "gap-3"
-                        }`}
-                        collapsed={collapsed}
-                        isActive={isActiveRoute(item.url)}
+                      <Link
+                        to={item.url}
+                        className={`flex items-center ${
+                          collapsed ? "" : "gap-3"
+                        } w-full`}
+                        title={collapsed ? item.title : ""}
                       >
-                        <Link
-                          to={item.url}
-                          className={`flex items-center ${
-                            collapsed ? "" : "gap-3"
-                          } w-full`}
-                          title={collapsed ? item.title : ""}
+                        <SidebarMenuButton
+                          className={`w-full py-3 px-4 rounded-md flex items-center ${
+                            collapsed ? "justify-center" : "gap-3"
+                          }`}
+                          collapsed={collapsed}
+                          isActive={isActiveRoute(item.url)}
                         >
                           <item.icon className="flex-shrink-0" size={24} />
                           {!collapsed && (
@@ -198,8 +198,8 @@ const AppSidebar = ({ roleProp }: { roleProp?: string }) => {
                               {item.title}
                             </span>
                           )}
-                        </Link>
-                      </SidebarMenuButton>
+                        </SidebarMenuButton>
+                      </Link>
                     </SidebarMenuItem>
                   ))}
                 </SidebarMenu>
