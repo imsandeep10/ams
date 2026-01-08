@@ -10,6 +10,8 @@ import {
   ArrowUpDown,
   Activity,
   Edit,
+  Wallet,
+  MessageSquareMore,
 } from "lucide-react";
 import type { Student } from "@/types/studentTypes";
 import { useNavigate } from "react-router-dom";
@@ -26,16 +28,14 @@ import { toast } from "sonner";
 const StatusBadge = React.memo<{ status: "Present" | "Absent" }>(
   ({ status }) => (
     <div
-      className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-        status === "Present"
-          ? "bg-green-100 text-green-800"
-          : "bg-red-100 text-red-800"
-      }`}
+      className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${status === "Present"
+        ? "bg-green-100 text-green-800"
+        : "bg-red-100 text-red-800"
+        }`}
     >
       <div
-        className={`w-2 h-2 rounded-full mr-1 ${
-          status === "Present" ? "bg-green-500" : "bg-red-500"
-        }`}
+        className={`w-2 h-2 rounded-full mr-1 ${status === "Present" ? "bg-green-500" : "bg-red-500"
+          }`}
       />
       {status}
     </div>
@@ -65,20 +65,12 @@ const ActionButtons = React.memo<ActionButtonsProps>(
       }
     };
 
-    const handleView = () => {
-      navigate(`/student-profile/${studentId}`);
-    };
-
-    const handleTrack = () => {
-      navigate(`/student-track/${studentId}`);
-    };
-
-    const handleEdit = () => {
-      navigate(`/edit-student/${studentId}?language=${studentLanguage}`);
-    };
-
     const handleDelete = () => {
       setIsOpen(true);
+    };
+
+    const handleNavigation = (path: string) => {
+      navigate(path);
     };
 
     return (
@@ -89,7 +81,7 @@ const ActionButtons = React.memo<ActionButtonsProps>(
               variant="ghost"
               size="sm"
               className="h-8 w-8 p-0 text-blue-600 hover:bg-blue-50 cursor-pointer"
-              onClick={handleView}
+              onClick={() => handleNavigation(`/student-profile/${studentId}`)}
             >
               <Eye className="w-4 h-4" />
             </Button>
@@ -105,7 +97,7 @@ const ActionButtons = React.memo<ActionButtonsProps>(
               variant="ghost"
               size="sm"
               className="h-8 w-8 p-0 text-blue-600 hover:bg-blue-50  cursor-pointer"
-              onClick={handleTrack}
+              onClick={() => handleNavigation(`/student-track/${studentId}`)}
             >
               <Activity className="w-4 h-4" />
             </Button>
@@ -121,13 +113,39 @@ const ActionButtons = React.memo<ActionButtonsProps>(
               variant="ghost"
               size="sm"
               className="h-8 w-8 p-0 text-yellow-500 hover:bg-yellow-50  cursor-pointer"
-              onClick={handleEdit}
+              onClick={() => handleNavigation(`/edit-student/${studentId}?language=${studentLanguage}`)}
             >
               <Edit className="w-4 h-4" />
             </Button>
           </TooltipTrigger>
           <TooltipContent>
             <p>Edit student</p>
+          </TooltipContent>
+        </Tooltip>
+
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant={"ghost"} size={"sm"} className="h-8 w-8 p-0 text-green-900 hover:bg-green-50  cursor-pointer"
+              onClick={() => handleNavigation(`/payment/${studentId}`)}
+            >
+              <Wallet />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Payment</p>
+          </TooltipContent>
+        </Tooltip>
+
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant={"ghost"} size={"sm"} className="h-8 w-8 p-0 text-[#1DC794] hover:bg-[#e9fff8] hover:text-[#003d2b]  cursor-pointer"
+              onClick={() => handleNavigation(`/remark/${studentId}`)}
+            >
+              <MessageSquareMore />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Remark</p>
           </TooltipContent>
         </Tooltip>
 
@@ -200,20 +218,20 @@ export const columns: ColumnDef<Student>[] = [
     cell: ({ row }) => {
       const student = row.original;
       const navigate = useNavigate();
-      
+
       const handleRowClick = () => {
         navigate(`/student-profile/${student.id}`);
       };
-      
+
       return (
-        <div 
+        <div
           className="flex flex-col gap-1 cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors"
           onClick={handleRowClick}
         >
           <div className="font-semibold">{student.name}</div>
           <div className="text-xs text-gray-500">ID: {student.studentId}</div>
           <div className="text-xs text-gray-500">
-            Faculty: {student.faculty}
+            Faculty: {student.faculty || "N/A"}
           </div>
         </div>
       );
@@ -237,18 +255,18 @@ export const columns: ColumnDef<Student>[] = [
     cell: ({ row }) => {
       const student = row.original;
       const navigate = useNavigate();
-      
+
       const handleRowClick = () => {
         navigate(`/student-profile/${student.id}`);
       };
-      
+
       return (
-        <div 
+        <div
           className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors"
           onClick={handleRowClick}
         >
           <Clock className="w-4 h-4 text-gray-400" />
-          <span className="text-sm">{student.classTime}</span>
+          <span className="text-sm">{student.classTime || "N/A"}</span>
         </div>
       );
     },
@@ -261,23 +279,23 @@ export const columns: ColumnDef<Student>[] = [
     cell: ({ row }) => {
       const student = row.original;
       const navigate = useNavigate();
-      
+
       const handleRowClick = () => {
         navigate(`/student-profile/${student.id}`);
       };
-      
+
       return (
-        <div 
+        <div
           className="flex flex-col gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors"
           onClick={handleRowClick}
         >
           <div className="flex items-center gap-2">
             <Phone className="w-4 h-4 text-gray-400" />
-            <span className="text-sm">{student.phone}</span>
+            <span className="text-sm">{student.phone || "N/A"}</span>
           </div>
           <div className="flex items-center gap-2">
             <Mail className="w-4 h-4 text-gray-400" />
-            <span className="text-sm">{student.email}</span>
+            <span className="text-sm">{student.email || "N/A"}</span>
           </div>
         </div>
       );
@@ -301,20 +319,20 @@ export const columns: ColumnDef<Student>[] = [
     cell: ({ row }) => {
       const student = row.original;
       const navigate = useNavigate();
-      
+
       const handleRowClick = () => {
         navigate(`/student-profile/${student.id}`);
       };
-      
+
       return (
-        <div 
+        <div
           className="flex flex-col gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors"
           onClick={handleRowClick}
         >
-          <div className="text-sm font-medium">{student.language}</div>
+          <div className="text-sm font-medium">{student.language || "N/A"}</div>
 
           <div className="text-xs text-gray-500">
-            Country: {student.preferredCountry}
+            Country: {student.preferredCountry || "N/A"}
           </div>
         </div>
       );

@@ -12,6 +12,7 @@ import {
   Clock,
   Target,
   Calendar,
+  Info,
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -19,6 +20,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { useGetStudentById } from "@/lib/api/useStudents";
+import { IoEarth } from "react-icons/io5";
+import { LiaMoneyBillWaveAltSolid } from "react-icons/lia";
+import RemarkCard from "@/components/remarks/remarkCard";
 
 export const StudentProfile = React.memo(() => {
   const navigate = useNavigate();
@@ -87,7 +91,7 @@ export const StudentProfile = React.memo(() => {
 
   return (
     <div className="min-h-screen  p-4 md:p-6 lg:p-8">
-      <div className="max-w-6xl mx-auto">
+      <div className="w-full mx-auto">
         <Button
           variant="ghost"
           onClick={() => navigate(-1)}
@@ -97,161 +101,164 @@ export const StudentProfile = React.memo(() => {
           Back
         </Button>
 
-        <div className="space-y-6">
-          <Card>
-            <CardContent className="pt-6">
-              <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
-                <div className="relative">
-                  <Avatar className="w-32 h-32 border-4 border-white shadow-lg">
-                    <AvatarImage
-                      src={studentData.profileImage}
-                      alt={studentData.fullName}
-                    />
-                    <AvatarFallback className="text-2xl">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="col-span-1 flex flex-col gap-6">
+            <Card className="rounded-md border border-gray-300 shadow-xs">
+              <CardContent className="gap-4 flex flex-col">
+                <div className="flex flex-col items-center justify-center gap-2">
+                  <Avatar className="bg-green-50 rounded-full w-40 h-40 aspect-square ">
+                    <AvatarImage src={studentData.profileImage} />
+                    <AvatarFallback className="text-4xl font-medium">
                       {getInitials(studentData.fullName)}
                     </AvatarFallback>
                   </Avatar>
-                  <div className="absolute bottom-0 right-0 bg-primary rounded-full p-2 shadow-md">
-                    <Camera className="w-4 h-4 text-white" />
-                  </div>
-                </div>
-
-                <div className="flex-1 text-center md:text-left space-y-3">
-                  <div>
-                    <h1 className="text-3xl font-bold text-gray-900">
+                  <div className="mt-2">
+                    <h3 className="text-2xl font-medium text-center">
                       {studentData.fullName}
-                    </h1>
-                    <Badge variant="secondary" className="mt-2 text-white">
-                      <GraduationCap className="w-4 h-4 mr-1" />
+                    </h3>
+                    <p className="text-muted-foreground text-center font-medium">
                       {studentData.academicQualification}
-                    </Badge>
-                  </div>
-
-                  <div className="flex flex-col sm:flex-row gap-4 text-sm text-gray-600">
-                    <div className="flex items-center justify-center md:justify-start gap-2">
-                      <Mail className="w-4 h-4" />
-                      <span className="break-all">{studentData.email}</span>
-                    </div>
-                    <div className="flex items-center justify-center md:justify-start gap-2">
-                      <Phone className="w-4 h-4" />
-                      <span>{studentData.contactNumber}</span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-center md:justify-start gap-2 text-sm text-gray-600">
-                    <MapPin className="w-4 h-4" />
-                    <span>{studentData.address}</span>
+                    </p>
                   </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Academic Information */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <GraduationCap className="w-5 h-5" />
-                Academic Information
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-500 flex items-center gap-2">
-                    <BookOpen className="w-4 h-4" />
-                    Academic Qualification
-                  </label>
-                  <p className="text-gray-900 font-medium">
-                    {studentData.academicQualification}
-                  </p>
+                <div className="flex gap-2">
+                  <Mail />
+                  <p>{studentData.email}</p>
                 </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-500 flex items-center gap-2">
-                    <Calendar className="w-4 h-4" />
-                    Year of Completion
-                  </label>
-                  <p className="text-gray-900 font-medium">
-                    {studentData.yearOfCompletion}
-                  </p>
+                <div className="flex gap-2">
+                  <Phone />
+                  <p>{studentData.contactNumber}</p>
                 </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-500 flex items-center gap-2">
-                    <Target className="w-4 h-4" />
-                    GPA/Percentage
-                  </label>
-                  <p className="text-gray-900 font-medium">
-                    {studentData.gpaPercentage}
-                  </p>
+                <div className="flex gap-2">
+                  <MapPin />
+                  <p>{studentData.address}</p>
                 </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-500 flex items-center gap-2">
-                    <BookOpen className="w-4 h-4" />
-                    Faculty
-                  </label>
-                  <p className="text-gray-900 font-medium">
-                    {studentData.faculty}
+              </CardContent>
+            </Card>
+            <Card className="rounded-md border border-gray-300 shadow-xs gap-4">
+              <CardHeader className="flex gap-2 items-center">
+                <IoEarth size={24} className="text-primary" />
+                <CardTitle className="text-xl font-medium">
+                  Study Preference
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="flex flex-col gap-2">
+                <div className="grid grid-cols-[2fr_1fr] gap-2">
+                  <p className="text-muted-foreground font-medium">
+                    Preferred Country:
                   </p>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-500 flex items-center gap-2">
-                    <Target className="w-4 h-4" />
-                    Interested Course
-                  </label>
-                  <p className="text-gray-900 font-medium">
-                    {studentData.interestedCourse}
-                  </p>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-500 flex items-center gap-2">
-                    <Clock className="w-4 h-4" />
-                    Class Time
-                  </label>
-                  <p className="text-gray-900 font-medium">
-                    {studentData.classTime}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Study Preferences */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Globe className="w-5 h-5" />
-                Study Preferences
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-500 flex items-center gap-2">
-                    <Globe className="w-4 h-4" />
-                    Preferred Country
-                  </label>
-                  <p className="text-gray-900 font-medium">
+                  <p className="font-medium">
                     {studentData.countryWishToApply}
                   </p>
                 </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-500 flex items-center gap-2">
-                    <Languages className="w-4 h-4" />
-                    Language
-                  </label>
-                  <p className="text-gray-900 font-medium">
-                    {studentData.language}
+                <div className="grid grid-cols-[2fr_1fr] gap-2">
+                  <p className="text-muted-foreground font-medium">
+                    Language Proficiency:
+                  </p>
+                  <p className="font-medium">{studentData.language}</p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+          <div className="col-span-2 flex flex-col gap-6">
+            <Card className="rounded-md border border-gray-300 shadow-xs">
+              <CardHeader className="flex gap-2 items-center">
+                <GraduationCap className="text-blue-500" size={28} />
+                <CardTitle className="text-xl font-medium">
+                  Academic Information
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="grid grid-cols-3 gap-x-2 gap-y-6">
+                <div className="flex flex-col">
+                  <p className="text-muted-foreground font-medium">
+                    Academic Qualification:
+                  </p>
+                  <p className="font-medium">
+                    {studentData.academicQualification}
                   </p>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+                <div className="flex flex-col">
+                  <p className="text-muted-foreground font-medium">
+                    Year of Completion:
+                  </p>
+                  <p className="font-medium">{studentData.yearOfCompletion}</p>
+                </div>
+                <div className="flex flex-col">
+                  <p className="text-muted-foreground font-medium">
+                    GPA/Percentage:
+                  </p>
+                  <p className="font-medium">{studentData.gpaPercentage}</p>
+                </div>
+                <div className="flex flex-col">
+                  <p className="text-muted-foreground font-medium">Faculty:</p>
+                  <p className="font-medium">{studentData.faculty}</p>
+                </div>
+                <div className="flex flex-col">
+                  <p className="text-muted-foreground font-medium">
+                    Interested Course:
+                  </p>
+                  <p className="font-medium">{studentData.interestedCourse}</p>
+                </div>
+                <div className="flex flex-col">
+                  <p className="text-muted-foreground font-medium">
+                    Overall PTE/IELTS Score:
+                  </p>
+                  <p className="font-medium">{studentData.language}</p>
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="rounded-md border border-gray-300 shadow-xs">
+              <CardHeader className="flex gap-2 items-center">
+                <Info className="text-blue-500" size={28} />
+                <CardTitle className="text-xl font-medium">
+                  Other Information
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 md:gap-4">
+                <OtherInfoCard
+                  icon={LiaMoneyBillWaveAltSolid}
+                  title="PAYMENT"
+                  status="Approved"
+                  otherInfo="Last updated: Jan 25,2025"
+                />
+                <OtherInfoCard
+                  icon={LiaMoneyBillWaveAltSolid}
+                  title="PAYMENT"
+                  status="Approved"
+                  otherInfo="Last updated: Jan 25,2025"
+                />
+                <OtherInfoCard
+                  icon={LiaMoneyBillWaveAltSolid}
+                  title="PAYMENT"
+                  status="Approved"
+                  otherInfo="Last updated: Jan 25,2025"
+                />
+                <OtherInfoCard
+                  icon={LiaMoneyBillWaveAltSolid}
+                  title="PAYMENT"
+                  status="Approved"
+                  otherInfo="Last updated: Jan 25,2025"
+                />
+                <OtherInfoCard
+                  icon={LiaMoneyBillWaveAltSolid}
+                  title="PAYMENT"
+                  status="Approved"
+                  otherInfo="Last updated: Jan 25,2025"
+                />
+              </CardContent>
+            </Card>
+            <Card className="rounded-md border border-gray-300 shadow-xs">
+              <CardHeader className="flex justify-between items-center">
+                <CardTitle className="font-medium text-lg">Remarks</CardTitle>
+                <CardTitle className="font-medium text-lg">
+                  View Full History
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <RemarkCard />
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
     </div>
@@ -259,3 +266,42 @@ export const StudentProfile = React.memo(() => {
 });
 
 StudentProfile.displayName = "StudentProfile";
+
+interface otherInfoCardProps {
+  icon: React.ElementType;
+  title: string;
+  status?: string;
+  otherInfo?: string;
+}
+const OtherInfoCard = ({
+  icon: ICON,
+  title,
+  status,
+  otherInfo,
+}: otherInfoCardProps) => {
+  const statusColor = (str?: string) => {
+    if (!str) return null;
+    switch (str) {
+      case "Paid":
+        return <p className="text-yellow-500 font-medium text-lg">{str}</p>;
+      case "Received":
+        return <p className="text-green-500 font-medium text-lg">{str}</p>;
+      case "Approved":
+        return <p className="text-blue-500 font-medium text-lg">{str}</p>;
+      default:
+        return <p className="text-gray-500 font-medium text-lg">{str}</p>;
+    }
+  };
+  return (
+    <Card className="p-2 gap-0">
+      <CardHeader className="flex items-center gap-2 px-2">
+        <ICON className="text-muted-foreground w-6 h-6 shrink-0" />
+        <CardTitle className="font-medium">{title}</CardTitle>
+      </CardHeader>
+      <CardContent className="p-2">
+        {statusColor(status)}
+        <p className="text-muted-foreground">{otherInfo}</p>
+      </CardContent>
+    </Card>
+  );
+};
