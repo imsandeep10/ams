@@ -28,14 +28,16 @@ import { toast } from "sonner";
 const StatusBadge = React.memo<{ status: "Present" | "Absent" }>(
   ({ status }) => (
     <div
-      className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${status === "Present"
-        ? "bg-green-100 text-green-800"
-        : "bg-red-100 text-red-800"
-        }`}
+      className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+        status === "Present"
+          ? "bg-green-100 text-green-800"
+          : "bg-red-100 text-red-800"
+      }`}
     >
       <div
-        className={`w-2 h-2 rounded-full mr-1 ${status === "Present" ? "bg-green-500" : "bg-red-500"
-          }`}
+        className={`w-2 h-2 rounded-full mr-1 ${
+          status === "Present" ? "bg-green-500" : "bg-red-500"
+        }`}
       />
       {status}
     </div>
@@ -113,7 +115,11 @@ const ActionButtons = React.memo<ActionButtonsProps>(
               variant="ghost"
               size="sm"
               className="h-8 w-8 p-0 text-yellow-500 hover:bg-yellow-50  cursor-pointer"
-              onClick={() => handleNavigation(`/edit-student/${studentId}?language=${studentLanguage}`)}
+              onClick={() =>
+                handleNavigation(
+                  `/edit-student/${studentId}?language=${studentLanguage}`
+                )
+              }
             >
               <Edit className="w-4 h-4" />
             </Button>
@@ -125,8 +131,11 @@ const ActionButtons = React.memo<ActionButtonsProps>(
 
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button variant={"ghost"} size={"sm"} className="h-8 w-8 p-0 text-green-900 hover:bg-green-50  cursor-pointer"
-              onClick={() => handleNavigation(`/payment/${studentId}`)}
+            <Button
+              variant={"ghost"}
+              size={"sm"}
+              className="h-8 w-8 p-0 text-green-900 hover:bg-green-50  cursor-pointer"
+              onClick={() => handleNavigation(`/student-payment/${studentId}`)}
             >
               <Wallet />
             </Button>
@@ -138,7 +147,10 @@ const ActionButtons = React.memo<ActionButtonsProps>(
 
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button variant={"ghost"} size={"sm"} className="h-8 w-8 p-0 text-[#1DC794] hover:bg-[#e9fff8] hover:text-[#003d2b]  cursor-pointer"
+            <Button
+              variant={"ghost"}
+              size={"sm"}
+              className="h-8 w-8 p-0 text-[#1DC794] hover:bg-[#e9fff8] hover:text-[#003d2b]  cursor-pointer"
               onClick={() => handleNavigation(`/remark/${studentId}`)}
             >
               <MessageSquareMore />

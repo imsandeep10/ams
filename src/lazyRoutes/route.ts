@@ -49,6 +49,9 @@ export const CreateStudentRoute = lazy(() =>
     default: module.CreateStudent,
   }))
 );
+export const StudentPaymentRoute = lazy(
+  () => import("../components/students/studentPayment/studentPayment")
+);
 
 // admin pages
 export const DashboardPageRoute = lazy(() => import("../pages/dashboardPage"));
