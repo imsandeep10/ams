@@ -13,7 +13,6 @@ export default defineConfig({
   },
   server: {
     host: true,
-    allowedHosts: ["myapp.local"],
     proxy: {
       "/api": {
         target: "https://zooming-clarity-production-2779.up.railway.app", // base url
