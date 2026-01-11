@@ -13,10 +13,9 @@ export default defineConfig({
   },
   server: {
     host: true,
-    allowedHosts: ["myapp.local"],
     proxy: {
       "/api": {
-        target: "https://3krgwsgr-3001.inc1.devtunnels.ms/", // base url
+        target: "https://zooming-clarity-production-2779.up.railway.app", // base url
         changeOrigin: true,
         secure: false,
       },

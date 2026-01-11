@@ -16,7 +16,8 @@ export interface Student {
   preferredCountry: string;
   language: string;
 
-  user?: {
+  user: {
+    id: string
     address: string;
     fullName: string;
     phoneNumber: string;

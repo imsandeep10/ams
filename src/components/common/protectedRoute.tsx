@@ -1,6 +1,7 @@
 import { type ReactNode } from "react";
 import { Navigate } from "react-router-dom";
 import { useCurrentUser } from "@/lib/api/useUser";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -8,10 +9,11 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  const { data: currentUser, isPending: isLoading } = useCurrentUser();
+  const { data: currentUser, isPending, isLoading } = useCurrentUser();
   // console.log("currentUser", currentUser);
-
-  if (isLoading) {
+  const queryClient = useQueryClient();
+  queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+  if (isLoading || isPending) {
     return <div>Loading...</div>;
   }
   if (!currentUser) {

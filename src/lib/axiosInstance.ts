@@ -1,7 +1,8 @@
 import axios from "axios";
+// const baseURL = import.meta.env.VITE_API_URL;
 
 const api = axios.create({
-  // baseURL: "https://shenita-dynamometrical-lory.ngrok-free.dev/",
+  // baseURL: import.meta.env.VITE_BASE_URL,
   timeout: 10000,
   withCredentials: true,
   headers: {
