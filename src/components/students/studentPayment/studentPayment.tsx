@@ -11,20 +11,36 @@ import {
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import { type PaymentFormData, paymentSchema } from "@/schema/paymentSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar1 } from "lucide-react";
+import { useParams } from "react-router-dom";
+import { useGetStudentById } from "@/lib/api/useStudents";
+import { useEffect } from "react";
 
 const StudentPayment = () => {
+  const { id } = useParams<{ id: string }>();
+
+  const { data: studentData, isPending: isLoading } = useGetStudentById(id!);
+
   const form = useForm<PaymentFormData>({
     resolver: zodResolver(paymentSchema),
     defaultValues: {
-      fullName: "",
-      phoneNumber: "",
+      fullName: studentData?.user.fullName || "",
+      phoneNumber: studentData?.user.phoneNumber || "",
       amount: 0,
-      paymentDate: "",
+      paymentDate: undefined,
       paymentMethod: "cash",
+      language: studentData?.language!,
       remarks: "",
     },
   });
@@ -32,10 +48,52 @@ const StudentPayment = () => {
   const onSubmit = (data: PaymentFormData) => {
     console.log(data);
   };
+
+  useEffect(() => {
+    form.reset({
+      fullName: studentData?.user.fullName || "",
+      phoneNumber: studentData?.user.phoneNumber || "",
+      amount: 0,
+      paymentDate: undefined,
+      paymentMethod: "cash",
+      language: studentData?.language!,
+      remarks: "",
+    });
+  }, [studentData, form]);
+
+  if (isLoading) {
+    return (
+      <div>
+        <BackButton />
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-7 w-32" />
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-5 sm:space-y-6 md:space-y-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-8">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className="space-y-2">
+                    <Skeleton className="h-4 w-24" />
+                    <Skeleton className="h-10 w-full" />
+                  </div>
+                ))}
+              </div>
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-24" />
+                <Skeleton className="h-40 w-full" />
+              </div>
+              <Skeleton className="h-10 w-full" />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div>
       <BackButton />
-
       <Card>
         <CardHeader>
           <CardTitle>Payment</CardTitle>
@@ -54,7 +112,11 @@ const StudentPayment = () => {
                     <FormItem>
                       <Label htmlFor="fullName">Full Name</Label>
                       <FormControl>
-                        <Input placeholder="Enter full name" {...field} />
+                        <Input
+                          placeholder="Enter full name"
+                          {...field}
+                          disabled
+                        />
                       </FormControl>
                     </FormItem>
                   )}
@@ -70,6 +132,7 @@ const StudentPayment = () => {
                           placeholder="Enter phone number"
                           {...field}
                           type="number"
+                          disabled
                         />
                       </FormControl>
                     </FormItem>
@@ -101,7 +164,42 @@ const StudentPayment = () => {
                     <FormItem>
                       <Label htmlFor="paymentDate">Payment Date</Label>
                       <FormControl>
-                        <Input placeholder="DD-MM-YY" {...field} type="date" />
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              id="date"
+                              className="w-full justify-start font-normal bg-white"
+                            >
+                              {field.value
+                                ? new Date(field.value).toLocaleDateString(
+                                    "eng",
+                                    {
+                                      year: "numeric",
+                                      month: "short",
+                                      day: "2-digit",
+                                    }
+                                  )
+                                : "Select date"}
+                              <Calendar1 className="ml-auto" />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent
+                            className="w-auto overflow-hidden p-0"
+                            align="start"
+                          >
+                            <Calendar
+                              mode="single"
+                              selected={
+                                field.value ? new Date(field.value) : undefined
+                              }
+                              captionLayout="dropdown"
+                              onSelect={(date) => {
+                                field.onChange(date ? date.toISOString() : "");
+                              }}
+                            />
+                          </PopoverContent>
+                        </Popover>
                       </FormControl>
                     </FormItem>
                   )}
@@ -139,6 +237,7 @@ const StudentPayment = () => {
                         <Select
                           onValueChange={field.onChange}
                           defaultValue={field.value}
+                          disabled
                         >
                           <SelectTrigger className="w-full">
                             <SelectValue placeholder="Select language" />
@@ -173,7 +272,7 @@ const StudentPayment = () => {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full">
+              <Button type="submit" className="w-full h-auto">
                 Save
               </Button>
             </form>

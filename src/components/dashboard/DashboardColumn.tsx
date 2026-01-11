@@ -4,7 +4,7 @@ import React from "react";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
-import type { Student } from "@/types/studentTypes";
+import type { Student } from "@/shared/types/studentTypes";
 
 // Status Badge Component
 const StatusBadge = React.memo<{ status: "Present" | "Absent" }>(
@@ -70,11 +70,7 @@ export const dashboardColumns: ColumnDef<Student>[] = [
     accessorKey: "registrationDate",
     cell: ({ row }) => {
       const student = row.original;
-      return (
-        <div className="text-sm">
-          {student.phone || "Not available"}
-        </div>
-      );
+      return <div className="text-sm">{student.phone || "Not available"}</div>;
     },
   },
   {

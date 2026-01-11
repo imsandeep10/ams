@@ -1,4 +1,4 @@
-import type { SidBartypes } from "@/types/sidebarTypes";
+import type { SidBartypes } from "@/shared/types/sidebarTypes";
 import {
   BookCheck,
   BookOpen,

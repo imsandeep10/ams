@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/tooltip";
 import { toast } from "sonner";
 import { useDeleteAdmin } from "@/lib/api/useAdmin";
-import type { createAdminTypes } from "@/types/createAdminTypes";
+import type { createAdminTypes } from "@/shared/types/createAdminTypes";
 
 // Status Badge Component
 const StatusBadge = React.memo<{ status: "Present" | "Absent" }>(
@@ -118,9 +118,10 @@ const ActionButtons = React.memo<ActionButtonsProps>(({ adminId }) => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
           <div className="bg-white rounded-lg p-6 w-80 max-w-full mx-4">
             <h2 className="text-lg font-semibold mb-4">Confirm Delete</h2>
-         <p className="mb-6 break-words whitespace-normal">
-  Are you sure you want to delete this Admin? This action cannot be undone.
-</p>
+            <p className="mb-6 break-words whitespace-normal">
+              Are you sure you want to delete this Admin? This action cannot be
+              undone.
+            </p>
 
             <div className="flex justify-end gap-3">
               <Button

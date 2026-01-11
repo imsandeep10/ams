@@ -1,5 +1,6 @@
 import { useDashboardStats } from "@/lib/api/dashboard";
 import { useCurrentUser } from "@/lib/api/useUser";
+import { Role } from "@/shared/interface/studentResponse";
 import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -63,7 +64,7 @@ export const TotalCard = React.memo(({ selectedDate }: TotalCardProps) => {
     }
 
     // For IELTS Admin: show only IELTS-related cards
-    if (currentUser?.role === "ieltsAdmin") {
+    if (currentUser?.role === Role.IELTS_ADMIN) {
       return [
         {
           subtitle: "Total IELTS Enrolled",
@@ -81,7 +82,7 @@ export const TotalCard = React.memo(({ selectedDate }: TotalCardProps) => {
     }
 
     // For PTE Admin: show only PTE-related cards
-    if (currentUser?.role === "pteAdmin") {
+    if (currentUser?.role === Role.PTE_ADMIN) {
       return [
         {
           subtitle: "Total PTE Enrolled",
@@ -99,7 +100,7 @@ export const TotalCard = React.memo(({ selectedDate }: TotalCardProps) => {
     }
 
     // For SAT Admin: show only SAT-related cards
-    if (currentUser?.role === "satAdmin") {
+    if (currentUser?.role === Role.SAT_ADMIN) {
       return [
         {
           subtitle: "Total SAT Enrolled",
@@ -117,7 +118,7 @@ export const TotalCard = React.memo(({ selectedDate }: TotalCardProps) => {
     }
 
     // For Duolingo Admin: show only Duolingo-related cards
-    if (currentUser?.role === "duolingoAdmin") {
+    if (currentUser?.role === Role.DUOLINGO_ADMIN) {
       return [
         {
           subtitle: "Total Duolingo Enrolled",

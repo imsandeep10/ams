@@ -22,7 +22,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -48,7 +48,6 @@ function DashboardTable<TData, TValue>({
   isLoading = false,
   emptyMessage,
 }: DataTableProps<TData, TValue>) {
-  
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -87,14 +86,17 @@ function DashboardTable<TData, TValue>({
   };
 
   const startIndex = (pagination.page - 1) * pagination.limit + 1;
-  const endIndex = Math.min(pagination.page * pagination.limit, pagination.total);
+  const endIndex = Math.min(
+    pagination.page * pagination.limit,
+    pagination.total
+  );
 
   return (
     <div className="w-full space-y-4">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <h3 className="text-2xl font-semibold">Today Attendance</h3>
       </div>
-      
+
       {/* Table */}
       <div className="rounded-md border">
         <Table>
@@ -124,14 +126,15 @@ function DashboardTable<TData, TValue>({
           </TableHeader>
           <TableBody>
             {isLoading ? (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  Loading...
-                </TableCell>
-              </TableRow>
+              Array.from({ length: 5 }).map((_, index) => (
+                <TableRow key={index}>
+                  {columns.map((_, cellIndex) => (
+                    <TableCell key={cellIndex} className="py-4">
+                      <Skeleton className="h-5 w-full" />
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
             ) : table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
@@ -155,7 +158,7 @@ function DashboardTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  {emptyMessage ?? 'No results found.'}
+                  {emptyMessage ?? "No results found."}
                 </TableCell>
               </TableRow>
             )}
@@ -167,15 +170,17 @@ function DashboardTable<TData, TValue>({
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4">
         <div className="flex items-center space-x-4">
           <p className="text-sm text-muted-foreground">
-            Showing{" "}
-            <span className="font-medium">{startIndex}</span> to{" "}
+            Showing <span className="font-medium">{startIndex}</span> to{" "}
             <span className="font-medium">{endIndex}</span> of{" "}
             <span className="font-medium">{pagination.total}</span> results
           </p>
-          
+
           {onPageSizeChange && (
             <div className="flex items-center space-x-2">
-              <label htmlFor="pageSize" className="text-sm text-muted-foreground">
+              <label
+                htmlFor="pageSize"
+                className="text-sm text-muted-foreground"
+              >
                 Show:
               </label>
               <select

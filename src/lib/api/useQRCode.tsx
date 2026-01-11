@@ -5,7 +5,7 @@ import type {
   GlobalQRCodeType,
   StaticQRCodeType,
   MockTestRegistrationQRCodeType,
-} from "@/types/dashboardTypes";
+} from "@/shared/types/dashboardTypes";
 
 interface AttendanceResponse {
   success: boolean;

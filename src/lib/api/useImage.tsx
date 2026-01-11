@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import api from "../axiosInstance";
-import type { UploadedImageResponse } from "@/types/createStudentTypes";
+import type { UploadedImageResponse } from "@/shared/types/createStudentTypes";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
 

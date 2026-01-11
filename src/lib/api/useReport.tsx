@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import api from "../axiosInstance";
-import type { Language } from "@/types/languageType";
 import type {
   DonutChartResponse,
   ReportPeriodType,
   PeriodReportResponse,
-} from "@/types/reportTypes";
+} from "@/shared/types/reportTypes";
+import type { Language } from "@/shared/types/languageType";
 
 type UseGetStudentGrowthParams = {
   startYear?: number;

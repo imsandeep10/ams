@@ -1,4 +1,4 @@
-import type { IELTSMockTestFormData } from "@/types/mockFormTypes";
+import type { IELTSMockTestFormData } from "@/shared/types/mockFormTypes";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import api from "../axiosInstance";
 import type { AxiosError, AxiosResponse } from "axios";

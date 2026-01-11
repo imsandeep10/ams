@@ -1,10 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import api from "../axiosInstance";
 import { AxiosError } from "axios";
-import type { CreateStudentResponse } from "@/types/createStudentTypes";
+import type { CreateStudentResponse } from "@/shared/types/createStudentTypes";
 import type { CreateStudentFormData } from "@/schema/createStudentSchema";
 import { toast } from "sonner";
-import type { Student } from "@/types/studentTypes";
+import type { Student } from "@/shared/types/studentTypes";
+import type { StudentResponse } from "@/shared/interface/studentResponse";
 
 type UpdateStudentPayload = {
   id: string;
@@ -187,7 +188,7 @@ export const useGetStudentById = (id: string) => {
       if (!res || !res.data) {
         throw new Error("Student Not Found");
       }
-      return res.data.student;
+      return res.data.student as StudentResponse;
     },
     enabled: !!id, // only fetch if id exists
   });

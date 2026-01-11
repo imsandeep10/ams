@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import api from "../axiosInstance";
-import type { CurrentUserResponse } from "@/types/currentUserResponse";
+import type { CurrentUserResponse } from "@/shared/types/currentUserResponse";
 
 export const useCurrentUser = () => {
   return useQuery<CurrentUserResponse, AxiosError>({

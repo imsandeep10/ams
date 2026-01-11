@@ -34,6 +34,7 @@ import {
   StudentPaymentRoute,
   StudentProfileRoute,
   StudentRegisterRoute,
+  StudentRemarkRoute,
   StudentTrackRoute,
 } from "./lazyRoutes/route";
 
@@ -186,6 +187,10 @@ const router = createBrowserRouter([
           {
             path: "student-payment/:id",
             element: <StudentPaymentRoute />,
+          },
+          {
+            path: "student-remark/:id",
+            element: <StudentRemarkRoute />,
           },
           {
             path: "student-track/:id",

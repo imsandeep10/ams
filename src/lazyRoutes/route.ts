@@ -52,6 +52,9 @@ export const CreateStudentRoute = lazy(() =>
 export const StudentPaymentRoute = lazy(
   () => import("../components/students/studentPayment/studentPayment")
 );
+export const StudentRemarkRoute = lazy(
+  () => import("../components/students/remark/student-remark")
+);
 
 // admin pages
 export const DashboardPageRoute = lazy(() => import("../pages/dashboardPage"));

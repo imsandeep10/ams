@@ -110,7 +110,7 @@ export const StudentTrack = React.memo(() => {
               </div>
             </CardContent>
           </Card>
-          
+
           {/* Join Date Message */}
           {/* {attendanceRecord.message && (
             <Card className="border-l-4 border-l-amber-500 bg-amber-50 dark:bg-amber-950">
@@ -128,82 +128,84 @@ export const StudentTrack = React.memo(() => {
       )}
 
       {/* Stats Cards */}
-      {!isPending && attendanceRecord && attendanceRecord.dailyRecords.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="border-l-4 border-l-blue-500 hover:shadow-lg transition-shadow">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center gap-2">
-                <CalendarIcon className="h-4 w-4" />
-                Total Days
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-gray-900 dark:text-white">
-                {attendanceRecord.summary.totalDays}
-              </div>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                Working Days: {attendanceRecord.summary.workingDays}
-              </p>
-            </CardContent>
-          </Card>
+      {!isPending &&
+        attendanceRecord &&
+        attendanceRecord.dailyRecords.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <Card className="border-l-4 border-l-blue-500 hover:shadow-lg transition-shadow">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center gap-2">
+                  <CalendarIcon className="h-4 w-4" />
+                  Total Days
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold text-gray-900 dark:text-white">
+                  {attendanceRecord.summary.totalDays}
+                </div>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  Working Days: {attendanceRecord.summary.workingDays}
+                </p>
+              </CardContent>
+            </Card>
 
-          <Card className="border-l-4 border-l-green-500 hover:shadow-lg transition-shadow">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center gap-2">
-                <CheckCircle className="h-4 w-4" />
-                Present Days
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-green-600 dark:text-green-400">
-                {attendanceRecord.summary.presentDays}
-              </div>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                Out of {attendanceRecord.summary.workingDays} working days
-              </p>
-            </CardContent>
-          </Card>
+            <Card className="border-l-4 border-l-green-500 hover:shadow-lg transition-shadow">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center gap-2">
+                  <CheckCircle className="h-4 w-4" />
+                  Present Days
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold text-green-600 dark:text-green-400">
+                  {attendanceRecord.summary.presentDays}
+                </div>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  Out of {attendanceRecord.summary.workingDays} working days
+                </p>
+              </CardContent>
+            </Card>
 
-          <Card className="border-l-4 border-l-red-500 hover:shadow-lg transition-shadow">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center gap-2">
-                <XCircle className="h-4 w-4" />
-                Absent Days
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-red-600 dark:text-red-400">
-                {attendanceRecord.summary.absentDays}
-              </div>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                Includes weekends: {attendanceRecord.summary.weekendDays}
-              </p>
-            </CardContent>
-          </Card>
+            <Card className="border-l-4 border-l-red-500 hover:shadow-lg transition-shadow">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center gap-2">
+                  <XCircle className="h-4 w-4" />
+                  Absent Days
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold text-red-600 dark:text-red-400">
+                  {attendanceRecord.summary.absentDays}
+                </div>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  Includes weekends: {attendanceRecord.summary.weekendDays}
+                </p>
+              </CardContent>
+            </Card>
 
-          <Card className="border-l-4 border-l-purple-500 hover:shadow-lg transition-shadow">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center gap-2">
-                <TrendingUp className="h-4 w-4" />
-                Attendance Rate
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-purple-600 dark:text-purple-400">
-                {attendanceRecord.summary.attendancePercentage.toFixed(1)}%
-              </div>
-              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-2">
-                <div
-                  className="bg-purple-600 h-2 rounded-full transition-all duration-500"
-                  style={{
-                    width: `${attendanceRecord.summary.attendancePercentage}%`,
-                  }}
-                />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
+            <Card className="border-l-4 border-l-purple-500 hover:shadow-lg transition-shadow">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center gap-2">
+                  <TrendingUp className="h-4 w-4" />
+                  Attendance Rate
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold text-purple-600 dark:text-purple-400">
+                  {attendanceRecord.summary.attendancePercentage.toFixed(1)}%
+                </div>
+                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-2">
+                  <div
+                    className="bg-purple-600 h-2 rounded-full transition-all duration-500"
+                    style={{
+                      width: `${attendanceRecord.summary.attendancePercentage}%`,
+                    }}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
 
       {/* Month/Year Selector */}
       <Card>
@@ -279,14 +281,17 @@ export const StudentTrack = React.memo(() => {
                 </p>
               </div>
             </div>
-          ) : attendanceRecord && attendanceRecord.dailyRecords && attendanceRecord.dailyRecords.length > 0 ? (
+          ) : attendanceRecord &&
+            attendanceRecord.dailyRecords &&
+            attendanceRecord.dailyRecords.length > 0 ? (
             <TrackDataTable
               columns={trackColumns}
               data={attendanceRecord.dailyRecords}
             />
           ) : (
             <div className="text-center py-8 text-gray-500">
-              {attendanceRecord?.message || "No attendance records found for this period."}
+              {attendanceRecord?.message ||
+                "No attendance records found for this period."}
             </div>
           )}
         </CardContent>
