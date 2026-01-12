@@ -1,5 +1,6 @@
 import type { SidBartypes } from "@/shared/types/sidebarTypes";
 import {
+  BadgeDollarSign,
   BookCheck,
   BookOpen,
   FileText,
@@ -60,13 +61,6 @@ export const sideBar: SidBartypes[] = [
     url: "/admins",
     icon: UserStar,
   },
-
-  {
-    title: "Payment",
-    url: "/payment",
-    icon: UserStar,
-  },
-
   {
     title: "Mock Table",
     url: "/mock-data-table",
@@ -76,7 +70,19 @@ export const sideBar: SidBartypes[] = [
 
 // Role-based sidebars
 export const roleSidebars: Record<string, SidBartypes[]> = {
-  superAdmin: sideBar,
+  superAdmin: [
+    ...sideBar,
+    {
+      title: "Payment",
+      url: "/payment",
+      icon: BadgeDollarSign,
+    },
+    {
+      title: "Book Table",
+      url: "/book-data-table",
+      icon: BookOpen,
+    },
+  ],
   pteAdmin: [
     { title: "Dashboard", url: "/pte/dashboard", icon: LayoutDashboard },
     { title: "Students", url: "/pte/students", icon: Users },
@@ -87,6 +93,11 @@ export const roleSidebars: Record<string, SidBartypes[]> = {
     { title: "Students", url: "/ielts/students", icon: Users },
     { title: "Report", url: "/ielts/report", icon: FileText },
     { title: "Mock", url: "/ielts/mock-data-table", icon: BookCheck },
+    {
+      title: "Book Table",
+      url: "/book-data-table",
+      icon: BookOpen,
+    },
   ],
   duolingoAdmin: [
     { title: "Dashboard", url: "/duolingo/dashboard", icon: LayoutDashboard },
@@ -106,5 +117,10 @@ export const roleSidebars: Record<string, SidBartypes[]> = {
     { title: "Duolingo", url: "/duolingo/students", icon: Users },
     { title: "SAT", url: "/sat/students", icon: Users },
     { title: "Payment", url: "/accountant/payment", icon: FileText },
+    {
+      title: "Payment",
+      url: "/payment",
+      icon: UserStar,
+    },
   ],
 };

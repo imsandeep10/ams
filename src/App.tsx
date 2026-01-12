@@ -27,6 +27,7 @@ import {
   IeltsPageRoute,
   LoginRoute,
   MockPage,
+  PaymentPageRoute,
   ProfileRoute,
   PtePageRoute,
   ReportRoute,
@@ -85,7 +86,9 @@ const router = createBrowserRouter([
           {
             path: "pte",
             element: (
-              <RoleProtected allowedRoles={["pteAdmin", "superAdmin", "accountant"]}>
+              <RoleProtected
+                allowedRoles={["pteAdmin", "superAdmin", "accountant"]}
+              >
                 <RoleLayout />
               </RoleProtected>
             ),
@@ -104,7 +107,9 @@ const router = createBrowserRouter([
           {
             path: "ielts",
             element: (
-              <RoleProtected allowedRoles={["ieltsAdmin", "superAdmin", "accountant"]}>
+              <RoleProtected
+                allowedRoles={["ieltsAdmin", "superAdmin", "accountant"]}
+              >
                 <RoleLayout />
               </RoleProtected>
             ),
@@ -127,7 +132,9 @@ const router = createBrowserRouter([
           {
             path: "duolingo",
             element: (
-              <RoleProtected allowedRoles={["duolingoAdmin", "superAdmin", "accountant"]}>
+              <RoleProtected
+                allowedRoles={["duolingoAdmin", "superAdmin", "accountant"]}
+              >
                 <RoleLayout />
               </RoleProtected>
             ),
@@ -145,7 +152,9 @@ const router = createBrowserRouter([
           {
             path: "sat",
             element: (
-              <RoleProtected allowedRoles={["satAdmin", "superAdmin", "accountant"]}>
+              <RoleProtected
+                allowedRoles={["satAdmin", "superAdmin", "accountant"]}
+              >
                 <RoleLayout />
               </RoleProtected>
             ),
@@ -221,6 +230,10 @@ const router = createBrowserRouter([
           {
             path: "create-admin",
             element: <CreateAdminRoute />,
+          },
+          {
+            path: "/payment",
+            element: <PaymentPageRoute />,
           },
           {
             path: "Password-admin",

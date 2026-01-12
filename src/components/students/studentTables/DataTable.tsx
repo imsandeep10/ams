@@ -25,12 +25,6 @@ import {
 } from "@/components/ui/table";
 import { Plus, Search, Share } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { TooltipArrow } from "@radix-ui/react-tooltip";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

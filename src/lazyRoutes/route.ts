@@ -17,9 +17,7 @@ export const IeltsPageRoute = lazy(() => import("../pages/ieltsPage"));
 export const DuolingoPageRoute = lazy(() => import("../pages/duolingoPage"));
 export const SatPageRoute = lazy(() => import("../pages/satPage"));
 export const PtePageRoute = lazy(() => import("../pages/ptePage"));
-export const MockPage = lazy(
-  () => import("../pages/mockPage")
-);
+export const MockPage = lazy(() => import("../pages/mockPage"));
 export const IeltsMockTestFormRoute = lazy(
   () => import("../components/mock-test/IeltsMockTestForm")
 );
@@ -82,4 +80,9 @@ export const AdminProfileRoute = lazy(() =>
   import("../pages/AdminProfile").then((module) => ({
     default: module.AdminProfile,
   }))
+);
+
+// payment page
+export const PaymentPageRoute = lazy(
+  () => import("../pages/payment/paymentPage")
 );
