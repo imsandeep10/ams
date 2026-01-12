@@ -7,7 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { Language } from "@/types/languageType";
+import type { Language } from "@/shared/types/languageType";
 import {
   LineChart,
   Line,
@@ -34,14 +34,9 @@ export const TodayAttendanceCard: React.FC<TodayAttendanceCardProps> = ({
   onLanguageChange,
   showLanguageSelector = true,
 }) => {
- 
-
-
-
   const monthName = new Date(year, month - 1).toLocaleString("default", {
     month: "long",
   });
-
 
   return (
     <Card className="w-full shadow-md border border-gray-200 bg-white">
@@ -69,13 +64,10 @@ export const TodayAttendanceCard: React.FC<TodayAttendanceCardProps> = ({
             </Select>
           )}
         </div>
-       
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={400}>
-          <LineChart
-            margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-          >
+          <LineChart margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
             <XAxis
               dataKey="date"

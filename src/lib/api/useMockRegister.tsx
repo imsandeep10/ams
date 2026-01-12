@@ -1,9 +1,11 @@
-import type { IELTSMockTestFormData } from "@/types/mockFormTypes";
+import type {
+  createMockRegisterRespoonse,
+  IELTSMockTestFormData,
+} from "@/shared/types/mockFormTypes";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import api from "../axiosInstance";
 import type { AxiosError, AxiosResponse } from "axios";
 import { toast } from "sonner";
-import type { createMockRegisterRespoonse } from "@/types/mockFormTypes";
 
 export const useMockRegister = () => {
   const queryClient = useQueryClient();
@@ -105,20 +107,25 @@ export const upcomingMockTest = (page: number = 1, limit: number = 10) => {
 export const useExportMockTests = () => {
   return useMutation({
     mutationFn: async () => {
-      const res = await api.get("/api/mock-test/past/export", { responseType: "blob" });
+      const res = await api.get("/api/mock-test/past/export", {
+        responseType: "blob",
+      });
       return res.data;
     },
     onSuccess: (data) => {
       const url = window.URL.createObjectURL(new Blob([data]));
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", `mock-tests-${new Date().toLocaleDateString()}.xlsx`);
+      link.setAttribute(
+        "download",
+        `mock-tests-${new Date().toLocaleDateString()}.xlsx`
+      );
       document.body.appendChild(link);
       link.click();
       link.parentNode?.removeChild(link);
     },
     onError: (error: AxiosError) => {
       toast.error(`Error exporting mock tests: ${error.message}`);
-    }
+    },
   });
 };

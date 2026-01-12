@@ -27,13 +27,16 @@ import {
   IeltsPageRoute,
   LoginRoute,
   MockPage,
+  PaymentPageRoute,
   ProfileRoute,
   PtePageRoute,
   ReportRoute,
   SatPageRoute,
+  StudentFollowUpRoute,
   StudentPaymentRoute,
   StudentProfileRoute,
   StudentRegisterRoute,
+  StudentRemarkRoute,
   StudentTrackRoute,
 } from "./lazyRoutes/route";
 
@@ -83,7 +86,9 @@ const router = createBrowserRouter([
           {
             path: "pte",
             element: (
-              <RoleProtected allowedRoles={["pteAdmin", "superAdmin", "accountant"]}>
+              <RoleProtected
+                allowedRoles={["pteAdmin", "superAdmin", "accountant"]}
+              >
                 <RoleLayout />
               </RoleProtected>
             ),
@@ -102,7 +107,9 @@ const router = createBrowserRouter([
           {
             path: "ielts",
             element: (
-              <RoleProtected allowedRoles={["ieltsAdmin", "superAdmin", "accountant"]}>
+              <RoleProtected
+                allowedRoles={["ieltsAdmin", "superAdmin", "accountant"]}
+              >
                 <RoleLayout />
               </RoleProtected>
             ),
@@ -125,7 +132,9 @@ const router = createBrowserRouter([
           {
             path: "duolingo",
             element: (
-              <RoleProtected allowedRoles={["duolingoAdmin", "superAdmin", "accountant"]}>
+              <RoleProtected
+                allowedRoles={["duolingoAdmin", "superAdmin", "accountant"]}
+              >
                 <RoleLayout />
               </RoleProtected>
             ),
@@ -143,7 +152,9 @@ const router = createBrowserRouter([
           {
             path: "sat",
             element: (
-              <RoleProtected allowedRoles={["satAdmin", "superAdmin", "accountant"]}>
+              <RoleProtected
+                allowedRoles={["satAdmin", "superAdmin", "accountant"]}
+              >
                 <RoleLayout />
               </RoleProtected>
             ),
@@ -205,12 +216,24 @@ const router = createBrowserRouter([
             element: <StudentPaymentRoute />,
           },
           {
+            path: "student-remark/:id",
+            element: <StudentRemarkRoute />,
+          },
+          {
             path: "student-track/:id",
             element: <StudentTrackRoute />,
           },
           {
+            path: "students/send-email",
+            element: <StudentFollowUpRoute />,
+          },
+          {
             path: "create-admin",
             element: <CreateAdminRoute />,
+          },
+          {
+            path: "/payment",
+            element: <PaymentPageRoute />,
           },
           {
             path: "Password-admin",

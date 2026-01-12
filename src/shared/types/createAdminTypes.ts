@@ -1,3 +1,5 @@
+import type { Role } from "../interface/studentResponse";
+
 export type createAdminTypes = {
   id: string;
   fullName: string;
@@ -6,7 +8,7 @@ export type createAdminTypes = {
   password: string;
   address: string;
   profileImageId: string | null;
-  role: string;
+  role: Role;
 };
 
 export type CreateAdminResponse = {

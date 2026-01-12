@@ -9,7 +9,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-import type { Mock } from "@/types/mockFormTypes";
+import type { Mock } from "@/shared/types/mockFormTypes";
 import { useDeleteMock } from "@/lib/api/useMockRegister";
 
 // Fixed ActionButtons component

@@ -79,9 +79,9 @@ function StudentRegister({ mode }: props) {
   useEffect(() => {
     if (mode === "edit" && StudentData) {
       const formData: CreateStudentFormData = {
-        fullName: StudentData.user?.fullName || StudentData.name || "",
-        email: StudentData.user?.email || StudentData.email || "",
-        phoneNumber: StudentData.user?.phoneNumber || StudentData.phone || "",
+        fullName: StudentData.user?.fullName || "",
+        email: StudentData.user?.email || "",
+        phoneNumber: StudentData.user?.phoneNumber || "",
         address: StudentData.user?.address || "",
         profileImageId:
           StudentData.user?.profileImage?.id ||
@@ -339,7 +339,10 @@ function StudentRegister({ mode }: props) {
               name="gpaOrPercentage"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>GPA <span className="text-gray-400 text-sm">(Optional)</span></FormLabel>
+                  <FormLabel>
+                    GPA{" "}
+                    <span className="text-gray-400 text-sm">(Optional)</span>
+                  </FormLabel>
                   <FormControl>
                     <Input
                       placeholder="3.5"
@@ -443,7 +446,10 @@ function StudentRegister({ mode }: props) {
               name="interestedCourse"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Interested Course <span className="text-gray-400 text-sm">(Optional)</span></FormLabel>
+                  <FormLabel>
+                    Interested Course{" "}
+                    <span className="text-gray-400 text-sm">(Optional)</span>
+                  </FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Enter your interested course"

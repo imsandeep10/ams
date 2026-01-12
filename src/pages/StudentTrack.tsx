@@ -18,6 +18,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+} from "@/components/ui/popover";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar } from "@/components/ui/calendar";
@@ -81,6 +82,24 @@ export const StudentTrack = React.memo(() => {
   // progress bar steps
 
   const progressBarSteps = [
+    {
+      label: "3 Days Attendance",
+      isCompleted: studentProgress?.percentageForAttendance >= 6.67,
+    },
+    {
+      label: "45 Days Attendance",
+      isCompleted: studentProgress?.percentageForAttendance >= 100,
+    },
+    {
+      label: "Date Booking",
+      isCompleted: studentProgress?.isDateBooked || false,
+    },
+    {
+      label: "Documents Received",
+      isCompleted: studentProgress?.isDocumentReceived || false,
+    },
+    { label: "Visa", isCompleted: studentProgress?.isVisaReceived || false },
+  ];
     {
       label: "3 Days Attendance",
       isCompleted: studentProgress?.percentageForAttendance >= 6.67,
@@ -169,7 +188,7 @@ export const StudentTrack = React.memo(() => {
         Back
       </Button>
       {/* Header Section */}
-      {!isPending && attendanceRecord && (
+      {attendanceRecord && (
         <>
           <Card className="border-none shadow-lg dark:from-gray-900 dark:to-gray-800">
             <CardContent className="p-6 space-y-4">
@@ -203,6 +222,12 @@ export const StudentTrack = React.memo(() => {
                           {attendanceRecord.period.monthName}{" "}
                           {attendanceRecord.period.year}
                         </div>
+                      </div>
+                      <div className="flex flex-wrap items-center gap-2 md:flex-row sm:justify-center lg:justify-start">
+                        <Button className="bg-[#1B5E20] text-white flex items-center gap-2">
+                          Button
+                          <SendHorizontal />
+                        </Button>
                       </div>
                       <div className="flex flex-wrap items-center gap-2 md:flex-row sm:justify-center lg:justify-start">
                         <Button className="bg-[#1B5E20] text-white flex items-center gap-2">
@@ -337,6 +362,9 @@ export const StudentTrack = React.memo(() => {
                         <SelectContent className="bg-[#F1FFF5] text-[#0E2A10] border-[#BAFFD3] ">
                           <SelectGroup>
                             <SelectItem value="received">Received</SelectItem>
+                            <SelectItem value="notReceived">
+                              Not Received
+                            </SelectItem>
                             <SelectItem value="notReceived">
                               Not Received
                             </SelectItem>

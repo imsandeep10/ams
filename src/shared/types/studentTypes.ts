@@ -1,6 +1,12 @@
+import type {
+  CurrentApplicationStatus,
+  CurrentStudentStatus,
+  EnrollmentStatus,
+  LanguageEnum,
+} from "./enums";
+
 export interface Student {
   id: string;
-  studentId: string;
   name: string;
   phone: string;
   email: string;
@@ -14,14 +20,15 @@ export interface Student {
   yearOfCompletion: string;
   interestedCourse: string;
   preferredCountry: string;
-  language: string;
-
+  language: LanguageEnum;
+  currentApplicationStatus: CurrentApplicationStatus;
+  currentStudentStatus: CurrentStudentStatus;
+  enrollmentStatus: EnrollmentStatus;
   user: {
-    id: string
+    id: string;
     address: string;
     fullName: string;
     phoneNumber: string;
     email: string;
   }; // optional related user details
 }
-

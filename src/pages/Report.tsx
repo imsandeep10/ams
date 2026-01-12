@@ -18,8 +18,9 @@ import {
 } from "@/lib/api/useReport";
 import { StudentGrowthChart } from "@/components/report/StudentGrowthChart";
 import ReportChart from "@/components/report/ReportChart";
-import type { ReportPeriodType } from "@/types/reportTypes";
+import type { ReportPeriodType } from "@/shared/types/reportTypes";
 import { useCurrentUser } from "@/lib/api/useUser";
+import { Role } from "@/shared/interface/studentResponse";
 
 const YEARS = [2023, 2024, 2025];
 const MONTHS = Array.from({ length: 12 }, (_, i) => i + 1);
@@ -36,15 +37,15 @@ export const Report = React.memo(() => {
 
   const programName = useMemo(() => {
     switch (currentUser?.role) {
-      case "ieltsAdmin":
+      case Role.IELTS_ADMIN:
         return "IELTS";
-      case "pteAdmin":
+      case Role.PTE_ADMIN:
         return "PTE";
-      case "satAdmin":
+      case Role.SAT_ADMIN:
         return "SAT";
-      case "duolingoAdmin":
+      case Role.DUOLINGO_ADMIN:
         return "Duolingo";
-      case "superAdmin":
+      case Role.SUPER_ADMIN:
         return "All Programs";
       default:
         return "Program";

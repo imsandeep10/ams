@@ -13,7 +13,7 @@ import {
   Wallet,
   MessageSquareMore,
 } from "lucide-react";
-import type { Student } from "@/types/studentTypes";
+import type { Student } from "@/shared/types/studentTypes";
 import { useNavigate } from "react-router-dom";
 import {
   Tooltip,
@@ -23,6 +23,9 @@ import {
 
 import { useDeleteStudent } from "@/lib/api/useStudents";
 import { toast } from "sonner";
+import { useCurrentUser } from "@/lib/api/useUser";
+import { Role } from "@/shared/interface/studentResponse";
+import DeleteModal from "@/components/model/deleteModel";
 
 // Status Badge Component
 const StatusBadge = React.memo<{ status: "Present" | "Absent" }>(
@@ -56,7 +59,10 @@ const ActionButtons = React.memo<ActionButtonsProps>(
   ({ studentId, studentLanguage }) => {
     const [isOpen, setIsOpen] = useState(false);
     const navigate = useNavigate();
-    const { mutateAsync, isPending } = useDeleteStudent();
+    3;
+
+    const { data: currentUserData } = useCurrentUser();
+    const { mutateAsync } = useDeleteStudent();
 
     const handleConfirmDelete = async () => {
       try {
@@ -74,6 +80,8 @@ const ActionButtons = React.memo<ActionButtonsProps>(
     const handleNavigation = (path: string) => {
       navigate(path);
     };
+
+    const isAccountant = currentUserData?.role === Role.ACCOUNTANT;
 
     return (
       <div className="flex items-center gap-2">
@@ -109,25 +117,27 @@ const ActionButtons = React.memo<ActionButtonsProps>(
           </TooltipContent>
         </Tooltip>
 
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-8 w-8 p-0 text-yellow-500 hover:bg-yellow-50  cursor-pointer"
-              onClick={() =>
-                handleNavigation(
-                  `/edit-student/${studentId}?language=${studentLanguage}`
-                )
-              }
-            >
-              <Edit className="w-4 h-4" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Edit student</p>
-          </TooltipContent>
-        </Tooltip>
+        {!isAccountant && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 w-8 p-0 text-yellow-500 hover:bg-yellow-50  cursor-pointer"
+                onClick={() =>
+                  handleNavigation(
+                    `/edit-student/${studentId}?language=${studentLanguage}`
+                  )
+                }
+              >
+                <Edit className="w-4 h-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Edit student</p>
+            </TooltipContent>
+          </Tooltip>
+        )}
 
         <Tooltip>
           <TooltipTrigger asChild>
@@ -151,7 +161,7 @@ const ActionButtons = React.memo<ActionButtonsProps>(
               variant={"ghost"}
               size={"sm"}
               className="h-8 w-8 p-0 text-[#1DC794] hover:bg-[#e9fff8] hover:text-[#003d2b]  cursor-pointer"
-              onClick={() => handleNavigation(`/remark/${studentId}`)}
+              onClick={() => handleNavigation(`/student-remark/${studentId}`)}
             >
               <MessageSquareMore />
             </Button>
@@ -161,49 +171,29 @@ const ActionButtons = React.memo<ActionButtonsProps>(
           </TooltipContent>
         </Tooltip>
 
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-8 w-8 p-0 text-red-600 hover:bg-red-50  cursor-pointer"
-              onClick={handleDelete}
-            >
-              <Trash2 className="w-4 h-4" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Delete student</p>
-          </TooltipContent>
-        </Tooltip>
-
-        {isOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 w-full">
-            <div className="bg-white rounded-lg p-6 w-80 max-w-full mx-4">
-              <h2 className="text-lg font-semibold mb-4">Confirm Delete</h2>
-              <p className="mb-6 text-wrap">
-                Are you sure you want to delete this student? This action cannot
-                be undone.
-              </p>
-              <div className="flex justify-end gap-3">
-                <Button
-                  className=" cursor-pointer"
-                  variant="outline"
-                  onClick={() => setIsOpen(false)}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  className="bg-red-600 hover:bg-red-700 text-white  cursor-pointer"
-                  onClick={handleConfirmDelete}
-                  disabled={isPending}
-                >
-                  {isPending ? "Deleting..." : "Delete"}
-                </Button>
-              </div>
-            </div>
-          </div>
+        {!isAccountant && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 w-8 p-0 text-red-600 hover:bg-red-50  cursor-pointer"
+                onClick={handleDelete}
+              >
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Delete student</p>
+            </TooltipContent>
+          </Tooltip>
         )}
+
+        <DeleteModal
+          open={isOpen}
+          onOpenChange={setIsOpen}
+          onConfirm={handleConfirmDelete}
+        />
       </div>
     );
   }
@@ -240,7 +230,7 @@ export const columns: ColumnDef<Student>[] = [
           onClick={handleRowClick}
         >
           <div className="font-semibold">{student.name}</div>
-          <div className="text-xs text-gray-500">ID: {student.studentId}</div>
+          <div className="text-xs text-gray-500">ID: {student.id}</div>
           <div className="text-xs text-gray-500">
             Faculty: {student.faculty || "N/A"}
           </div>

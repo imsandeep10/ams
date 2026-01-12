@@ -3,16 +3,26 @@ import { columns } from "@/components/students/studentTables/Columns";
 import { DataTable } from "@/components/students/studentTables/DataTable";
 import { useGetAllStudents } from "@/lib/api/useStudents";
 import React, { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 const AllStudentsPage: React.FC = () => {
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialPage = Number(searchParams.get("page") ?? 1);
+  const initialPageSize = Number(searchParams.get("limit") ?? 10);
 
-  const { data, isPending } = useGetAllStudents(page, pageSize);
-  
+  const [filter, setFilter] = useState({
+    page: initialPage,
+    limit: initialPageSize,
+  });
+
+  const { data, isPending } = useGetAllStudents(filter.page, filter.limit);
+
   const handlePaginationChange = (newPage: number, newPageSize: number) => {
-    setPage(newPage);
-    setPageSize(newPageSize);
+    setFilter({ page: newPage, limit: newPageSize });
+    setSearchParams({
+      page: newPage.toString(),
+      limit: newPageSize.toString(),
+    });
   };
 
   if (isPending) {
@@ -26,12 +36,12 @@ const AllStudentsPage: React.FC = () => {
   return (
     <div className="container mx-auto py-2">
       <h1 className="text-2xl font-bold mb-4">All Enrolled Students</h1>
-      <DataTable 
-        columns={columns} 
+      <DataTable
+        columns={columns}
         data={data?.students || []}
         pageCount={data?.pagination.totalPages || 1}
-        pageIndex={page - 1}
-        pageSize={pageSize}
+        pageIndex={initialPage - 1}
+        pageSize={initialPageSize}
         totalRows={data?.pagination.total || 0}
         onPaginationChange={handlePaginationChange}
       />
