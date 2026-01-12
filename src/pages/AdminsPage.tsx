@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 const AdminPage: React.FC = () => {
   const { data: admins, isPending, error } = useGetAllAdmins();
+  console.log("Admins data:", admins);
   const navigate = useNavigate();
   if (isPending) {
     return (

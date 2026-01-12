@@ -34,7 +34,6 @@ import {
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
 
 export const StudentTrack = React.memo(() => {
@@ -103,99 +102,6 @@ export const StudentTrack = React.memo(() => {
   ).length;
   const totalProgressPercentage =
     (completedSteps / progressBarSteps.length) * 100;
-
-  if (isPending) {
-    return (
-      <div className="container mx-auto p-4 md:p-6 space-y-6">
-        <Button
-          variant="ghost"
-          onClick={() => navigate(-1)}
-          className="mb-6 hover:bg-gray-200 cursor-pointer"
-        >
-          <ArrowLeft className="w-5 h-5 mr-2" />
-          Back
-        </Button>
-
-        {/* Header Section Skeleton */}
-        <Card className="border-none shadow-lg">
-          <CardContent className="p-6 space-y-4">
-            <div className="flex flex-col lg:flex-row w-full lg:justify-between">
-              {/* First section - Profile */}
-              <div className="flex flex-col lg:flex-row items-start md:items-center gap-6">
-                <Skeleton className="h-32 w-32 rounded-full" />
-                <div className="flex-1 space-y-3">
-                  <Skeleton className="h-8 w-64" />
-                  <Skeleton className="h-4 w-48" />
-                  <Skeleton className="h-4 w-56" />
-                  <Skeleton className="h-10 w-32" />
-                </div>
-              </div>
-              {/* Second section - Selects */}
-              <div className="flex flex-col gap-4 py-2 px-2">
-                <div className="flex flex-col lg:flex-row gap-4">
-                  {Array.from({ length: 3 }).map((_, i) => (
-                    <Skeleton key={i} className="h-10 w-[200px]" />
-                  ))}
-                </div>
-                <div className="flex flex-col lg:flex-row gap-4">
-                  {Array.from({ length: 3 }).map((_, i) => (
-                    <Skeleton key={i} className="h-10 w-[200px]" />
-                  ))}
-                </div>
-              </div>
-            </div>
-            {/* Progress bar skeleton */}
-            <div className="py-4 mt-4 lg:ml-32 xl:ml-40 space-y-4">
-              <div className="flex justify-between">
-                <Skeleton className="h-5 w-48" />
-                <Skeleton className="h-5 w-12" />
-              </div>
-              <Skeleton className="h-2 w-full" />
-              <div className="flex justify-between">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Skeleton key={i} className="h-4 w-24" />
-                ))}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Stats Cards Skeleton */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <Card key={i} className="hover:shadow-lg transition-shadow">
-              <CardHeader className="pb-3">
-                <Skeleton className="h-4 w-32" />
-              </CardHeader>
-              <CardContent>
-                <Skeleton className="h-9 w-16 mb-2" />
-                <Skeleton className="h-3 w-40" />
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        {/* Month/Year Selector Skeleton */}
-        <Card>
-          <CardHeader>
-            <Skeleton className="h-6 w-48" />
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-wrap gap-4">
-              <div className="flex flex-col gap-2 min-w-[200px]">
-                <Skeleton className="h-4 w-16" />
-                <Skeleton className="h-10 w-full" />
-              </div>
-              <div className="flex flex-col gap-2 min-w-[150px]">
-                <Skeleton className="h-4 w-16" />
-                <Skeleton className="h-10 w-full" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
 
   return (
     <div className="container mx-auto p-4 md:p-6 space-y-6">
@@ -442,82 +348,84 @@ export const StudentTrack = React.memo(() => {
       )}
 
       {/* Stats Cards */}
-      {attendanceRecord && attendanceRecord.dailyRecords.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="border-l-4 border-l-blue-500 hover:shadow-lg transition-shadow">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center gap-2">
-                <CalendarIcon className="h-4 w-4" />
-                Total Days
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-gray-900 dark:text-white">
-                {attendanceRecord.summary.totalDays}
-              </div>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                Working Days: {attendanceRecord.summary.workingDays}
-              </p>
-            </CardContent>
-          </Card>
+      {!isPending &&
+        attendanceRecord &&
+        attendanceRecord.dailyRecords.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <Card className="border-l-4 border-l-blue-500 hover:shadow-lg transition-shadow">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center gap-2">
+                  <CalendarIcon className="h-4 w-4" />
+                  Total Days
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold text-gray-900 dark:text-white">
+                  {attendanceRecord.summary.totalDays}
+                </div>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  Working Days: {attendanceRecord.summary.workingDays}
+                </p>
+              </CardContent>
+            </Card>
 
-          <Card className="border-l-4 border-l-green-500 hover:shadow-lg transition-shadow">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center gap-2">
-                <CheckCircle className="h-4 w-4" />
-                Present Days
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-green-600 dark:text-green-400">
-                {attendanceRecord.summary.presentDays}
-              </div>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                Out of {attendanceRecord.summary.workingDays} working days
-              </p>
-            </CardContent>
-          </Card>
+            <Card className="border-l-4 border-l-green-500 hover:shadow-lg transition-shadow">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center gap-2">
+                  <CheckCircle className="h-4 w-4" />
+                  Present Days
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold text-green-600 dark:text-green-400">
+                  {attendanceRecord.summary.presentDays}
+                </div>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  Out of {attendanceRecord.summary.workingDays} working days
+                </p>
+              </CardContent>
+            </Card>
 
-          <Card className="border-l-4 border-l-red-500 hover:shadow-lg transition-shadow">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center gap-2">
-                <XCircle className="h-4 w-4" />
-                Absent Days
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-red-600 dark:text-red-400">
-                {attendanceRecord.summary.absentDays}
-              </div>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                Includes weekends: {attendanceRecord.summary.weekendDays}
-              </p>
-            </CardContent>
-          </Card>
+            <Card className="border-l-4 border-l-red-500 hover:shadow-lg transition-shadow">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center gap-2">
+                  <XCircle className="h-4 w-4" />
+                  Absent Days
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold text-red-600 dark:text-red-400">
+                  {attendanceRecord.summary.absentDays}
+                </div>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  Includes weekends: {attendanceRecord.summary.weekendDays}
+                </p>
+              </CardContent>
+            </Card>
 
-          <Card className="border-l-4 border-l-purple-500 hover:shadow-lg transition-shadow">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center gap-2">
-                <TrendingUp className="h-4 w-4" />
-                Attendance Rate
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-purple-600 dark:text-purple-400">
-                {attendanceRecord.summary.attendancePercentage.toFixed(1)}%
-              </div>
-              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-2">
-                <div
-                  className="bg-purple-600 h-2 rounded-full transition-all duration-500"
-                  style={{
-                    width: `${attendanceRecord.summary.attendancePercentage}%`,
-                  }}
-                />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
+            <Card className="border-l-4 border-l-purple-500 hover:shadow-lg transition-shadow">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center gap-2">
+                  <TrendingUp className="h-4 w-4" />
+                  Attendance Rate
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold text-purple-600 dark:text-purple-400">
+                  {attendanceRecord.summary.attendancePercentage.toFixed(1)}%
+                </div>
+                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-2">
+                  <div
+                    className="bg-purple-600 h-2 rounded-full transition-all duration-500"
+                    style={{
+                      width: `${attendanceRecord.summary.attendancePercentage}%`,
+                    }}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
 
       {/* Month/Year Selector */}
       <Card>
@@ -573,6 +481,39 @@ export const StudentTrack = React.memo(() => {
               </Select>
             </div>
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Data Table */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg font-semibold">
+            Daily Attendance Records
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {isPending ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="flex flex-col items-center gap-3">
+                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
+                <p className="text-sm text-muted-foreground font-medium">
+                  Loading attendance records...
+                </p>
+              </div>
+            </div>
+          ) : attendanceRecord &&
+            attendanceRecord.dailyRecords &&
+            attendanceRecord.dailyRecords.length > 0 ? (
+            <TrackDataTable
+              columns={trackColumns}
+              data={attendanceRecord.dailyRecords}
+            />
+          ) : (
+            <div className="text-center py-8 text-gray-500">
+              {attendanceRecord?.message ||
+                "No attendance records found for this period."}
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

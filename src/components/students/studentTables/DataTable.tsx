@@ -23,7 +23,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Mail, Plus, Search } from "lucide-react";
+import { Plus, Search, Share } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import {
   Tooltip,
@@ -40,6 +40,10 @@ interface DataTableProps<TData, TValue> {
   pageSize?: number;
   totalRows?: number;
   onPaginationChange?: (page: number, pageSize: number) => void;
+  addLink?: string;
+  addLabel?: string;
+  onExport?: () => void;
+  isExporting?: boolean;
 }
 
 export function DataTable<TData, TValue>({
@@ -50,6 +54,11 @@ export function DataTable<TData, TValue>({
   pageSize: externalPageSize = 10,
   totalRows = 0,
   onPaginationChange,
+  addLink,
+  onExport,
+  isExporting,
+
+  addLabel = "Add Student",
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -60,7 +69,6 @@ export function DataTable<TData, TValue>({
   const [pageSize, setPageSize] = useState(externalPageSize);
   const pathname = window.location.pathname.split("/").filter(Boolean);
   const isServerSidePagination = !!onPaginationChange;
-
   const navigate = useNavigate();
 
   const table = useReactTable({
@@ -154,28 +162,32 @@ export function DataTable<TData, TValue>({
               <option value={100}>100</option>
             </select>
           </div>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                className="cursor-pointer"
-                variant={"outline"}
-                size={"icon-sm"}
-                onClick={() => navigate("/students/send-email")}
-              >
-                <Mail />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Single / Bulk Email</p>
-            </TooltipContent>
-          </Tooltip>
+          <div>
+            {/* download */}
+            {onExport && (
+              <div className="flex justify-center">
+                <Button
+                  onClick={onExport}
+                  disabled={isExporting}
+                  className="cursor-pointer"
+                >
+                  <Share />
+                  {isExporting ? "Exporting..." : "Export"}
+                </Button>
+              </div>
+            )}
+          </div>
           <Button
             className="cursor-pointer"
             onClick={() => {
-              navigate(`/create-student?language=${pathname[0]}`);
+              if (addLink) {
+                navigate(addLink);
+              } else {
+                navigate(`/create-student?language=${pathname[0]}`);
+              }
             }}
           >
-            <span>Add Student</span>
+            <span>{addLabel || "Add Student"}</span>
             <Plus />
           </Button>
         </div>

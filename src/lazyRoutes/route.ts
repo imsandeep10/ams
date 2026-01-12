@@ -17,8 +17,8 @@ export const IeltsPageRoute = lazy(() => import("../pages/ieltsPage"));
 export const DuolingoPageRoute = lazy(() => import("../pages/duolingoPage"));
 export const SatPageRoute = lazy(() => import("../pages/satPage"));
 export const PtePageRoute = lazy(() => import("../pages/ptePage"));
-export const MockRegisterDataRoute = lazy(
-  () => import("../pages/MockRegisterData")
+export const MockPage = lazy(
+  () => import("../pages/mockPage")
 );
 export const IeltsMockTestFormRoute = lazy(
   () => import("../components/mock-test/IeltsMockTestForm")
