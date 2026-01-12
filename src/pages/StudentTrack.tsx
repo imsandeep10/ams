@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { TrackDataTable } from "@/components/students/studentTrack/TrackDataTable";
 import { trackColumns } from "@/components/students/studentTrack/TrackColumn";
 import { useGetStudentAttendanceTrack } from "@/lib/api/useStudents";
@@ -19,7 +19,13 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Clock,
@@ -35,6 +41,13 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 export const StudentTrack = React.memo(() => {
   const { id } = useParams<{ id: string }>();
@@ -150,10 +163,47 @@ export const StudentTrack = React.memo(() => {
                         </div>
                       </div>
                       <div className="flex flex-wrap items-center gap-2 md:flex-row sm:justify-center lg:justify-start">
-                        <Button className="bg-[#1B5E20] text-white flex items-center gap-2">
-                          Button
-                          <SendHorizontal />
-                        </Button>
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button className="bg-[#1B5E20] text-white flex items-center gap-2">
+                              Send Mail
+                              <SendHorizontal />
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent>
+                            <DialogHeader>
+                              <DialogTitle>
+                                Select custom email or marks
+                              </DialogTitle>
+                            </DialogHeader>
+
+                            <Link to="send-email">
+                              <Card className="gap-0">
+                                <CardHeader>
+                                  <CardTitle>Custom Email</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                  <CardDescription>
+                                    Send custom email to student{" "}
+                                  </CardDescription>
+                                </CardContent>
+                              </Card>
+                            </Link>
+
+                            <Link to="send-email">
+                              <Card className="gap-0">
+                                <CardHeader>
+                                  <CardTitle>Marks Email</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                  <CardDescription>
+                                    Send student result through email
+                                  </CardDescription>
+                                </CardContent>
+                              </Card>
+                            </Link>
+                          </DialogContent>
+                        </Dialog>
                       </div>
                     </div>
                   </div>
