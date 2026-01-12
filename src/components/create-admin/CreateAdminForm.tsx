@@ -79,6 +79,7 @@ function CreateAdminFormComponent({ mode }: props) {
         "duolingoAdmin",
         "ieltsAdmin",
         "pteAdmin",
+        "accountant",
       ];
       const adminRole =
         adminData.role && validRoles.includes(adminData.role)
@@ -118,6 +119,7 @@ function CreateAdminFormComponent({ mode }: props) {
         "duolingoAdmin",
         "ieltsAdmin",
         "pteAdmin",
+        "accountant",
       ];
       const adminRole =
         adminData.role && validRoles.includes(adminData.role)
@@ -368,6 +370,7 @@ function CreateAdminFormComponent({ mode }: props) {
                         {field.value === "satAdmin" && "SAT Admin"}
                         {field.value === "ieltsAdmin" && "IELTS Admin"}
                         {field.value === "pteAdmin" && "PTE Admin"}
+                        {field.value === "accountant" && "Accountant"}
                         {!field.value && "Select Role"}
                       </SelectValue>
                     </SelectTrigger>
@@ -379,6 +382,7 @@ function CreateAdminFormComponent({ mode }: props) {
                     </SelectItem>
                     <SelectItem value="ieltsAdmin">IELTS Admin</SelectItem>
                     <SelectItem value="pteAdmin">PTE Admin</SelectItem>
+                    <SelectItem value="accountant">Accountant</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />

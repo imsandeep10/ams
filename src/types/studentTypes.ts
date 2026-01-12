@@ -24,3 +24,4 @@ export interface Student {
     email: string;
   }; // optional related user details
 }
+

@@ -216,14 +216,13 @@ export const columns: ColumnDef<Student>[] = [
     id: "studentInfo",
     header: ({ column }) => {
       return (
-        <Button
-          variant="ghost"
+        <button
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="h-8 px-2 lg:px-3"
+          className="h-8 px-2 lg:px-3 flex items-center"
         >
           Student Info
           <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
+        </button>
       );
     },
     accessorKey: "name",
@@ -362,3 +361,4 @@ export const columns: ColumnDef<Student>[] = [
     enableSorting: false,
   },
 ];
+

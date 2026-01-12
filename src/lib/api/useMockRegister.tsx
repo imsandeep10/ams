@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import api from "../axiosInstance";
 import type { AxiosError, AxiosResponse } from "axios";
 import { toast } from "sonner";
+import type { createMockRegisterRespoonse } from "@/types/mockFormTypes";
 
 export const useMockRegister = () => {
   const queryClient = useQueryClient();
@@ -66,5 +67,74 @@ export const useDeleteMock = () => {
     onError: (error: AxiosError) => {
       toast.error(`Error deleting mock student: ${error.message}`);
     },
+  });
+};
+
+export const upcomingMockTest = (page: number = 1, limit: number = 10) => {
+  return useQuery({
+    queryKey: ["mock-tests", "upcoming", page, limit],
+    queryFn: async (): Promise<{
+      data: createMockRegisterRespoonse[];
+      pagination: {
+        page: number;
+        limit: number;
+        total: number;
+        totalPages: number;
+      };
+    }> => {
+      const res = await api.get(`/api/mock-test/upcoming`, {
+        params: { page, limit },
+      });
+      if (!res?.data) {
+        throw new Error("Failed to fetch mock test Data");
+      }
+
+      const rawData = res.data.data || [];
+
+      const mocktest = rawData.map((value: any) => ({
+        id: value.id,
+        timeSlot: value.timeSlot,
+        mockTestDate: value.mockTestDate,
+      testType: value.testType,
+      moduleCompleted: value.moduleCompleted,
+      fullName: value.fullName,
+      surname: value.surname,
+      whatsappNumber: value.whatsappNumber,
+      examDate: value.examDate,
+      destinationCountry: value.destinationCountry,
+        
+      }));
+
+      return {
+        data: mocktest,
+        pagination: res.data.pagination || {
+          page,
+          limit,
+          total: mocktest.length,
+          totalPages: 1,
+        },
+      };
+    },
+  });
+};
+
+export const useExportMockTests = () => {
+  return useMutation({
+    mutationFn: async () => {
+      const res = await api.get("/api/mock-test/past/export", { responseType: "blob" });
+      return res.data;
+    },
+    onSuccess: (data) => {
+      const url = window.URL.createObjectURL(new Blob([data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `mock-tests-${new Date().toLocaleDateString()}.xlsx`);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode?.removeChild(link);
+    },
+    onError: (error: AxiosError) => {
+      toast.error(`Error exporting mock tests: ${error.message}`);
+    }
   });
 };

@@ -60,6 +60,13 @@ export const sideBar: SidBartypes[] = [
     url: "/admins",
     icon: UserStar,
   },
+
+  {
+    title: "Payment",
+    url: "/payment",
+    icon: UserStar,
+  },
+
   {
     title: "Mock Table",
     url: "/mock-data-table",
@@ -90,5 +97,14 @@ export const roleSidebars: Record<string, SidBartypes[]> = {
     { title: "Dashboard", url: "/sat/dashboard", icon: LayoutDashboard },
     { title: "Students", url: "/sat/students", icon: Users },
     { title: "Report", url: "/sat/report", icon: FileText },
+  ],
+  accountant: [
+    { title: "Dashboard", url: "/accountant/dashboard", icon: LayoutDashboard },
+    { title: "Students", url: "/accountant/students", icon: Users },
+    { title: "IELTS", url: "/ielts/students", icon: Users },
+    { title: "PTE", url: "/pte/students", icon: Users },
+    { title: "Duolingo", url: "/duolingo/students", icon: Users },
+    { title: "SAT", url: "/sat/students", icon: Users },
+    { title: "Payment", url: "/accountant/payment", icon: FileText },
   ],
 };

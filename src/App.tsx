@@ -26,7 +26,7 @@ import {
   IeltsMockTestFormRoute,
   IeltsPageRoute,
   LoginRoute,
-  MockRegisterDataRoute,
+  MockPage,
   ProfileRoute,
   PtePageRoute,
   ReportRoute,
@@ -83,7 +83,7 @@ const router = createBrowserRouter([
           {
             path: "pte",
             element: (
-              <RoleProtected allowedRoles={["pteAdmin", "superAdmin"]}>
+              <RoleProtected allowedRoles={["pteAdmin", "superAdmin", "accountant"]}>
                 <RoleLayout />
               </RoleProtected>
             ),
@@ -102,7 +102,7 @@ const router = createBrowserRouter([
           {
             path: "ielts",
             element: (
-              <RoleProtected allowedRoles={["ieltsAdmin", "superAdmin"]}>
+              <RoleProtected allowedRoles={["ieltsAdmin", "superAdmin", "accountant"]}>
                 <RoleLayout />
               </RoleProtected>
             ),
@@ -118,14 +118,14 @@ const router = createBrowserRouter([
               { path: "report", element: <ReportRoute /> },
               {
                 path: "mock-data-table",
-                element: <MockRegisterDataRoute />,
+                element: <MockPage />,
               },
             ],
           },
           {
             path: "duolingo",
             element: (
-              <RoleProtected allowedRoles={["duolingoAdmin", "superAdmin"]}>
+              <RoleProtected allowedRoles={["duolingoAdmin", "superAdmin", "accountant"]}>
                 <RoleLayout />
               </RoleProtected>
             ),
@@ -143,7 +143,7 @@ const router = createBrowserRouter([
           {
             path: "sat",
             element: (
-              <RoleProtected allowedRoles={["satAdmin", "superAdmin"]}>
+              <RoleProtected allowedRoles={["satAdmin", "superAdmin", "accountant"]}>
                 <RoleLayout />
               </RoleProtected>
             ),
@@ -157,6 +157,23 @@ const router = createBrowserRouter([
               { path: "students/create", element: <CreateStudentRoute /> },
               { path: "students/edit/:id", element: <EditStudentRoute /> },
               { path: "report", element: <ReportRoute /> },
+            ],
+          },
+          {
+            path: "accountant",
+            element: (
+              <RoleProtected allowedRoles={["accountant", "superAdmin"]}>
+                <RoleLayout />
+              </RoleProtected>
+            ),
+            children: [
+              {
+                index: true,
+                element: <RoleIndexRedirect adminRole={"accountant"} />,
+              },
+              { path: "dashboard", element: <DashboardPageRoute /> },
+              { path: "students", element: <AllStudentPageRoute /> },
+              { path: "students/create", element: <CreateStudentRoute /> },
             ],
           },
           {
@@ -217,7 +234,7 @@ const router = createBrowserRouter([
           },
           {
             path: "mock-data-table",
-            element: <MockRegisterDataRoute />,
+            element: <MockPage />,
           },
         ],
       },

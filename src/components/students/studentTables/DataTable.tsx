@@ -23,7 +23,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Plus, Search } from "lucide-react";
+import { Plus, Search, Share } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface DataTableProps<TData, TValue> {
@@ -34,6 +34,10 @@ interface DataTableProps<TData, TValue> {
   pageSize?: number;
   totalRows?: number;
   onPaginationChange?: (page: number, pageSize: number) => void;
+  addLink?: string;
+  addLabel?: string;
+  onExport?: () => void;
+  isExporting?: boolean;
 }
 
 export function DataTable<TData, TValue>({
@@ -44,6 +48,11 @@ export function DataTable<TData, TValue>({
   pageSize: externalPageSize = 10,
   totalRows = 0,
   onPaginationChange,
+  addLink,
+  onExport,
+  isExporting,
+
+  addLabel = "Add Student",
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -54,7 +63,6 @@ export function DataTable<TData, TValue>({
   const [pageSize, setPageSize] = useState(externalPageSize);
   const pathname = window.location.pathname.split("/").filter(Boolean);
   const isServerSidePagination = !!onPaginationChange;
-
   const navigate = useNavigate();
 
   const table = useReactTable({
@@ -134,7 +142,9 @@ export function DataTable<TData, TValue>({
 
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">Rows per page:</span>
+            <span className="text-sm text-muted-foreground">
+              Rows per page:
+            </span>
             <select
               value={pageSize}
               onChange={(e) => handlePageSizeChange(Number(e.target.value))}
@@ -146,16 +156,36 @@ export function DataTable<TData, TValue>({
               <option value={100}>100</option>
             </select>
           </div>
+          <div>
+          {/* download */}
+          {onExport && (
+            <div className="flex justify-center">
+              <Button
+                onClick={onExport}
+                disabled={isExporting}
+                className="cursor-pointer"
+              >
+                <Share />
+                {isExporting ? "Exporting..." : "Export"}
+              </Button>
+            </div>
+          )}
+        </div>
           <Button
             className="cursor-pointer"
             onClick={() => {
-              navigate(`/create-student?language=${pathname[0]}`);
+              if (addLink) {
+                navigate(addLink);
+              } else {
+                navigate(`/create-student?language=${pathname[0]}`);
+              }
             }}
           >
-            <span>Add Student</span>
+            <span>{addLabel || "Add Student"}</span>
             <Plus />
           </Button>
         </div>
+
       </div>
 
       {/* Table */}
@@ -226,7 +256,7 @@ export function DataTable<TData, TValue>({
               {isServerSidePagination
                 ? pageIndex * pageSize + 1
                 : table.getState().pagination.pageIndex *
-                  table.getState().pagination.pageSize +
+                    table.getState().pagination.pageSize +
                   1}
             </span>{" "}
             to{" "}
@@ -260,7 +290,11 @@ export function DataTable<TData, TValue>({
               variant="outline"
               size="sm"
               onClick={handlePreviousPage}
-              disabled={isServerSidePagination ? pageIndex === 0 : !table.getCanPreviousPage()}
+              disabled={
+                isServerSidePagination
+                  ? pageIndex === 0
+                  : !table.getCanPreviousPage()
+              }
             >
               Previous
             </Button>
@@ -268,7 +302,11 @@ export function DataTable<TData, TValue>({
               variant="outline"
               size="sm"
               onClick={handleNextPage}
-              disabled={isServerSidePagination ? pageIndex >= pageCount - 1 : !table.getCanNextPage()}
+              disabled={
+                isServerSidePagination
+                  ? pageIndex >= pageCount - 1
+                  : !table.getCanNextPage()
+              }
             >
               Next
             </Button>

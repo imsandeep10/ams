@@ -178,6 +178,8 @@ export const useGetAllStudents = (page: number = 1, limit: number = 10) => {
   });
 };
 
+
+
 export const useGetStudentById = (id: string) => {
   return useQuery({
     queryKey: ["student", id],
