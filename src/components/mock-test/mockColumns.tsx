@@ -1,6 +1,6 @@
-import type { createMockRegisterRespoonse } from "@/types/mockFormTypes";
 import type { ColumnDef } from "@tanstack/react-table";
 import MockActionButtons from "./mockTestAction";
+import type { createMockRegisterRespoonse } from "@/shared/types/mockFormTypes";
 
 export const columnsMockTest: ColumnDef<createMockRegisterRespoonse>[] = [
   {
@@ -68,11 +68,7 @@ export const columnsMockTest: ColumnDef<createMockRegisterRespoonse>[] = [
     header: () => <span className="sr-only">Actions</span>,
     accessorKey: "id",
     cell: ({ row }) => {
-      return (
-        <MockActionButtons
-          id={row.original.id}
-        />
-      );
+      return <MockActionButtons id={row.original.id} />;
     },
-  }
+  },
 ];
