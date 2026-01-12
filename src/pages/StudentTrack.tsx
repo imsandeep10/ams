@@ -17,7 +17,7 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
+} from "@/components/ui/popover";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar } from "@/components/ui/calendar";
@@ -35,6 +35,8 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
+import { StatsCard } from "@/components/recordCards/Card";
+import { Progress } from "@/components/ui/progress";
 
 export const StudentTrack = React.memo(() => {
   const { id } = useParams<{ id: string }>();
@@ -46,6 +48,7 @@ export const StudentTrack = React.memo(() => {
   const [year, setYear] = useState(currentYear.toString());
   const [month, setMonth] = useState(currentMonth.toString());
   const navigate = useNavigate();
+  const [progress, setProgress] = React.useState(0);
 
   const { data: attendanceRecord, isPending } = useGetStudentAttendanceTrack(
     id!,
@@ -78,15 +81,82 @@ export const StudentTrack = React.memo(() => {
   // progress bar steps
 
   const progressBarSteps = [
-    { label: "3 Days Attendance", isCompleted: (studentProgress?.percentageForAttendance) >= 6.67 },
-    { label: "45 Days Attendance", isCompleted: (studentProgress?.percentageForAttendance) >= 100 },
-    { label: "Date Booking", isCompleted: (studentProgress?.isDateBooked) || false },
-    { label: "Documents Received", isCompleted: (studentProgress?.isDocumentReceived) || false },
-    { label: "Visa", isCompleted: (studentProgress?.isVisaReceived) || false },
-  ]
+    {
+      label: "3 Days Attendance",
+      isCompleted: studentProgress?.percentageForAttendance >= 6.67,
+    },
+    {
+      label: "45 Days Attendance",
+      isCompleted: studentProgress?.percentageForAttendance >= 100,
+    },
+    {
+      label: "Date Booking",
+      isCompleted: studentProgress?.isDateBooked || false,
+    },
+    {
+      label: "Documents Received",
+      isCompleted: studentProgress?.isDocumentReceived || false,
+    },
+    { label: "Visa", isCompleted: studentProgress?.isVisaReceived || false },
+  ];
 
-  const completedSteps = progressBarSteps.filter((step) => step.isCompleted).length;
-  const totalProgressPercentage = (completedSteps / progressBarSteps.length) * 100;
+  const completedSteps = progressBarSteps.filter(
+    (step) => step.isCompleted
+  ).length;
+  const totalProgressPercentage =
+    (completedSteps / progressBarSteps.length) * 100;
+
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      setProgress(totalProgressPercentage)
+    },300);
+    return () => clearInterval(timer);
+  },[totalProgressPercentage])
+
+
+  const statsData = [
+    {
+      title: "Total Days",
+      icon: CalendarIcon,
+      value: attendanceRecord?.summary.totalDays || 0,
+      borderColor: "border-l-blue-500",
+      textColor: "text-gray-900",
+      subtext: `Working Days: ${attendanceRecord?.summary.workingDays || 0}`,
+    },
+    {
+      title: "Present Days",
+      icon: CheckCircle,
+      value: attendanceRecord?.summary.presentDays || 0,
+      borderColor: "border-l-green-500",
+      textColor: "text-green-600",
+      subtext: `Out of ${
+        attendanceRecord?.summary.workingDays || 0
+      } working days`,
+    },
+    {
+      title: "Absent Days",
+      icon: XCircle,
+      value: attendanceRecord?.summary.absentDays || 0,
+      borderColor: "border-l-red-500",
+      textColor: "text-red-600",
+      subtext: `Includes weekends: ${
+        attendanceRecord?.summary.weekendDays || 0
+      }`,
+    },
+    {
+      title: "Attendance Rate",
+      icon: TrendingUp,
+      value: `${
+        attendanceRecord?.summary.attendancePercentage.toFixed(1) || 0
+      }%`,
+      borderColor: "border-l-purple-500",
+      textColor: "text-purple-600",
+      subtext: `Working days attendance percentage${
+        attendanceRecord?.summary?.workingDaysAttendancePercentage.toFixed(1) ||
+        0
+      }%`,
+    },
+  ];
 
   return (
     <div className="container mx-auto p-4 md:p-6 space-y-6">
@@ -134,12 +204,12 @@ export const StudentTrack = React.memo(() => {
                           {attendanceRecord.period.year}
                         </div>
                       </div>
-                        <div className="flex flex-wrap items-center gap-2 md:flex-row sm:justify-center lg:justify-start">
-                          <Button className="bg-[#1B5E20] text-white flex items-center gap-2">
-                            Button
-                            <SendHorizontal />
-                          </Button>
-                        </div>
+                      <div className="flex flex-wrap items-center gap-2 md:flex-row sm:justify-center lg:justify-start">
+                        <Button className="bg-[#1B5E20] text-white flex items-center gap-2">
+                          Button
+                          <SendHorizontal />
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -267,7 +337,9 @@ export const StudentTrack = React.memo(() => {
                         <SelectContent className="bg-[#F1FFF5] text-[#0E2A10] border-[#BAFFD3] ">
                           <SelectGroup>
                             <SelectItem value="received">Received</SelectItem>
-                            <SelectItem value="notReceived">Not Received</SelectItem>
+                            <SelectItem value="notReceived">
+                              Not Received
+                            </SelectItem>
                           </SelectGroup>
                         </SelectContent>
                       </Select>
@@ -284,25 +356,31 @@ export const StudentTrack = React.memo(() => {
                 </div>
                 {/* progress section */}
                 <div className="relative space-y-2">
-                  <div className="flex justify-between z-10">
+                  <div className="grid grid-cols-5 z-10">
                     {progressBarSteps.map((step, index) => (
-                      <Circle
+                      <div
                         key={index}
-                        className={`h-4 w-4 stroke-none transition-colors duration-300 ${step.isCompleted ? 'fill-[#22C55E]' : 'fill-[#E5E7EB]'}
-                        `}/>
+                        className="flex justify-end"
+                      >
+                      <Circle
+                        className={`h-4 w-4 stroke-none transition-colors duration-300 ${
+                          step.isCompleted ? "fill-[#22C55E]" : "fill-[#E5E7EB]"
+                        }
+                        `}
+                      />
+                      </div>
                     ))}
                     {/* <Circle className="h-4 w-4 fill-[#22C55E] stroke-none" /> */}
                   </div>
-                  <div className="w-full h-2">
-                    <div className="w-full absolute rounded-full h-2 bg-[#E5E7EB] "></div>
-                    <div className={`w-${totalProgressPercentage}absolute rounded-full h-2 bg-[#22C55E] transition-all duration-500 ease-out`}></div>
-                  </div>
-                  <div className="flex justify-between">
+                  <Progress
+                    value={progress}
+                    className="h-2 w-full  bg-[#E5E7EB]"
+                  />
+                  <div className="grid grid-cols-5">
                     {progressBarSteps.map((step, index) => (
-                      <span
-                        key={index}
-                        className=""
-                      >{step.label}</span>
+                      <span key={index} className="text-center text-sm max-w-[80px] mx-auto">
+                        {step.label}
+                      </span>
                     ))}
                   </div>
                 </div>
@@ -331,7 +409,7 @@ export const StudentTrack = React.memo(() => {
         attendanceRecord &&
         attendanceRecord.dailyRecords.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Card className="border-l-4 border-l-blue-500 hover:shadow-lg transition-shadow">
+            {/* <Card className="border-l-4 border-l-blue-500 hover:shadow-lg transition-shadow">
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center gap-2">
                   <CalendarIcon className="h-4 w-4" />
@@ -402,7 +480,18 @@ export const StudentTrack = React.memo(() => {
                   />
                 </div>
               </CardContent>
-            </Card>
+            </Card> */}
+            {statsData.map((stat) => (
+              <StatsCard
+                key={stat.title}
+                title={stat.title}
+                icon={stat.icon}
+                value={stat.value}
+                subtext={stat.subtext}
+                borderColor={stat.borderColor}
+                textColor={stat.textColor}
+              />
+            ))}
           </div>
         )}
 

@@ -223,7 +223,7 @@ export const useGetStudentAttendanceTrack = (
   month: number
 ) => {
   return useQuery({
-    queryKey: ["attendance"],
+    queryKey: ["attendance", studentId, year, month],
     queryFn: async () => {
       try {
         const res = await api.get(
@@ -245,7 +245,7 @@ export const useStudentProgress = (
   userId: string
 ) => {
   return useQuery({
-    queryKey: ["student-progress"],
+    queryKey: ["student-progress", userId],
     queryFn: async () => {
       try {
         const res = await api.get(`/api/student-progress/${userId}`);

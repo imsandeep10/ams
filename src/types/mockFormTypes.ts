@@ -3,7 +3,7 @@ export type createMockRegisterRespoonse = {
   mockTestDate: string;
   timeSlot: PreferredTime;
   testType: TestType;
-  moduleCompleted: ModulesCompleted[];
+  modulesCompleted: ModulesCompleted[];
   fullName: string;
   whatsappNumber: string;
   examDate: string;
