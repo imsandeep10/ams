@@ -26,6 +26,8 @@ export const TotalCard = React.memo(({ selectedDate }: TotalCardProps) => {
     }
   };
 
+  console.log("Dashboard Stats:", stats);
+
   const cards = useMemo<CardData[]>(() => {
     if (!stats) return [];
 
@@ -59,6 +61,10 @@ export const TotalCard = React.memo(({ selectedDate }: TotalCardProps) => {
         {
           subtitle: "Duolingo Present",
           total: stats.duolingo,
+        },
+        {
+          subtitle: "Total Mock Tests Attended",
+          total: stats.total,
         },
       ];
     }
