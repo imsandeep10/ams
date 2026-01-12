@@ -23,8 +23,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Plus, Search } from "lucide-react";
+import { Mail, Plus, Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { TooltipArrow } from "@radix-ui/react-tooltip";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -134,7 +140,9 @@ export function DataTable<TData, TValue>({
 
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">Rows per page:</span>
+            <span className="text-sm text-muted-foreground">
+              Rows per page:
+            </span>
             <select
               value={pageSize}
               onChange={(e) => handlePageSizeChange(Number(e.target.value))}
@@ -146,6 +154,21 @@ export function DataTable<TData, TValue>({
               <option value={100}>100</option>
             </select>
           </div>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                className="cursor-pointer"
+                variant={"outline"}
+                size={"icon-sm"}
+                onClick={() => navigate("/students/send-email")}
+              >
+                <Mail />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Single / Bulk Email</p>
+            </TooltipContent>
+          </Tooltip>
           <Button
             className="cursor-pointer"
             onClick={() => {
@@ -226,7 +249,7 @@ export function DataTable<TData, TValue>({
               {isServerSidePagination
                 ? pageIndex * pageSize + 1
                 : table.getState().pagination.pageIndex *
-                  table.getState().pagination.pageSize +
+                    table.getState().pagination.pageSize +
                   1}
             </span>{" "}
             to{" "}
@@ -260,7 +283,11 @@ export function DataTable<TData, TValue>({
               variant="outline"
               size="sm"
               onClick={handlePreviousPage}
-              disabled={isServerSidePagination ? pageIndex === 0 : !table.getCanPreviousPage()}
+              disabled={
+                isServerSidePagination
+                  ? pageIndex === 0
+                  : !table.getCanPreviousPage()
+              }
             >
               Previous
             </Button>
@@ -268,7 +295,11 @@ export function DataTable<TData, TValue>({
               variant="outline"
               size="sm"
               onClick={handleNextPage}
-              disabled={isServerSidePagination ? pageIndex >= pageCount - 1 : !table.getCanNextPage()}
+              disabled={
+                isServerSidePagination
+                  ? pageIndex >= pageCount - 1
+                  : !table.getCanNextPage()
+              }
             >
               Next
             </Button>

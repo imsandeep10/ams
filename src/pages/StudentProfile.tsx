@@ -6,6 +6,10 @@ import {
   MapPin,
   GraduationCap,
   Info,
+  FileText,
+  PlaneTakeoff,
+  BookOpenText,
+  Calendar,
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -24,19 +28,19 @@ export const StudentProfile = React.memo(() => {
 
   const studentData = student
     ? {
-        fullName: student.user?.fullName || "N/A",
-        email: student.user?.email || "N/A",
-        contactNumber: student.user?.phoneNumber || "N/A",
-        academicQualification: student.academicQualification || "N/A",
-        yearOfCompletion: student.yearOfCompletion || "N/A",
-        countryWishToApply: student.preferredCountry || "N/A",
-        language: student.language || "N/A",
-        faculty: student.faculty || "N/A",
-        classTime: student.classTime || "N/A",
-        gpaPercentage: student.gpaOrPercentage || "N/A",
-        interestedCourse: student.interestedCourse || "N/A",
-        profileImage: student.user?.profileImage.url || "profile.svg",
-        address: student.user?.address || "N/A",
+        fullName: student?.user?.fullName || "N/A",
+        email: student?.user?.email || "N/A",
+        contactNumber: student?.user?.phoneNumber || "N/A",
+        academicQualification: student?.academicQualification || "N/A",
+        yearOfCompletion: student?.yearOfCompletion || "N/A",
+        countryWishToApply: student?.preferredCountry || "N/A",
+        language: student?.language || "N/A",
+        faculty: student?.faculty || "N/A",
+        classTime: student?.classTime || "N/A",
+        gpaPercentage: student?.gpaOrPercentage || "N/A",
+        interestedCourse: student?.interestedCourse || "N/A",
+        profileImage: student?.user?.profileImage?.url || "profile.svg",
+        address: student?.user?.address || "N/A",
       }
     : null;
 
@@ -81,6 +85,38 @@ export const StudentProfile = React.memo(() => {
       .slice(0, 2);
   };
 
+  const otherInfoCardData = [
+    {
+      icon: LiaMoneyBillWaveAltSolid,
+      title: "PAYMENT",
+      status: "PAID IN FULL",
+      otherInfo: "Last updated: Jan 25,2025",
+    },
+    {
+      icon: FileText,
+      title: "DOCUMENTS",
+      status: "RECEIVED",
+      otherInfo: "Verification completed",
+    },
+    {
+      icon: PlaneTakeoff,
+      title: "VISA STATUS",
+      status: "ACCEPTED",
+      otherInfo: "Last updated: Jan 25,2025",
+    },
+    {
+      icon: BookOpenText,
+      title: "BOOK STATUS",
+      status: "RECEIVED",
+      otherInfo: "Set #4 Received",
+    },
+    {
+      icon: Calendar,
+      title: "DATEBOOK",
+      status: "Dec 10,2023",
+      otherInfo: "Sheduled",
+    },
+  ];
   return (
     <div className="min-h-screen  p-4 md:p-6 lg:p-8">
       <div className="w-full mx-auto">
@@ -99,31 +135,31 @@ export const StudentProfile = React.memo(() => {
               <CardContent className="gap-4 flex flex-col">
                 <div className="flex flex-col items-center justify-center gap-2">
                   <Avatar className="bg-green-50 rounded-full w-40 h-40 aspect-square ">
-                    <AvatarImage src={studentData.profileImage} />
+                    <AvatarImage src={studentData?.profileImage} />
                     <AvatarFallback className="text-4xl font-medium">
-                      {getInitials(studentData.fullName)}
+                      {getInitials(studentData?.fullName)}
                     </AvatarFallback>
                   </Avatar>
                   <div className="mt-2">
                     <h3 className="text-2xl font-medium text-center">
-                      {studentData.fullName}
+                      {studentData?.fullName}
                     </h3>
                     <p className="text-muted-foreground text-center font-medium">
-                      {studentData.academicQualification}
+                      {studentData?.academicQualification}
                     </p>
                   </div>
                 </div>
                 <div className="flex gap-2">
                   <Mail />
-                  <p>{studentData.email}</p>
+                  <p>{studentData?.email}</p>
                 </div>
                 <div className="flex gap-2">
                   <Phone />
-                  <p>{studentData.contactNumber}</p>
+                  <p>{studentData?.contactNumber}</p>
                 </div>
                 <div className="flex gap-2">
                   <MapPin />
-                  <p>{studentData.address}</p>
+                  <p>{studentData?.address}</p>
                 </div>
               </CardContent>
             </Card>
@@ -140,14 +176,14 @@ export const StudentProfile = React.memo(() => {
                     Preferred Country:
                   </p>
                   <p className="font-medium">
-                    {studentData.countryWishToApply}
+                    {studentData?.countryWishToApply}
                   </p>
                 </div>
                 <div className="grid grid-cols-[2fr_1fr] gap-2">
                   <p className="text-muted-foreground font-medium">
                     Language Proficiency:
                   </p>
-                  <p className="font-medium">{studentData.language}</p>
+                  <p className="font-medium">{studentData?.language}</p>
                 </div>
               </CardContent>
             </Card>
@@ -166,36 +202,36 @@ export const StudentProfile = React.memo(() => {
                     Academic Qualification:
                   </p>
                   <p className="font-medium">
-                    {studentData.academicQualification}
+                    {studentData?.academicQualification}
                   </p>
                 </div>
                 <div className="flex flex-col">
                   <p className="text-muted-foreground font-medium">
                     Year of Completion:
                   </p>
-                  <p className="font-medium">{studentData.yearOfCompletion}</p>
+                  <p className="font-medium">{studentData?.yearOfCompletion}</p>
                 </div>
                 <div className="flex flex-col">
                   <p className="text-muted-foreground font-medium">
                     GPA/Percentage:
                   </p>
-                  <p className="font-medium">{studentData.gpaPercentage}</p>
+                  <p className="font-medium">{studentData?.gpaPercentage}</p>
                 </div>
                 <div className="flex flex-col">
                   <p className="text-muted-foreground font-medium">Faculty:</p>
-                  <p className="font-medium">{studentData.faculty}</p>
+                  <p className="font-medium">{studentData?.faculty}</p>
                 </div>
                 <div className="flex flex-col">
                   <p className="text-muted-foreground font-medium">
                     Interested Course:
                   </p>
-                  <p className="font-medium">{studentData.interestedCourse}</p>
+                  <p className="font-medium">{studentData?.interestedCourse}</p>
                 </div>
                 <div className="flex flex-col">
                   <p className="text-muted-foreground font-medium">
                     Overall PTE/IELTS Score:
                   </p>
-                  <p className="font-medium">{studentData.language}</p>
+                  <p className="font-medium">{studentData?.language}</p>
                 </div>
               </CardContent>
             </Card>
@@ -207,36 +243,15 @@ export const StudentProfile = React.memo(() => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 md:gap-4">
-                <OtherInfoCard
-                  icon={LiaMoneyBillWaveAltSolid}
-                  title="PAYMENT"
-                  status="Approved"
-                  otherInfo="Last updated: Jan 25,2025"
-                />
-                <OtherInfoCard
-                  icon={LiaMoneyBillWaveAltSolid}
-                  title="PAYMENT"
-                  status="Approved"
-                  otherInfo="Last updated: Jan 25,2025"
-                />
-                <OtherInfoCard
-                  icon={LiaMoneyBillWaveAltSolid}
-                  title="PAYMENT"
-                  status="Approved"
-                  otherInfo="Last updated: Jan 25,2025"
-                />
-                <OtherInfoCard
-                  icon={LiaMoneyBillWaveAltSolid}
-                  title="PAYMENT"
-                  status="Approved"
-                  otherInfo="Last updated: Jan 25,2025"
-                />
-                <OtherInfoCard
-                  icon={LiaMoneyBillWaveAltSolid}
-                  title="PAYMENT"
-                  status="Approved"
-                  otherInfo="Last updated: Jan 25,2025"
-                />
+                {otherInfoCardData.map((item) => (
+                  <OtherInfoCard
+                    icon={item.icon}
+                    title={item.title}
+                    status={item.status}
+                    otherInfo={item.otherInfo}
+                    key={item.title}
+                  />
+                ))}
               </CardContent>
             </Card>
             <Card className="rounded-md border border-gray-300 shadow-xs">
@@ -273,12 +288,12 @@ const OtherInfoCard = ({
 }: otherInfoCardProps) => {
   const statusColor = (str?: string) => {
     if (!str) return null;
-    switch (str) {
-      case "Paid":
+    switch (str.toLowerCase()) {
+      case "paid in full":
         return <p className="text-yellow-500 font-medium text-lg">{str}</p>;
-      case "Received":
+      case "received":
         return <p className="text-green-500 font-medium text-lg">{str}</p>;
-      case "Approved":
+      case "accepted":
         return <p className="text-blue-500 font-medium text-lg">{str}</p>;
       default:
         return <p className="text-gray-500 font-medium text-lg">{str}</p>;

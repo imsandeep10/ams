@@ -31,6 +31,7 @@ import {
   PtePageRoute,
   ReportRoute,
   SatPageRoute,
+  StudentFollowUpRoute,
   StudentPaymentRoute,
   StudentProfileRoute,
   StudentRegisterRoute,
@@ -195,6 +196,10 @@ const router = createBrowserRouter([
           {
             path: "student-track/:id",
             element: <StudentTrackRoute />,
+          },
+          {
+            path: "students/send-email",
+            element: <StudentFollowUpRoute />,
           },
           {
             path: "create-admin",
