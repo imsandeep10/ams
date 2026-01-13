@@ -17,9 +17,7 @@ export const IeltsPageRoute = lazy(() => import("../pages/ieltsPage"));
 export const DuolingoPageRoute = lazy(() => import("../pages/duolingoPage"));
 export const SatPageRoute = lazy(() => import("../pages/satPage"));
 export const PtePageRoute = lazy(() => import("../pages/ptePage"));
-export const MockRegisterDataRoute = lazy(
-  () => import("../pages/MockRegisterData")
-);
+export const MockPage = lazy(() => import("../pages/mockPage"));
 export const IeltsMockTestFormRoute = lazy(
   () => import("../components/mock-test/IeltsMockTestForm")
 );
@@ -49,6 +47,15 @@ export const CreateStudentRoute = lazy(() =>
     default: module.CreateStudent,
   }))
 );
+export const StudentPaymentRoute = lazy(
+  () => import("../components/students/studentPayment/studentPayment")
+);
+export const StudentRemarkRoute = lazy(
+  () => import("../components/students/remark/student-remark")
+);
+export const StudentFollowUpRoute = lazy(
+  () => import("../components/students/send-email/emailPage")
+);
 
 // admin pages
 export const DashboardPageRoute = lazy(() => import("../pages/dashboardPage"));
@@ -73,4 +80,14 @@ export const AdminProfileRoute = lazy(() =>
   import("../pages/AdminProfile").then((module) => ({
     default: module.AdminProfile,
   }))
+);
+
+// payment page
+export const PaymentPageRoute = lazy(
+  () => import("../pages/payment/paymentPage")
+);
+
+// email page
+export const CustomEmailPageRoute = lazy(
+  () => import("../components/students/send-email/customEmail")
 );

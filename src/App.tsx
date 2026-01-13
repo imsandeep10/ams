@@ -18,6 +18,7 @@ import {
   AttendacneRoute,
   CreateAdminRoute,
   CreateStudentRoute,
+  CustomEmailPageRoute,
   DashboardPageRoute,
   DuolingoPageRoute,
   EditAdminPageRoute,
@@ -26,13 +27,17 @@ import {
   IeltsMockTestFormRoute,
   IeltsPageRoute,
   LoginRoute,
-  MockRegisterDataRoute,
+  MockPage,
+  PaymentPageRoute,
   ProfileRoute,
   PtePageRoute,
   ReportRoute,
   SatPageRoute,
+  StudentFollowUpRoute,
+  StudentPaymentRoute,
   StudentProfileRoute,
   StudentRegisterRoute,
+  StudentRemarkRoute,
   StudentTrackRoute,
 } from "./lazyRoutes/route";
 
@@ -82,7 +87,9 @@ const router = createBrowserRouter([
           {
             path: "pte",
             element: (
-              <RoleProtected allowedRoles={["pteAdmin", "superAdmin"]}>
+              <RoleProtected
+                allowedRoles={["pteAdmin", "superAdmin", "accountant"]}
+              >
                 <RoleLayout />
               </RoleProtected>
             ),
@@ -95,13 +102,19 @@ const router = createBrowserRouter([
               { path: "students", element: <PtePageRoute /> },
               { path: "students/create", element: <CreateStudentRoute /> },
               { path: "students/edit/:id", element: <EditStudentRoute /> },
+              {
+                path: "students/send-email",
+                element: <StudentFollowUpRoute />,
+              },
               { path: "report", element: <ReportRoute /> },
             ],
           },
           {
             path: "ielts",
             element: (
-              <RoleProtected allowedRoles={["ieltsAdmin", "superAdmin"]}>
+              <RoleProtected
+                allowedRoles={["ieltsAdmin", "superAdmin", "accountant"]}
+              >
                 <RoleLayout />
               </RoleProtected>
             ),
@@ -114,17 +127,23 @@ const router = createBrowserRouter([
               { path: "students", element: <IeltsPageRoute /> },
               { path: "students/create", element: <CreateStudentRoute /> },
               { path: "students/edit/:id", element: <EditStudentRoute /> },
+              {
+                path: "students/send-email",
+                element: <StudentFollowUpRoute />,
+              },
               { path: "report", element: <ReportRoute /> },
               {
                 path: "mock-data-table",
-                element: <MockRegisterDataRoute />,
+                element: <MockPage />,
               },
             ],
           },
           {
             path: "duolingo",
             element: (
-              <RoleProtected allowedRoles={["duolingoAdmin", "superAdmin"]}>
+              <RoleProtected
+                allowedRoles={["duolingoAdmin", "superAdmin", "accountant"]}
+              >
                 <RoleLayout />
               </RoleProtected>
             ),
@@ -136,13 +155,19 @@ const router = createBrowserRouter([
               { path: "dashboard", element: <DashboardPageRoute /> },
               { path: "students", element: <DuolingoPageRoute /> },
               { path: "students/edit/:id", element: <EditStudentRoute /> },
+              {
+                path: "students/send-email",
+                element: <StudentFollowUpRoute />,
+              },
               { path: "report", element: <ReportRoute /> },
             ],
           },
           {
             path: "sat",
             element: (
-              <RoleProtected allowedRoles={["satAdmin", "superAdmin"]}>
+              <RoleProtected
+                allowedRoles={["satAdmin", "superAdmin", "accountant"]}
+              >
                 <RoleLayout />
               </RoleProtected>
             ),
@@ -155,7 +180,32 @@ const router = createBrowserRouter([
               { path: "students", element: <SatPageRoute /> },
               { path: "students/create", element: <CreateStudentRoute /> },
               { path: "students/edit/:id", element: <EditStudentRoute /> },
+              {
+                path: "students/send-email",
+                element: <StudentFollowUpRoute />,
+              },
               { path: "report", element: <ReportRoute /> },
+            ],
+          },
+          {
+            path: "accountant",
+            element: (
+              <RoleProtected allowedRoles={["accountant", "superAdmin"]}>
+                <RoleLayout />
+              </RoleProtected>
+            ),
+            children: [
+              {
+                index: true,
+                element: <RoleIndexRedirect adminRole={"accountant"} />,
+              },
+              { path: "dashboard", element: <DashboardPageRoute /> },
+              { path: "students", element: <AllStudentPageRoute /> },
+              { path: "students/create", element: <CreateStudentRoute /> },
+              {
+                path: "students/send-email",
+                element: <StudentFollowUpRoute />,
+              },
             ],
           },
           {
@@ -183,12 +233,28 @@ const router = createBrowserRouter([
             element: <StudentProfileRoute />,
           },
           {
+            path: "student-payment/:id",
+            element: <StudentPaymentRoute />,
+          },
+          {
+            path: "student-remark/:id",
+            element: <StudentRemarkRoute />,
+          },
+          {
             path: "student-track/:id",
             element: <StudentTrackRoute />,
           },
           {
+            path: "student-track/:id/email",
+            element: <CustomEmailPageRoute />,
+          },
+          {
             path: "create-admin",
             element: <CreateAdminRoute />,
+          },
+          {
+            path: "/payment",
+            element: <PaymentPageRoute />,
           },
           {
             path: "Password-admin",
@@ -212,7 +278,7 @@ const router = createBrowserRouter([
           },
           {
             path: "mock-data-table",
-            element: <MockRegisterDataRoute />,
+            element: <MockPage />,
           },
         ],
       },

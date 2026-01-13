@@ -25,7 +25,7 @@ import type {
   DestinationCountry,
   IELTSMockTestFormData,
   ModulesCompleted,
-} from "@/types/mockFormTypes";
+} from "@/shared/types/mockFormTypes";
 import {
   DESTINATION_COUNTRY_OPTIONS,
   MODULE_OPTIONS,

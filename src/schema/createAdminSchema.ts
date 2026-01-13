@@ -17,7 +17,7 @@ export const createAdminSchema = z.object({
     .or(z.literal("")),
   address: z.string().min(1, "Address is required"),
   profileImageId: z.string().optional(),
-  role: z.enum(["satAdmin", "duolingoAdmin", "ieltsAdmin", "pteAdmin"], {
+  role: z.enum(["satAdmin", "duolingoAdmin", "ieltsAdmin", "pteAdmin","accountant"], {
     message: "Please select a role",
   }),
 });

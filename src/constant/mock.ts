@@ -3,7 +3,7 @@ import type {
   ModulesCompleted,
   PreferredTime,
   TestType,
-} from "@/types/mockFormTypes";
+} from "@/shared/types/mockFormTypes";
 
 //
 export const PREFERRED_TIME_OPTIONS: PreferredTime[] = [

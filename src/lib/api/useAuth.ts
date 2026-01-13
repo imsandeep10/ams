@@ -1,5 +1,5 @@
 import type { LoginFormData } from "@/schema/LoginSchema";
-import { useMutation } from "@tanstack/react-query";
+import {  useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError, type AxiosResponse } from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -7,13 +7,21 @@ import api from "../axiosInstance";
 
 export const useLogin = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   return useMutation<AxiosResponse, AxiosError, LoginFormData>({
+    mutationKey: ["login"],
     mutationFn: async (data) => {
-      const res = await api.post("/api/login/signin", data);
+      const res = await api.post("/api/login/signin", data, {
+        headers: {
+          "Content-Type": "application/json",
+          'x-internal-access': import.meta.env.VITE_INTERNAL_ACCESS_KEY,
+        },
+      });
       return res.data;
     },
     onSuccess: () => {
       toast.success("Login successful!");
+      queryClient.invalidateQueries({ queryKey: ["currentUser", "login"] });
       navigate("/dashboard");
     },
     onError: (error: AxiosError) => {
@@ -23,6 +31,8 @@ export const useLogin = () => {
 };
 
 export const useLogout = () => {
+  const queryClient = useQueryClient();
+  const Navigate = useNavigate();
   return useMutation({
     mutationKey: ["logout"],
     mutationFn: async () => {
@@ -30,7 +40,9 @@ export const useLogout = () => {
       return res.data;
     },
     onSuccess: () => {
+      queryClient.clear();
       toast.success("Logout successful!");
+      Navigate("/", { replace: true });
     },
     onError: (error: AxiosError) => {
       toast.error(`Logout failed: ${error.message}`);

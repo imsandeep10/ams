@@ -23,8 +23,21 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Plus, Search } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Mail, Plus, Search, Share } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -34,6 +47,11 @@ interface DataTableProps<TData, TValue> {
   pageSize?: number;
   totalRows?: number;
   onPaginationChange?: (page: number, pageSize: number) => void;
+  addLink?: string;
+  addLabel?: string;
+  isMessaging?: boolean;
+  onExport?: () => void;
+  isExporting?: boolean;
 }
 
 export function DataTable<TData, TValue>({
@@ -44,6 +62,12 @@ export function DataTable<TData, TValue>({
   pageSize: externalPageSize = 10,
   totalRows = 0,
   onPaginationChange,
+  addLink,
+  isMessaging = false,
+  onExport,
+  isExporting,
+
+  addLabel = "Add Student",
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -54,7 +78,6 @@ export function DataTable<TData, TValue>({
   const [pageSize, setPageSize] = useState(externalPageSize);
   const pathname = window.location.pathname.split("/").filter(Boolean);
   const isServerSidePagination = !!onPaginationChange;
-
   const navigate = useNavigate();
 
   const table = useReactTable({
@@ -133,26 +156,44 @@ export function DataTable<TData, TValue>({
         </div>
 
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">Rows per page:</span>
-            <select
-              value={pageSize}
-              onChange={(e) => handlePageSizeChange(Number(e.target.value))}
-              className="border rounded px-2 py-1 text-sm cursor-pointer"
-            >
-              <option value={10}>10</option>
-              <option value={25}>25</option>
-              <option value={50}>50</option>
-              <option value={100}>100</option>
-            </select>
-          </div>
+          {isMessaging && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button className="cursor-pointer" variant={"outline"} asChild>
+                  <Link to="send-email">
+                    <Mail />
+                  </Link>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Single/Bulk Email</p>
+              </TooltipContent>
+            </Tooltip>
+          )}
+          {/* download */}
+          {onExport && (
+            <div className="flex justify-center">
+              <Button
+                onClick={onExport}
+                disabled={isExporting}
+                className="cursor-pointer"
+              >
+                <Share />
+                {isExporting ? "Exporting..." : "Export"}
+              </Button>
+            </div>
+          )}
           <Button
             className="cursor-pointer"
             onClick={() => {
-              navigate(`/create-student?language=${pathname[0]}`);
+              if (addLink) {
+                navigate(addLink);
+              } else {
+                navigate(`/create-student?language=${pathname[0]}`);
+              }
             }}
           >
-            <span>Add Student</span>
+            <span>{addLabel || "Add Student"}</span>
             <Plus />
           </Button>
         </div>
@@ -226,7 +267,7 @@ export function DataTable<TData, TValue>({
               {isServerSidePagination
                 ? pageIndex * pageSize + 1
                 : table.getState().pagination.pageIndex *
-                  table.getState().pagination.pageSize +
+                    table.getState().pagination.pageSize +
                   1}
             </span>{" "}
             to{" "}
@@ -251,6 +292,26 @@ export function DataTable<TData, TValue>({
 
         <div className="flex items-center space-x-2">
           <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground">
+              Rows per page:
+            </span>
+            <Select
+              onValueChange={(value) => handlePageSizeChange(Number(value))}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder={pageSize.toString()} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value="10">10</SelectItem>
+                  <SelectItem value="25">25</SelectItem>
+                  <SelectItem value="50">50</SelectItem>
+                  <SelectItem value="100">100</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex items-center gap-2">
             {isServerSidePagination && (
               <span className="text-sm text-muted-foreground">
                 Page {pageIndex + 1} of {pageCount}
@@ -260,7 +321,11 @@ export function DataTable<TData, TValue>({
               variant="outline"
               size="sm"
               onClick={handlePreviousPage}
-              disabled={isServerSidePagination ? pageIndex === 0 : !table.getCanPreviousPage()}
+              disabled={
+                isServerSidePagination
+                  ? pageIndex === 0
+                  : !table.getCanPreviousPage()
+              }
             >
               Previous
             </Button>
@@ -268,7 +333,11 @@ export function DataTable<TData, TValue>({
               variant="outline"
               size="sm"
               onClick={handleNextPage}
-              disabled={isServerSidePagination ? pageIndex >= pageCount - 1 : !table.getCanNextPage()}
+              disabled={
+                isServerSidePagination
+                  ? pageIndex >= pageCount - 1
+                  : !table.getCanNextPage()
+              }
             >
               Next
             </Button>

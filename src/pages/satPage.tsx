@@ -9,7 +9,7 @@ const SatPage: React.FC = () => {
   const [pageSize, setPageSize] = useState(10);
 
   const { data, isPending } = useGetStudentsByLanguage("SAT", page, pageSize);
-  
+
   const handlePaginationChange = (newPage: number, newPageSize: number) => {
     setPage(newPage);
     setPageSize(newPageSize);
@@ -25,8 +25,9 @@ const SatPage: React.FC = () => {
 
   return (
     <div className="container mx-auto py-2">
-      <DataTable 
-        columns={columns} 
+      <DataTable
+        columns={columns}
+        isMessaging={true}
         data={data?.students || []}
         pageCount={data?.pagination.totalPages || 1}
         pageIndex={page - 1}

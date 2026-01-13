@@ -1,4 +1,4 @@
-import type { studentTrackTypes } from "@/types/studentTrackTypes";
+import type { studentTrackTypes } from "@/shared/types/studentTrackTypes";
 
 export const attendanceRecords: studentTrackTypes[] = [
   {

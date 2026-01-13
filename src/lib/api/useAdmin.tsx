@@ -1,5 +1,5 @@
 import type { CreateAdminFormData } from "@/schema/createAdminSchema";
-import type { CreateAdminResponse } from "@/types/createAdminTypes";
+import type { CreateAdminResponse } from "@/shared/types/createAdminTypes";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { toast } from "sonner";

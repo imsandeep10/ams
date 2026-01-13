@@ -1,10 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import api from "../axiosInstance";
 import { AxiosError } from "axios";
-import type { CreateStudentResponse } from "@/types/createStudentTypes";
+import type { CreateStudentResponse } from "@/shared/types/createStudentTypes";
 import type { CreateStudentFormData } from "@/schema/createStudentSchema";
 import { toast } from "sonner";
-import type { Student } from "@/types/studentTypes";
+import type { Student } from "@/shared/types/studentTypes";
+import type { StudentResponse } from "@/shared/interface/studentResponse";
 
 type UpdateStudentPayload = {
   id: string;
@@ -178,6 +179,8 @@ export const useGetAllStudents = (page: number = 1, limit: number = 10) => {
   });
 };
 
+
+
 export const useGetStudentById = (id: string) => {
   return useQuery({
     queryKey: ["student", id],
@@ -187,7 +190,7 @@ export const useGetStudentById = (id: string) => {
       if (!res || !res.data) {
         throw new Error("Student Not Found");
       }
-      return res.data.student;
+      return res.data.student as StudentResponse;
     },
     enabled: !!id, // only fetch if id exists
   });
@@ -227,6 +230,7 @@ export const useGetStudentAttendanceTrack = (
         const res = await api.get(
           `/api/attendance-track/monthly/${studentId}?year=${year}&month=${month}`
         );
+        console.log("attandence",res.data);
         return res.data;
       } catch (err: any) {
         toast.error("Failed to fetch attendance:", err);
@@ -237,6 +241,21 @@ export const useGetStudentAttendanceTrack = (
     retry: 1,
   });
 };
+
+export const useStudentProgress = (
+  userId: string
+) => {
+  return useQuery({
+    queryKey: ["student-progress"],
+    queryFn: async () => {
+      try {
+        const res = await api.get(`/api/student-progress/${userId}`);
+        return res.data;
+      }
+      catch (err: any) {console.log(err);}
+    }
+  })
+}
 
 export const useStudentSearch = (
   query: string,

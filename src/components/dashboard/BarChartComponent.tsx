@@ -1,4 +1,4 @@
-import type { barChartTypes } from "@/types/barChartTypes";
+import type { barChartTypes } from "@/shared/types/barChartTypes";
 import React from "react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
 import {
@@ -13,7 +13,7 @@ type Props = {
   data: barChartTypes[];
 };
 
-const  BarChartComponent: React.FC<Props> = React.memo(({ data }) => {
+const BarChartComponent: React.FC<Props> = React.memo(({ data }) => {
   return (
     <div className="bg-white  rounded-md w-full  ">
       <div className="py-4 flex flex-row justify-between">

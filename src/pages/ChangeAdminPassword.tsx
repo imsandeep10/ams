@@ -81,7 +81,7 @@ export default function AdminPasswordForm() {
         <ArrowLeft className="w-5 h-5 mr-2" />
         Back
       </Button>
-      <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4">
+      <div className="h-[80vh] flex items-center justify-center bg-slate-50 p-4">
         <Card className="w-full max-w-md">
           <CardHeader>
             <CardTitle>Change Admin Password</CardTitle>

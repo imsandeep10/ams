@@ -1,4 +1,4 @@
-import type { dashboardtypes } from "@/types/dashboardTypes";
+import type { dashboardtypes } from "@/shared/types/dashboardTypes";
 
 export const dashboardTotalCard: dashboardtypes[] = [
   {

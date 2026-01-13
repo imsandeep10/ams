@@ -13,6 +13,7 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import { Skeleton } from "../ui/skeleton";
 import { memo, useCallback, useEffect, useState } from "react";
 import {
   Select,
@@ -48,7 +49,7 @@ function CreateStudentFormComponent({ mode }: props) {
   const { mutateAsync: updateStudent } = useUpdateStudent();
 
   const { id } = useParams<{ id: string }>();
-  const { data: StudentData } = useGetStudentById(id || "");
+  const { data: StudentData, isPending: isLoading } = useGetStudentById(id!);
 
   const [uploadError, setUploadError] = useState<string>("");
   const navigate = useNavigate();
@@ -80,12 +81,12 @@ function CreateStudentFormComponent({ mode }: props) {
   useEffect(() => {
     if (mode === "edit" && StudentData) {
       const formData: CreateStudentFormData = {
-        fullName: StudentData.user?.fullName || StudentData.name || "",
-        email: StudentData.user?.email || StudentData.email || "",
-        phoneNumber: StudentData.user?.phoneNumber || StudentData.phone || "",
+        fullName: StudentData.user?.fullName || "",
+        email: StudentData.user?.email || "",
+        phoneNumber: StudentData.user?.phoneNumber || "",
         address: StudentData.user?.address || "",
         profileImageId:
-          StudentData.user?.profileImage?.id ||
+          StudentData.user?.profileImage?.url ||
           StudentData.user?.profileImageId ||
           "",
         gpaOrPercentage: StudentData.gpaOrPercentage || "",
@@ -153,6 +154,52 @@ function CreateStudentFormComponent({ mode }: props) {
     },
     [createStudents, updateStudent, mode, id, router, pathLanguage]
   );
+
+  if (isLoading && mode === "edit") {
+    return (
+      <>
+        <Button
+          variant="ghost"
+          onClick={() => navigate(-1)}
+          className="mb-6 hover:bg-gray-200 cursor-pointer"
+        >
+          <ArrowLeft className="w-5 h-5 mr-2" />
+          Back
+        </Button>
+
+        <div className="bg-white grid grid-cols-1 md:grid-cols-2 gap-6 p-4 md:p-8 lg:p-6 py-8 rounded-lg shadow-md">
+          {/* Personal Information Section */}
+          <div className="md:col-span-2">
+            <Skeleton className="h-6 w-48" />
+          </div>
+
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div key={`personal-${i}`} className="space-y-2">
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-10 w-full" />
+            </div>
+          ))}
+
+          {/* Academic Information Section */}
+          <div className="md:col-span-2 mt-2">
+            <Skeleton className="h-6 w-48" />
+          </div>
+
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div key={`academic-${i}`} className="space-y-2">
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-10 w-full" />
+            </div>
+          ))}
+
+          {/* Submit Button */}
+          <div className="md:col-span-2">
+            <Skeleton className="h-11 w-full" />
+          </div>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>

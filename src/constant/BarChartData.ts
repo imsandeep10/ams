@@ -1,4 +1,4 @@
-import type { barChartTypes } from "@/types/barChartTypes";
+import type { barChartTypes } from "@/shared/types/barChartTypes";
 
 export const BarChartData: barChartTypes[] = [
   { name: "Class 1", daily: 80, monthly: 55 },
