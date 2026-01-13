@@ -15,6 +15,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useGetStudentById } from "@/lib/api/useStudents";
 import { IoEarth } from "react-icons/io5";
 import { LiaMoneyBillWaveAltSolid } from "react-icons/lia";
@@ -46,10 +47,106 @@ export const StudentProfile = React.memo(() => {
 
   if (isLoading)
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading student profile...</p>
+      <div className="min-h-screen p-4 md:p-6 lg:p-8">
+        <div className="w-full mx-auto">
+          <Skeleton className="h-10 w-24 mb-6" />
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Left Column */}
+            <div className="col-span-1 flex flex-col gap-6">
+              <Card className="rounded-md border border-gray-300 shadow-xs">
+                <CardContent className="gap-4 flex flex-col">
+                  <div className="flex flex-col items-center justify-center gap-2">
+                    <Skeleton className="rounded-full w-40 h-40" />
+                    <div className="mt-2 space-y-2">
+                      <Skeleton className="h-8 w-48 mx-auto" />
+                      <Skeleton className="h-5 w-32 mx-auto" />
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="flex gap-2">
+                      <Skeleton className="h-6 w-6" />
+                      <Skeleton className="h-6 w-full" />
+                    </div>
+                    <div className="flex gap-2">
+                      <Skeleton className="h-6 w-6" />
+                      <Skeleton className="h-6 w-full" />
+                    </div>
+                    <div className="flex gap-2">
+                      <Skeleton className="h-6 w-6" />
+                      <Skeleton className="h-6 w-full" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card className="rounded-md border border-gray-300 shadow-xs">
+                <CardHeader className="flex gap-2 items-center">
+                  <Skeleton className="h-6 w-6 rounded-full" />
+                  <Skeleton className="h-6 w-40" />
+                </CardHeader>
+                <CardContent className="flex flex-col gap-3">
+                  <div className="grid grid-cols-[2fr_1fr] gap-2">
+                    <Skeleton className="h-5 w-full" />
+                    <Skeleton className="h-5 w-full" />
+                  </div>
+                  <div className="grid grid-cols-[2fr_1fr] gap-2">
+                    <Skeleton className="h-5 w-full" />
+                    <Skeleton className="h-5 w-full" />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Right Column */}
+            <div className="col-span-2 flex flex-col gap-6">
+              <Card className="rounded-md border border-gray-300 shadow-xs">
+                <CardHeader className="flex gap-2 items-center">
+                  <Skeleton className="h-7 w-7 rounded-full" />
+                  <Skeleton className="h-6 w-48" />
+                </CardHeader>
+                <CardContent className="grid grid-cols-3 gap-x-2 gap-y-6">
+                  {[1, 2, 3, 4, 5, 6].map((i) => (
+                    <div key={i} className="flex flex-col gap-2">
+                      <Skeleton className="h-5 w-full" />
+                      <Skeleton className="h-5 w-3/4" />
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+
+              <Card className="rounded-md border border-gray-300 shadow-xs">
+                <CardHeader className="flex gap-2 items-center">
+                  <Skeleton className="h-7 w-7 rounded-full" />
+                  <Skeleton className="h-6 w-40" />
+                </CardHeader>
+                <CardContent className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 md:gap-4">
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <Card key={i} className="p-2 gap-0">
+                      <CardHeader className="flex items-center gap-2 px-2">
+                        <Skeleton className="h-6 w-6 rounded" />
+                        <Skeleton className="h-5 w-20" />
+                      </CardHeader>
+                      <CardContent className="p-2 space-y-2">
+                        <Skeleton className="h-6 w-full" />
+                        <Skeleton className="h-4 w-full" />
+                      </CardContent>
+                    </Card>
+                  ))}
+                </CardContent>
+              </Card>
+
+              <Card className="rounded-md border border-gray-300 shadow-xs">
+                <CardHeader className="flex justify-between items-center">
+                  <Skeleton className="h-6 w-24" />
+                  <Skeleton className="h-6 w-36" />
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <Skeleton className="h-24 w-full" />
+                  <Skeleton className="h-24 w-full" />
+                </CardContent>
+              </Card>
+            </div>
+          </div>
         </div>
       </div>
     );

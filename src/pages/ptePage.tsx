@@ -1,5 +1,5 @@
 import { DataTableSkeleton } from "@/components/common/DataTableSkeleton";
-import { columns } from "@/components/students/studentTables/Columns";
+import { LangugaeColumns } from "@/components/students/languageTables/languageColumns";
 import { DataTable } from "@/components/students/studentTables/DataTable";
 import { useGetStudentsByLanguage } from "@/lib/api/useStudents";
 import React, { useState } from "react";
@@ -26,7 +26,7 @@ const PtePage: React.FC = () => {
   return (
     <div className="container mx-auto py-2">
       <DataTable
-        columns={columns}
+        columns={LangugaeColumns}
         isMessaging={true}
         data={data?.students || []}
         pageCount={data?.pagination.totalPages || 1}

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { DataTableSkeleton } from "@/components/common/DataTableSkeleton";
-import { columns } from "@/components/students/studentTables/Columns";
 import { DataTable } from "@/components/students/studentTables/DataTable";
 import { useGetStudentsByLanguage } from "@/lib/api/useStudents";
+import { LangugaeColumns } from "@/components/students/languageTables/languageColumns";
 
 const SatPage: React.FC = () => {
   const [page, setPage] = useState(1);
@@ -26,7 +26,7 @@ const SatPage: React.FC = () => {
   return (
     <div className="container mx-auto py-2">
       <DataTable
-        columns={columns}
+        columns={LangugaeColumns}
         isMessaging={true}
         data={data?.students || []}
         pageCount={data?.pagination.totalPages || 1}
