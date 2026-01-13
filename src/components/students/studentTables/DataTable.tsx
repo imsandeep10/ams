@@ -46,6 +46,7 @@ interface DataTableProps<TData, TValue> {
   addLabel?: string;
   onExport?: () => void;
   isExporting?: boolean;
+  isAddButton?: boolean;
 }
 
 export function DataTable<TData, TValue>({
@@ -59,7 +60,7 @@ export function DataTable<TData, TValue>({
   addLink,
   onExport,
   isExporting,
-
+  isAddButton = true,
   addLabel = "Add Student",
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -164,7 +165,7 @@ export function DataTable<TData, TValue>({
               </div>
             )}
           </div>
-          <Button
+          {isAddButton && <Button
             className="cursor-pointer"
             onClick={() => {
               if (addLink) {
@@ -176,7 +177,7 @@ export function DataTable<TData, TValue>({
           >
             <span>{addLabel || "Add Student"}</span>
             <Plus />
-          </Button>
+          </Button>}
         </div>
       </div>
 

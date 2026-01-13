@@ -42,6 +42,9 @@ const Payment: React.FC = React.memo(() => {
         pageSize={studentData?.pagination.limit || 10}
         totalRows={studentData?.pagination.total || 0}
         onPaginationChange={handlePaginationChange}
+        isAddButton={false}
+        addLink=""
+        addLabel=""
       />
     </div>
   );

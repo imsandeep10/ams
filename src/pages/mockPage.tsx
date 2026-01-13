@@ -7,7 +7,7 @@ import { useExportMockTests } from "@/lib/api/useMockRegister";
 // import { StatsCard } from "@/components/recordCards/Card";
 // import { CalendarIcon } from "lucide-react";
 
-
+// maile garako yo ho
 const MockPage: React.FC = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -90,7 +90,7 @@ const MockPage: React.FC = () => {
           pageSize={pageSize}
           totalRows={data?.pagination.total || 0}
           onPaginationChange={handlePaginationChange}
-          addLink="/mock-test/register"
+          addLink="/mock-table/mock-test/register"
           addLabel="Add Mock Test"
           onExport={handleExport}
           isExporting={isExporting}

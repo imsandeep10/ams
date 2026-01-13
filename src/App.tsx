@@ -259,6 +259,10 @@ const router = createBrowserRouter([
             path: "mock-data-table",
             element: <MockPage />,
           },
+          {
+        path: "mock-table/mock-test/register",
+        element: <IeltsMockTestFormRoute isButton={true} />,
+      },
         ],
       },
       {

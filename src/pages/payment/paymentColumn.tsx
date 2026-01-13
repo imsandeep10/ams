@@ -16,7 +16,6 @@ interface ActionButtonsProps {
 
 const ActionButtons = React.memo<ActionButtonsProps>(({ studentId }) => {
   const navigate = useNavigate();
-  3;
 
   const handleNavigation = (path: string) => {
     navigate(path);

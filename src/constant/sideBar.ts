@@ -116,11 +116,10 @@ export const roleSidebars: Record<string, SidBartypes[]> = {
     { title: "PTE", url: "/pte/students", icon: Users },
     { title: "Duolingo", url: "/duolingo/students", icon: Users },
     { title: "SAT", url: "/sat/students", icon: Users },
-    { title: "Payment", url: "/accountant/payment", icon: FileText },
     {
       title: "Payment",
       url: "/payment",
-      icon: UserStar,
+      icon: BadgeDollarSign,
     },
   ],
 };

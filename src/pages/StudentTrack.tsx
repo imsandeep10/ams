@@ -1,4 +1,3 @@
-"use client";
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { TrackDataTable } from "@/components/students/studentTrack/TrackDataTable";
@@ -17,7 +16,6 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
 } from "@/components/ui/popover";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -100,24 +98,7 @@ export const StudentTrack = React.memo(() => {
     },
     { label: "Visa", isCompleted: studentProgress?.isVisaReceived || false },
   ];
-    {
-      label: "3 Days Attendance",
-      isCompleted: studentProgress?.percentageForAttendance >= 6.67,
-    },
-    {
-      label: "45 Days Attendance",
-      isCompleted: studentProgress?.percentageForAttendance >= 100,
-    },
-    {
-      label: "Date Booking",
-      isCompleted: studentProgress?.isDateBooked || false,
-    },
-    {
-      label: "Documents Received",
-      isCompleted: studentProgress?.isDocumentReceived || false,
-    },
-    { label: "Visa", isCompleted: studentProgress?.isVisaReceived || false },
-  ];
+    
 
   const completedSteps = progressBarSteps.filter(
     (step) => step.isCompleted
@@ -225,13 +206,7 @@ export const StudentTrack = React.memo(() => {
                       </div>
                       <div className="flex flex-wrap items-center gap-2 md:flex-row sm:justify-center lg:justify-start">
                         <Button className="bg-[#1B5E20] text-white flex items-center gap-2">
-                          Button
-                          <SendHorizontal />
-                        </Button>
-                      </div>
-                      <div className="flex flex-wrap items-center gap-2 md:flex-row sm:justify-center lg:justify-start">
-                        <Button className="bg-[#1B5E20] text-white flex items-center gap-2">
-                          Button
+                          Send mail
                           <SendHorizontal />
                         </Button>
                       </div>
@@ -256,7 +231,7 @@ export const StudentTrack = React.memo(() => {
                           <SelectGroup>
                             <SelectItem value="paid">Paid</SelectItem>
                             <SelectItem value="unpaid">Unpaid</SelectItem>
-                            <SelectItem value="pending">Pending</SelectItem>
+                            <SelectItem value="pending">Partial</SelectItem>
                           </SelectGroup>
                         </SelectContent>
                       </Select>
@@ -348,7 +323,7 @@ export const StudentTrack = React.memo(() => {
                         </PopoverContent>
                       </Popover>
                     </div>
-                    <div className="flex items-center justify-between gap-4">
+                    {/* <div className="flex items-center justify-between gap-4">
                       <label
                         htmlFor="DateBookStatus"
                         className="font-medium text-[#1B5E20] min-w-[40px]"
@@ -371,7 +346,7 @@ export const StudentTrack = React.memo(() => {
                           </SelectGroup>
                         </SelectContent>
                       </Select>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </div>
