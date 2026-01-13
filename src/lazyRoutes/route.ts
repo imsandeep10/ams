@@ -86,3 +86,8 @@ export const AdminProfileRoute = lazy(() =>
 export const PaymentPageRoute = lazy(
   () => import("../pages/payment/paymentPage")
 );
+
+// email page
+export const CustomEmailPageRoute = lazy(
+  () => import("../components/students/send-email/customEmail")
+);

@@ -10,39 +10,68 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  MultiSelect,
-  MultiSelectContent,
-  MultiSelectGroup,
-  MultiSelectItem,
-  MultiSelectTrigger,
-  MultiSelectValue,
-} from "@/components/ui/multi-select";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
-import { useStudentSearch } from "@/lib/api/useStudents";
-import { useCurrentUser } from "@/lib/api/useUser";
-import { emailSchema, type EmailFormData } from "@/schema/emailSchema";
+import { useCustomSingleEmail } from "@/lib/api/useEmail";
+import { useGetStudentById } from "@/lib/api/useStudents";
+import type { CustomEmailData } from "@/shared/types/sendEmail.types";
+import { SendEmailSchema } from "@/shared/types/sendEmail.types";
 import { zodResolver } from "@hookform/resolvers/zod";
-// import { useGetStudentsByLanguage } from "@/lib/api/useStudents";
-import React from "react";
 import { useForm } from "react-hook-form";
+import { useParams } from "react-router-dom";
 
-const EmailPage: React.FC = React.memo(() => {
-  // const { data: studentData, isPending } = useGetStudentsByLanguage();
-  // const [emailFilter, setEmailFilter] = useState<string>("");
-  const { data: studentByEmail } = useStudentSearch("");
-  const { data: currentStudent } = useCurrentUser();
-  const form = useForm<EmailFormData>({
-    resolver: zodResolver(emailSchema),
+const CustomEmailPage = () => {
+  const { id } = useParams<{ id: string }>();
+  const { data: currentStudent, isPending: isLoading } = useGetStudentById(id!);
+  const { mutate: sendCustomEmail, isPending } = useCustomSingleEmail();
+
+  const form = useForm<CustomEmailData>({
+    resolver: zodResolver(SendEmailSchema),
     defaultValues: {
-      to: [],
+      email: "",
       subject: "",
-      message: "",
-      from: currentStudent?.fullName || "",
+      body: "",
     },
+    values: currentStudent
+      ? {
+          email: currentStudent?.user.email || "",
+          subject: "",
+          body: "",
+        }
+      : undefined,
   });
 
-  // setEmailFilter("");
+  const handleSubmit = (data: CustomEmailData) => {
+    sendCustomEmail(data);
+  };
+
+  if (isLoading) {
+    return (
+      <div>
+        <BackButton />
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-8 w-48" />
+          </CardHeader>
+          <CardContent className="space-y-8">
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-20" />
+              <Skeleton className="h-10 w-full" />
+            </div>
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-16" />
+              <Skeleton className="h-10 w-full" />
+            </div>
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-20" />
+              <Skeleton className="h-[150px] w-full" />
+            </div>
+            <Skeleton className="h-10 w-full" />
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -50,19 +79,17 @@ const EmailPage: React.FC = React.memo(() => {
 
       <Card>
         <CardHeader>
-          <CardTitle>Write an Email</CardTitle>
+          <CardTitle className="text-xl">Write an Email</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
             <form
-              onSubmit={form.handleSubmit((data) => {
-                console.log(data);
-              })}
+              onSubmit={form.handleSubmit(handleSubmit)}
               className="space-y-8"
             >
               <FormField
                 control={form.control}
-                name="to"
+                name="email"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel
@@ -72,31 +99,12 @@ const EmailPage: React.FC = React.memo(() => {
                       Email id:
                     </FormLabel>
                     <FormControl>
-                      <MultiSelect
-                        onValuesChange={field.onChange}
-                        values={field.value}
-                      >
-                        <MultiSelectTrigger className="w-full">
-                          <MultiSelectValue placeholder="Select emails" />
-                        </MultiSelectTrigger>
-                        <MultiSelectContent
-                          search={{
-                            placeholder: "Search emails",
-                            emptyMessage: "No emails found",
-                          }}
-                        >
-                          <MultiSelectGroup>
-                            {studentByEmail?.map((item: any) => (
-                              <MultiSelectItem
-                                key={item.email}
-                                value={item.email}
-                              >
-                                {item.email}
-                              </MultiSelectItem>
-                            ))}
-                          </MultiSelectGroup>
-                        </MultiSelectContent>
-                      </MultiSelect>
+                      <Input
+                        id="emailId"
+                        placeholder="Enter email id"
+                        disabled
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -121,7 +129,7 @@ const EmailPage: React.FC = React.memo(() => {
               />
               <FormField
                 control={form.control}
-                name="message"
+                name="body"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel htmlFor="message">Message:</FormLabel>
@@ -137,8 +145,12 @@ const EmailPage: React.FC = React.memo(() => {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="px-4 py-2 w-full cursor-pointer">
-                Send Email
+              <Button
+                type="submit"
+                className="px-4 py-2 w-full cursor-pointer"
+                disabled={isPending}
+              >
+                {isPending ? "Sending..." : "Send Email"}
               </Button>
             </form>
           </Form>
@@ -146,6 +158,6 @@ const EmailPage: React.FC = React.memo(() => {
       </Card>
     </div>
   );
-});
+};
 
-export default EmailPage;
+export default CustomEmailPage;

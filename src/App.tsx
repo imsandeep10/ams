@@ -18,6 +18,7 @@ import {
   AttendacneRoute,
   CreateAdminRoute,
   CreateStudentRoute,
+  CustomEmailPageRoute,
   DashboardPageRoute,
   DuolingoPageRoute,
   EditAdminPageRoute,
@@ -242,6 +243,10 @@ const router = createBrowserRouter([
           {
             path: "student-track/:id",
             element: <StudentTrackRoute />,
+          },
+          {
+            path: "student-track/:id/email",
+            element: <CustomEmailPageRoute />,
           },
           {
             path: "create-admin",

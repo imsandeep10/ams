@@ -3,7 +3,10 @@ import React, { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { TrackDataTable } from "@/components/students/studentTrack/TrackDataTable";
 import { trackColumns } from "@/components/students/studentTrack/TrackColumn";
-import { useGetStudentAttendanceTrack } from "@/lib/api/useStudents";
+import {
+  useGetStudentAttendanceTrack,
+  useGetStudentById,
+} from "@/lib/api/useStudents";
 import { useStudentProgress } from "@/lib/api/useStudents";
 import {
   Select,
@@ -19,6 +22,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Card,
   CardContent,
@@ -48,6 +52,19 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useForm } from "react-hook-form";
+import type { SendResultScoreData } from "@/shared/types/sendEmail.types";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { useSendResultScore } from "@/lib/api/useEmail";
+import { DialogDescription } from "@radix-ui/react-dialog";
 
 export const StudentTrack = React.memo(() => {
   const { id } = useParams<{ id: string }>();
@@ -67,7 +84,22 @@ export const StudentTrack = React.memo(() => {
   );
 
   const { data: studentProgress } = useStudentProgress(id!);
-  console.log("student progress", studentProgress);
+  const { data: currentStudent } = useGetStudentById(id!);
+  const { mutate: sendResultScore, isPending: isSendingResult } =
+    useSendResultScore();
+
+  const form = useForm<SendResultScoreData>({
+    defaultValues: {
+      email: currentStudent?.user.email || "",
+      score: 0,
+    },
+    values: currentStudent
+      ? {
+          email: currentStudent?.user.email || "",
+          score: 0,
+        }
+      : undefined,
+  });
 
   // Generate year options (current year and past 5 years)
   const yearOptions = Array.from({ length: 6 }, (_, i) => currentYear - i);
@@ -115,6 +147,108 @@ export const StudentTrack = React.memo(() => {
   ).length;
   const totalProgressPercentage =
     (completedSteps / progressBarSteps.length) * 100;
+
+  const handleSubmit = (data: SendResultScoreData) => {
+    sendResultScore(data);
+  };
+
+  if (isPending) {
+    return (
+      <div className="container mx-auto p-4 md:p-6 space-y-6">
+        <Skeleton className="h-10 w-24" />
+
+        {/* Header Card Skeleton */}
+        <Card className="border-none shadow-lg">
+          <CardContent className="p-6 space-y-4">
+            <div className="flex flex-col lg:flex-row w-full lg:justify-between">
+              <div className="flex flex-col lg:flex-row items-start md:items-center gap-6">
+                <Skeleton className="h-32 w-32 rounded-full" />
+                <div className="flex-1 space-y-2">
+                  <Skeleton className="h-8 w-64" />
+                  <Skeleton className="h-4 w-48" />
+                  <Skeleton className="h-4 w-56" />
+                  <Skeleton className="h-10 w-32" />
+                </div>
+              </div>
+              <div className="flex flex-col gap-6 py-2">
+                <div className="flex flex-col lg:flex-row gap-4">
+                  <Skeleton className="h-10 w-[200px]" />
+                  <Skeleton className="h-10 w-[200px]" />
+                  <Skeleton className="h-10 w-[200px]" />
+                </div>
+                <div className="flex flex-col lg:flex-row gap-4">
+                  <Skeleton className="h-10 w-[200px]" />
+                  <Skeleton className="h-10 w-[140px]" />
+                  <Skeleton className="h-10 w-[200px]" />
+                </div>
+              </div>
+            </div>
+            <div className="py-4 mt-4 lg:ml-32 xl:ml-40 space-y-4">
+              <div className="flex justify-between">
+                <Skeleton className="h-6 w-48" />
+                <Skeleton className="h-6 w-12" />
+              </div>
+              <Skeleton className="h-2 w-full" />
+              <div className="flex justify-between">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <Skeleton key={i} className="h-4 w-20" />
+                ))}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Stats Cards Skeleton */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[1, 2, 3, 4].map((i) => (
+            <Card key={i}>
+              <CardHeader className="pb-3">
+                <Skeleton className="h-4 w-32" />
+              </CardHeader>
+              <CardContent>
+                <Skeleton className="h-10 w-20" />
+                <Skeleton className="h-3 w-full mt-2" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* Month/Year Selector Skeleton */}
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-6 w-48" />
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap gap-4">
+              <div className="flex flex-col gap-2 min-w-[200px]">
+                <Skeleton className="h-4 w-16" />
+                <Skeleton className="h-10 w-full" />
+              </div>
+              <div className="flex flex-col gap-2 min-w-[150px]">
+                <Skeleton className="h-4 w-16" />
+                <Skeleton className="h-10 w-full" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Data Table Skeleton */}
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-6 w-56" />
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              <Skeleton className="h-10 w-full" />
+              {[1, 2, 3, 4, 5].map((i) => (
+                <Skeleton key={i} className="h-12 w-full" />
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto p-4 md:p-6 space-y-6">
@@ -176,8 +310,9 @@ export const StudentTrack = React.memo(() => {
                                 Select custom email or marks
                               </DialogTitle>
                             </DialogHeader>
+                            <DialogDescription />
 
-                            <Link to="send-email">
+                            <Link to="email">
                               <Card className="gap-0">
                                 <CardHeader>
                                   <CardTitle>Custom Email</CardTitle>
@@ -190,18 +325,12 @@ export const StudentTrack = React.memo(() => {
                               </Card>
                             </Link>
 
-                            <Link to="send-email">
-                              <Card className="gap-0">
-                                <CardHeader>
-                                  <CardTitle>Marks Email</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                  <CardDescription>
-                                    Send student result through email
-                                  </CardDescription>
-                                </CardContent>
-                              </Card>
-                            </Link>
+                            {/* Dialog for marks email */}
+                            <SendScoreEmailDialog
+                              form={form}
+                              handleSubmit={handleSubmit}
+                              isSending={isSendingResult}
+                            />
                           </DialogContent>
                         </Dialog>
                       </div>
@@ -542,18 +671,9 @@ export const StudentTrack = React.memo(() => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          {isPending ? (
-            <div className="flex items-center justify-center py-12">
-              <div className="flex flex-col items-center gap-3">
-                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
-                <p className="text-sm text-muted-foreground font-medium">
-                  Loading attendance records...
-                </p>
-              </div>
-            </div>
-          ) : attendanceRecord &&
-            attendanceRecord.dailyRecords &&
-            attendanceRecord.dailyRecords.length > 0 ? (
+          {attendanceRecord &&
+          attendanceRecord.dailyRecords &&
+          attendanceRecord.dailyRecords.length > 0 ? (
             <TrackDataTable
               columns={trackColumns}
               data={attendanceRecord.dailyRecords}
@@ -572,3 +692,74 @@ export const StudentTrack = React.memo(() => {
 
 StudentTrack.displayName = "StudentTrack";
 export default StudentTrack;
+
+const SendScoreEmailDialog = ({
+  isSending,
+  form,
+  handleSubmit,
+}: {
+  isSending: boolean;
+  form: any;
+  handleSubmit: (data: SendResultScoreData) => void;
+}) => {
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Card className="gap-0 cursor-pointer">
+          <CardHeader>
+            <CardTitle>Marks Email</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <CardDescription>Send student result through email</CardDescription>
+          </CardContent>
+        </Card>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Marks Email</DialogTitle>
+        </DialogHeader>
+        <DialogDescription />
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="space-y-6"
+          >
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input disabled {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="score"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Score</FormLabel>
+                  <FormControl>
+                    <Input type="number" placeholder="Enter score" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button
+              type="submit"
+              className="w-full bg-[#1B5E20] text-white"
+              disabled={isSending}
+            >
+              {isSending ? "Sending..." : "Send Score"}
+            </Button>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
+  );
+};
