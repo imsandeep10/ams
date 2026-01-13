@@ -90,48 +90,77 @@ const ActionButtons = React.memo<ActionButtonsProps>(({ studentId }) => {
   );
 });
 
+// Status Badge Component
+const StatusBadge = React.memo<{ status: string }>(({ status }) => {
+  const getStatusStyle = (status: string) => {
+    const upperStatus = status.toUpperCase();
+    switch (upperStatus) {
+      case "PARTIAL":
+        return "bg-blue-100 text-blue-800 border-blue-300";
+      case "UNPAID":
+        return "bg-purple-100 text-purple-800 border-purple-300";
+      case "PAID":
+        return "bg-green-100 text-green-800 border-green-300";
+      default:
+        return "bg-gray-100 text-gray-800 border-gray-300";
+    }
+  };
+
+  return (
+    <div
+      className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-semibold border ${getStatusStyle(
+        status
+      )}`}
+    >
+      <p className="text-center">{status}</p>
+    </div>
+  );
+});
+
+StatusBadge.displayName = "StatusBadge";
+
 export const PaymentColumn: ColumnDef<Payment>[] = [
   {
     id: "fullName",
     header: "Full Name",
     accessorKey: "fullName",
-    cell: ({ row }) => <span>{row.original.fullName}</span>,
+    cell: ({ row }) => <p>{row.original.fullName}</p>,
   },
   {
     id: "paymentDate",
     header: "Payment Date",
     accessorKey: "paymentDate",
-    cell: ({ row }) => <span>{row.original.paymentDate}</span>,
+    cell: ({ row }) => <p>{row.original.paymentDate}</p>,
   },
   {
     id: "language",
     header: "Language",
     accessorKey: "language",
-    cell: ({ row }) => <span>{row.original.language}</span>,
+    cell: ({ row }) => <p>{row.original.language}</p>,
   },
   {
     id: "balance",
     header: "Balance",
     accessorKey: "balance",
-    cell: ({ row }) => <span>${row.original.balance.toFixed(2)}</span>,
+    cell: ({ row }) => <p>${row.original.balance.toFixed(2)}</p>,
   },
   {
     id: "dueDate",
     header: "Due Date",
     accessorKey: "dueDate",
-    cell: ({ row }) => <span>{row.original.dueDate}</span>,
+    cell: ({ row }) => <p>{row.original.dueDate}</p>,
   },
   {
     id: "paymentMethod",
     header: "Payment Method",
     accessorKey: "paymentMethod",
-    cell: ({ row }) => <span>{row.original.paymentMethod}</span>,
+    cell: ({ row }) => <p>{row.original.paymentMethod}</p>,
   },
   {
     id: "Status",
     header: "Status",
     accessorKey: "Status",
-    cell: ({ row }) => <span>{row.original.Status}</span>,
+    cell: ({ row }) => <StatusBadge status={row.original.Status} />,
   },
   {
     id: "actions",

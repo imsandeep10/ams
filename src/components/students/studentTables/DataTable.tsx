@@ -23,8 +23,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Plus, Search, Share } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { ChevronDown, Mail, Plus, Search, Share } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Select,
   SelectContent,
@@ -33,6 +33,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -44,6 +55,8 @@ interface DataTableProps<TData, TValue> {
   onPaginationChange?: (page: number, pageSize: number) => void;
   addLink?: string;
   addLabel?: string;
+  isMessaging?: boolean;
+  isPaymentFilter?: boolean;
   onExport?: () => void;
   isExporting?: boolean;
   isAddButton?: boolean;
@@ -58,6 +71,8 @@ export function DataTable<TData, TValue>({
   totalRows = 0,
   onPaginationChange,
   addLink,
+  isMessaging = false,
+  isPaymentFilter = false,
   onExport,
   isExporting,
   isAddButton = true,
@@ -150,22 +165,71 @@ export function DataTable<TData, TValue>({
         </div>
 
         <div className="flex items-center gap-2">
-          <div>
-            {/* download */}
-            {onExport && (
-              <div className="flex justify-center">
-                <Button
-                  onClick={onExport}
-                  disabled={isExporting}
-                  className="cursor-pointer"
-                >
-                  <Share />
-                  {isExporting ? "Exporting..." : "Export"}
+          {isMessaging && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button className="cursor-pointer" variant={"outline"} asChild>
+                  <Link to="send-email">
+                    <Mail />
+                  </Link>
                 </Button>
-              </div>
-            )}
-          </div>
-          {isAddButton && <Button
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Single/Bulk Email</p>
+              </TooltipContent>
+            </Tooltip>
+          )}
+          {/* download */}
+          {onExport && (
+            <div className="flex justify-center">
+              <Button
+                onClick={onExport}
+                disabled={isExporting}
+                className="cursor-pointer"
+              >
+                <Share />
+                {isExporting ? "Exporting..." : "Export"}
+              </Button>
+            </div>
+          )}
+
+          {isPaymentFilter && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button className="cursor-pointer" variant={"outline"}>
+                  <span>Filter Payments</span>
+                  <ChevronDown />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onClick={() => navigate("/payment?filter=all")}
+                >
+                  All
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onClick={() => navigate("/payment?filter=paid")}
+                >
+                  Paid
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onClick={() => navigate("/payment?filter=unpaid")}
+                >
+                  UnPaid
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onClick={() => navigate("/payment?filter=partial")}
+                >
+                  Partial
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
+          <Button
             className="cursor-pointer"
             onClick={() => {
               if (addLink) {

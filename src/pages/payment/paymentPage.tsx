@@ -10,6 +10,7 @@ const Payment: React.FC = React.memo(() => {
 
   const page = Number(searchParams.get("page") ?? 1);
   const limit = Number(searchParams.get("limit") ?? 10);
+  const paymentFilter = searchParams.get("filter") ?? "all";
 
   const [filter, setFilter] = useState({
     page,
@@ -18,7 +19,8 @@ const Payment: React.FC = React.memo(() => {
 
   const { data: studentData, isPending } = useGetAllStudents(
     filter.page,
-    filter.limit
+    filter.limit,
+    paymentFilter === "all" ? undefined : paymentFilter
   );
 
   if (isPending) {
@@ -37,6 +39,7 @@ const Payment: React.FC = React.memo(() => {
       <DataTable
         columns={PaymentColumn}
         data={[]}
+        isPaymentFilter={true}
         pageCount={studentData?.pagination.totalPages || 1}
         pageIndex={studentData?.pagination.page || 0}
         pageSize={studentData?.pagination.limit || 10}

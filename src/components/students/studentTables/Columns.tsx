@@ -1,354 +1,214 @@
-import React, { useState } from "react";
+import React from "react";
 import type { ColumnDef } from "@tanstack/react-table";
-import { Button } from "@/components/ui/button";
-import {
-  Eye,
-  Trash2,
-  Phone,
-  Mail,
-  Clock,
-  ArrowUpDown,
-  Activity,
-  Edit,
-  Wallet,
-  MessageSquareMore,
-} from "lucide-react";
 import type { Student } from "@/shared/types/studentTypes";
-import { useNavigate } from "react-router-dom";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-import { useDeleteStudent } from "@/lib/api/useStudents";
-import { toast } from "sonner";
-import { useCurrentUser } from "@/lib/api/useUser";
-import { Role } from "@/shared/interface/studentResponse";
-import DeleteModal from "@/components/model/deleteModel";
+// Language Badge Component
+const LanguageBadge = React.memo<{ language: string }>(({ language }) => {
+  const getLanguageStyle = (lang: string) => {
+    const upperLang = lang.toUpperCase();
+    switch (upperLang) {
+      case "IELTS":
+        return "bg-blue-100 text-blue-800 border-blue-300";
+      case "PTE":
+        return "bg-purple-100 text-purple-800 border-purple-300";
+      case "TOEFL":
+        return "bg-green-100 text-green-800 border-green-300";
+      case "DUOLINGO":
+        return "bg-emerald-100 text-emerald-800 border-emerald-300";
+      case "SAT":
+        return "bg-orange-100 text-orange-800 border-orange-300";
+      default:
+        return "bg-gray-100 text-gray-800 border-gray-300";
+    }
+  };
 
-// Status Badge Component
-const StatusBadge = React.memo<{ status: "Present" | "Absent" }>(
-  ({ status }) => (
+  return (
     <div
-      className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-        status === "Present"
-          ? "bg-green-100 text-green-800"
-          : "bg-red-100 text-red-800"
-      }`}
+      className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-semibold border ${getLanguageStyle(
+        language
+      )}`}
     >
-      <div
-        className={`w-2 h-2 rounded-full mr-1 ${
-          status === "Present" ? "bg-green-500" : "bg-red-500"
-        }`}
-      />
-      {status}
+      <p className="text-center">{language}</p>
     </div>
-  )
-);
+  );
+});
 
-StatusBadge.displayName = "StatusBadge";
-
-// Fixed ActionButtons component
-interface ActionButtonsProps {
-  studentId: string;
-  studentLanguage: string;
-}
-
-const ActionButtons = React.memo<ActionButtonsProps>(
-  ({ studentId, studentLanguage }) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const navigate = useNavigate();
-    3;
-
-    const { data: currentUserData } = useCurrentUser();
-    const { mutateAsync } = useDeleteStudent();
-
-    const handleConfirmDelete = async () => {
-      try {
-        await mutateAsync(studentId);
-        setIsOpen(false);
-      } catch (error: any) {
-        toast.error(`Failed to delete student: ${error.message}`);
-      }
-    };
-
-    const handleDelete = () => {
-      setIsOpen(true);
-    };
-
-    const handleNavigation = (path: string) => {
-      navigate(path);
-    };
-
-    const isAccountant = currentUserData?.role === Role.ACCOUNTANT;
-
-    return (
-      <div className="flex items-center gap-2">
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-8 w-8 p-0 text-blue-600 hover:bg-blue-50 cursor-pointer"
-              onClick={() => handleNavigation(`/student-profile/${studentId}`)}
-            >
-              <Eye className="w-4 h-4" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>View Student Profile</p>
-          </TooltipContent>
-        </Tooltip>
-
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-8 w-8 p-0 text-blue-600 hover:bg-blue-50  cursor-pointer"
-              onClick={() => handleNavigation(`/student-track/${studentId}`)}
-            >
-              <Activity className="w-4 h-4" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>View Student Track</p>
-          </TooltipContent>
-        </Tooltip>
-
-        {!isAccountant && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-8 w-8 p-0 text-yellow-500 hover:bg-yellow-50  cursor-pointer"
-                onClick={() =>
-                  handleNavigation(
-                    `/edit-student/${studentId}?language=${studentLanguage}`
-                  )
-                }
-              >
-                <Edit className="w-4 h-4" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Edit student</p>
-            </TooltipContent>
-          </Tooltip>
-        )}
-
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant={"ghost"}
-              size={"sm"}
-              className="h-8 w-8 p-0 text-green-900 hover:bg-green-50  cursor-pointer"
-              onClick={() => handleNavigation(`/student-payment/${studentId}`)}
-            >
-              <Wallet />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Payment</p>
-          </TooltipContent>
-        </Tooltip>
-
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant={"ghost"}
-              size={"sm"}
-              className="h-8 w-8 p-0 text-[#1DC794] hover:bg-[#e9fff8] hover:text-[#003d2b]  cursor-pointer"
-              onClick={() => handleNavigation(`/student-remark/${studentId}`)}
-            >
-              <MessageSquareMore />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Remark</p>
-          </TooltipContent>
-        </Tooltip>
-
-        {!isAccountant && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-8 w-8 p-0 text-red-600 hover:bg-red-50  cursor-pointer"
-                onClick={handleDelete}
-              >
-                <Trash2 className="w-4 h-4" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Delete student</p>
-            </TooltipContent>
-          </Tooltip>
-        )}
-
-        <DeleteModal
-          open={isOpen}
-          onOpenChange={setIsOpen}
-          onConfirm={handleConfirmDelete}
-        />
-      </div>
-    );
-  }
-);
-
-ActionButtons.displayName = "ActionButtons";
+LanguageBadge.displayName = "LanguageBadge";
 
 export const columns: ColumnDef<Student>[] = [
   {
-    id: "studentInfo",
-    header: ({ column }) => {
+    id: "profilePicture",
+    header: "Profile",
+    accessorKey: "profilePicture",
+    cell: ({ row }) => {
+      const student = row.original;
       return (
-        <button
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="h-8 px-2 lg:px-3 flex items-center"
-        >
-          Student Info
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </button>
+        <div className="flex items-center justify-center cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors">
+          <Avatar>
+            <AvatarImage
+              src={student.image || "/default-avatar.png"}
+              alt={student.name}
+            />
+            <AvatarFallback>{student.name.charAt(0)}</AvatarFallback>
+          </Avatar>
+        </div>
       );
     },
+  },
+  {
+    id: "fullName",
+    header: "Full Name",
     accessorKey: "name",
     cell: ({ row }) => {
       const student = row.original;
-      const navigate = useNavigate();
-
-      const handleRowClick = () => {
-        navigate(`/student-profile/${student.id}`);
-      };
-
       return (
-        <div
-          className="flex flex-col gap-1 cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors"
-          onClick={handleRowClick}
-        >
-          <div className="font-semibold">{student.name}</div>
-          <div className="text-xs text-gray-500">ID: {student.id}</div>
-          <div className="text-xs text-gray-500">
-            Faculty: {student.faculty || "N/A"}
-          </div>
+        <div className="flex flex-col gap-1 cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors">
+          <p className="font-semibold">{student.name}</p>
+        </div>
+      );
+    },
+  },
+  {
+    id: "email",
+    header: "Email",
+    accessorKey: "email",
+    cell: ({ row }) => {
+      const student = row.original;
+      return (
+        <div className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors">
+          <p>{student.email || "N/A"}</p>
+        </div>
+      );
+    },
+  },
+
+  {
+    id: "phoneNumber",
+    header: "Phone no.",
+    accessorKey: "phone",
+    cell: ({ row }) => {
+      const student = row.original;
+      return (
+        <div className="flex flex-col gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors">
+          <p className="text-sm">{student.phone || "N/A"}</p>
+        </div>
+      );
+    },
+  },
+  {
+    id: "academicQualification",
+    header: "Academic Qualification",
+    accessorKey: "academicQualification",
+    cell: ({ row }) => {
+      const student = row.original;
+      return (
+        <div className="flex flex-col gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors">
+          <p className="text-sm font-medium">
+            {student.academicQualification || "N/A"}
+          </p>
+        </div>
+      );
+    },
+  },
+  {
+    id: "completion",
+    header: "Completion",
+    accessorKey: "yearOfCompletion",
+    cell: ({ row }) => {
+      const student = row.original;
+      return (
+        <div className="flex flex-col gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors">
+          <p className="text-sm font-medium">
+            {student.yearOfCompletion || "N/A"}
+          </p>
+        </div>
+      );
+    },
+  },
+  {
+    id: "gpa",
+    header: "GPA",
+    accessorKey: "gpaOrPercentage",
+    cell: ({ row }) => {
+      const student = row.original;
+      return (
+        <div className="flex flex-col gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors">
+          <p className="text-sm font-medium">
+            {student.gpaOrPercentage || "N/A"}
+          </p>
+        </div>
+      );
+    },
+  },
+  {
+    id: "preferedCountry",
+    header: "Preferred Country",
+    accessorKey: "preferredCountry",
+    cell: ({ row }) => {
+      const student = row.original;
+      return (
+        <div className="flex flex-col gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors">
+          <p className="text-sm font-medium">
+            {student.preferredCountry || "N/A"}
+          </p>
+        </div>
+      );
+    },
+  },
+  {
+    id: "faculty",
+    header: "Faculty",
+    accessorKey: "faculty",
+    cell: ({ row }) => {
+      const student = row.original;
+      return (
+        <div className="flex flex-col gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors">
+          <p className="text-sm font-medium">{student.faculty || "N/A"}</p>
         </div>
       );
     },
   },
   {
     id: "classTime",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="h-8 px-2 lg:px-3"
-        >
-          Class Time
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    header: "Class Time",
     accessorKey: "classTime",
     cell: ({ row }) => {
       const student = row.original;
-      const navigate = useNavigate();
-
-      const handleRowClick = () => {
-        navigate(`/student-profile/${student.id}`);
-      };
-
       return (
-        <div
-          className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors"
-          onClick={handleRowClick}
-        >
-          <Clock className="w-4 h-4 text-gray-400" />
-          <span className="text-sm">{student.classTime || "N/A"}</span>
+        <div className="flex flex-col gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors">
+          <p className="text-sm font-medium">{student.classTime || "N/A"}</p>
         </div>
       );
     },
   },
-
   {
-    id: "contact",
-    header: "Contact",
-    accessorKey: "email",
+    id: "languageTest",
+    header: "Language Test",
+    accessorKey: "language",
     cell: ({ row }) => {
       const student = row.original;
-      const navigate = useNavigate();
-
-      const handleRowClick = () => {
-        navigate(`/student-profile/${student.id}`);
-      };
 
       return (
-        <div
-          className="flex flex-col gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors"
-          onClick={handleRowClick}
-        >
-          <div className="flex items-center gap-2">
-            <Phone className="w-4 h-4 text-gray-400" />
-            <span className="text-sm">{student.phone || "N/A"}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Mail className="w-4 h-4 text-gray-400" />
-            <span className="text-sm">{student.email || "N/A"}</span>
-          </div>
+        <div className="flex flex-col gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors">
+          <LanguageBadge language={student.language} />
         </div>
       );
     },
   },
   {
-    id: "courseInfo",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="h-8 px-2 lg:px-3"
-        >
-          Course Info
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    id: "interestedCourse",
+    header: "Interested Course",
     accessorKey: "interestedCourse",
     cell: ({ row }) => {
       const student = row.original;
-      const navigate = useNavigate();
-
-      const handleRowClick = () => {
-        navigate(`/student-profile/${student.id}`);
-      };
-
       return (
-        <div
-          className="flex flex-col gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors"
-          onClick={handleRowClick}
-        >
-          <div className="text-sm font-medium">{student.language || "N/A"}</div>
-
-          <div className="text-xs text-gray-500">
-            Country: {student.preferredCountry || "N/A"}
-          </div>
+        <div className="flex flex-col gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors">
+          <p className="text-sm font-medium">
+            {student.interestedCourse || "N/A"}
+          </p>
         </div>
       );
     },
   },
-  {
-    id: "actions",
-    header: "Actions",
-    cell: ({ row }) => (
-      <ActionButtons
-        studentId={row.original.id}
-        studentLanguage={row.original.language}
-      />
-    ),
-    enableSorting: false,
-  },
 ];
-

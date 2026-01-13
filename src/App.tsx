@@ -18,6 +18,7 @@ import {
   AttendacneRoute,
   CreateAdminRoute,
   CreateStudentRoute,
+  CustomEmailPageRoute,
   DashboardPageRoute,
   DuolingoPageRoute,
   EditAdminPageRoute,
@@ -101,6 +102,10 @@ const router = createBrowserRouter([
               { path: "students", element: <PtePageRoute /> },
               { path: "students/create", element: <CreateStudentRoute /> },
               { path: "students/edit/:id", element: <EditStudentRoute /> },
+              {
+                path: "students/send-email",
+                element: <StudentFollowUpRoute />,
+              },
               { path: "report", element: <ReportRoute /> },
             ],
           },
@@ -122,6 +127,10 @@ const router = createBrowserRouter([
               { path: "students", element: <IeltsPageRoute /> },
               { path: "students/create", element: <CreateStudentRoute /> },
               { path: "students/edit/:id", element: <EditStudentRoute /> },
+              {
+                path: "students/send-email",
+                element: <StudentFollowUpRoute />,
+              },
               { path: "report", element: <ReportRoute /> },
               {
                 path: "mock-data-table",
@@ -146,6 +155,10 @@ const router = createBrowserRouter([
               { path: "dashboard", element: <DashboardPageRoute /> },
               { path: "students", element: <DuolingoPageRoute /> },
               { path: "students/edit/:id", element: <EditStudentRoute /> },
+              {
+                path: "students/send-email",
+                element: <StudentFollowUpRoute />,
+              },
               { path: "report", element: <ReportRoute /> },
             ],
           },
@@ -167,6 +180,10 @@ const router = createBrowserRouter([
               { path: "students", element: <SatPageRoute /> },
               { path: "students/create", element: <CreateStudentRoute /> },
               { path: "students/edit/:id", element: <EditStudentRoute /> },
+              {
+                path: "students/send-email",
+                element: <StudentFollowUpRoute />,
+              },
               { path: "report", element: <ReportRoute /> },
             ],
           },
@@ -185,6 +202,10 @@ const router = createBrowserRouter([
               { path: "dashboard", element: <DashboardPageRoute /> },
               { path: "students", element: <AllStudentPageRoute /> },
               { path: "students/create", element: <CreateStudentRoute /> },
+              {
+                path: "students/send-email",
+                element: <StudentFollowUpRoute />,
+              },
             ],
           },
           {
@@ -224,8 +245,8 @@ const router = createBrowserRouter([
             element: <StudentTrackRoute />,
           },
           {
-            path: "students/send-email",
-            element: <StudentFollowUpRoute />,
+            path: "student-track/:id/email",
+            element: <CustomEmailPageRoute />,
           },
           {
             path: "create-admin",

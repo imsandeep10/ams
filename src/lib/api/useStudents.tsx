@@ -129,9 +129,13 @@ export const useGetStudentsByLanguage = (
   });
 };
 
-export const useGetAllStudents = (page: number = 1, limit: number = 10) => {
+export const useGetAllStudents = (
+  page: number = 1,
+  limit: number = 10,
+  paymentFilter?: string
+) => {
   return useQuery({
-    queryKey: ["all-students", page, limit],
+    queryKey: ["all-students", page, limit, paymentFilter],
     queryFn: async (): Promise<{
       students: Student[];
       pagination: {
@@ -142,7 +146,7 @@ export const useGetAllStudents = (page: number = 1, limit: number = 10) => {
       };
     }> => {
       const res = await api.get(`/api/student`, {
-        params: { page, limit },
+        params: { page, limit, paymentFilter },
       });
       if (!res?.data?.students) {
         throw new Error("Failed to fetch students");
@@ -178,8 +182,6 @@ export const useGetAllStudents = (page: number = 1, limit: number = 10) => {
     },
   });
 };
-
-
 
 export const useGetStudentById = (id: string) => {
   return useQuery({
@@ -230,7 +232,7 @@ export const useGetStudentAttendanceTrack = (
         const res = await api.get(
           `/api/attendance-track/monthly/${studentId}?year=${year}&month=${month}`
         );
-        console.log("attandence",res.data);
+        console.log("attandence", res.data);
         return res.data;
       } catch (err: any) {
         toast.error("Failed to fetch attendance:", err);
@@ -242,20 +244,19 @@ export const useGetStudentAttendanceTrack = (
   });
 };
 
-export const useStudentProgress = (
-  userId: string
-) => {
+export const useStudentProgress = (userId: string) => {
   return useQuery({
     queryKey: ["student-progress", userId],
     queryFn: async () => {
       try {
         const res = await api.get(`/api/student-progress/${userId}`);
         return res.data;
+      } catch (err: any) {
+        console.log(err);
       }
-      catch (err: any) {console.log(err);}
-    }
-  })
-}
+    },
+  });
+};
 
 export const useStudentSearch = (
   query: string,
