@@ -23,7 +23,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Mail, Plus, Search, Share } from "lucide-react";
+import { ChevronDown, Mail, Plus, Search, Share } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Select,
@@ -38,6 +38,12 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -50,6 +56,7 @@ interface DataTableProps<TData, TValue> {
   addLink?: string;
   addLabel?: string;
   isMessaging?: boolean;
+  isPaymentFilter?: boolean;
   onExport?: () => void;
   isExporting?: boolean;
 }
@@ -64,6 +71,7 @@ export function DataTable<TData, TValue>({
   onPaginationChange,
   addLink,
   isMessaging = false,
+  isPaymentFilter = false,
   onExport,
   isExporting,
 
@@ -182,6 +190,43 @@ export function DataTable<TData, TValue>({
                 {isExporting ? "Exporting..." : "Export"}
               </Button>
             </div>
+          )}
+
+          {isPaymentFilter && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button className="cursor-pointer" variant={"outline"}>
+                  <span>Filter Payments</span>
+                  <ChevronDown />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onClick={() => navigate("/payment?filter=all")}
+                >
+                  All
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onClick={() => navigate("/payment?filter=paid")}
+                >
+                  Paid
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onClick={() => navigate("/payment?filter=unpaid")}
+                >
+                  UnPaid
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onClick={() => navigate("/payment?filter=partial")}
+                >
+                  Partial
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           )}
           <Button
             className="cursor-pointer"

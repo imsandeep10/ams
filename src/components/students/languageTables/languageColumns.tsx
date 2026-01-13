@@ -7,7 +7,6 @@ import {
   Phone,
   Mail,
   Clock,
-  ArrowUpDown,
   Activity,
   Edit,
   Wallet,
@@ -204,17 +203,7 @@ ActionButtons.displayName = "ActionButtons";
 export const LangugaeColumns: ColumnDef<Student>[] = [
   {
     id: "studentInfo",
-    header: ({ column }) => {
-      return (
-        <button
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="h-8 px-2 lg:px-3 flex items-center"
-        >
-          Student Info
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </button>
-      );
-    },
+    header: "Student Info",
     accessorKey: "name",
     cell: ({ row }) => {
       const student = row.original;
@@ -240,18 +229,7 @@ export const LangugaeColumns: ColumnDef<Student>[] = [
   },
   {
     id: "classTime",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="h-8 px-2 lg:px-3"
-        >
-          Class Time
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    header: "Class Time",
     accessorKey: "classTime",
     cell: ({ row }) => {
       const student = row.original;
@@ -304,18 +282,7 @@ export const LangugaeColumns: ColumnDef<Student>[] = [
   },
   {
     id: "courseInfo",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="h-8 px-2 lg:px-3"
-        >
-          Course Info
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    header: "Course Info",
     accessorKey: "interestedCourse",
     cell: ({ row }) => {
       const student = row.original;
