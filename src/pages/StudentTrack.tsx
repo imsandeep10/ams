@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { TrackDataTable } from "@/components/students/studentTrack/TrackDataTable";
 import { trackColumns } from "@/components/students/studentTrack/TrackColumn";
@@ -143,7 +143,6 @@ export const StudentTrack = React.memo(() => {
     },
     { label: "Visa", isCompleted: studentProgress?.isVisaReceived || false },
   ];
-    
 
   const completedSteps = progressBarSteps.filter(
     (step) => step.isCompleted
@@ -154,6 +153,13 @@ export const StudentTrack = React.memo(() => {
   const handleSubmit = (data: SendResultScoreData) => {
     sendResultScore(data);
   };
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setProgress(totalProgressPercentage);
+    }, 300);
+    return () => clearInterval(timer);
+  }, [totalProgressPercentage]);
 
   if (isPending) {
     return (
@@ -252,14 +258,6 @@ export const StudentTrack = React.memo(() => {
       </div>
     );
   }
-
-  React.useEffect(() => {
-    const timer = setInterval(() => {
-      setProgress(totalProgressPercentage)
-    },300);
-    return () => clearInterval(timer);
-  },[totalProgressPercentage])
-
 
   const statsData = [
     {
@@ -540,16 +538,15 @@ export const StudentTrack = React.memo(() => {
                 <div className="relative space-y-2">
                   <div className="grid grid-cols-5 z-10">
                     {progressBarSteps.map((step, index) => (
-                      <div
-                        key={index}
-                        className="flex justify-end"
-                      >
-                      <Circle
-                        className={`h-4 w-4 stroke-none transition-colors duration-300 ${
-                          step.isCompleted ? "fill-[#22C55E]" : "fill-[#E5E7EB]"
-                        }
+                      <div key={index} className="flex justify-end">
+                        <Circle
+                          className={`h-4 w-4 stroke-none transition-colors duration-300 ${
+                            step.isCompleted
+                              ? "fill-[#22C55E]"
+                              : "fill-[#E5E7EB]"
+                          }
                         `}
-                      />
+                        />
                       </div>
                     ))}
                     {/* <Circle className="h-4 w-4 fill-[#22C55E] stroke-none" /> */}
@@ -560,7 +557,10 @@ export const StudentTrack = React.memo(() => {
                   />
                   <div className="grid grid-cols-5">
                     {progressBarSteps.map((step, index) => (
-                      <span key={index} className="text-center text-sm max-w-[80px] mx-auto">
+                      <span
+                        key={index}
+                        className="text-center text-sm max-w-[80px] mx-auto"
+                      >
                         {step.label}
                       </span>
                     ))}

@@ -229,19 +229,21 @@ export function DataTable<TData, TValue>({
               </DropdownMenuContent>
             </DropdownMenu>
           )}
-          <Button
-            className="cursor-pointer"
-            onClick={() => {
-              if (addLink) {
-                navigate(addLink);
-              } else {
-                navigate(`/create-student?language=${pathname[0]}`);
-              }
-            }}
-          >
-            <span>{addLabel || "Add Student"}</span>
-            <Plus />
-          </Button>}
+          {isAddButton && (
+            <Button
+              className="cursor-pointer"
+              onClick={() => {
+                if (addLink) {
+                  navigate(addLink);
+                } else {
+                  navigate(`/create-student?language=${pathname[0]}`);
+                }
+              }}
+            >
+              <span>{addLabel || "Add Student"}</span>
+              <Plus />
+            </Button>
+          )}
         </div>
       </div>
 
