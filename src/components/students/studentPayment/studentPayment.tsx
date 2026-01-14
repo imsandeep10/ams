@@ -39,7 +39,9 @@ const StudentPayment = () => {
       phoneNumber: studentData?.user.phoneNumber || "",
       amount: 0,
       paymentDate: undefined,
-      paymentMethod: "cash",
+      paymentMethod: null,
+      paymentStatus: "NOT_PAID",
+      book: null,
       language: studentData?.language!,
       remarks: "",
     },
@@ -55,7 +57,9 @@ const StudentPayment = () => {
       phoneNumber: studentData?.user.phoneNumber || "",
       amount: 0,
       paymentDate: undefined,
-      paymentMethod: "cash",
+      paymentMethod: null,
+      paymentStatus: "NOT_PAID",
+      book: null,
       language: studentData?.language!,
       remarks: "",
     });
@@ -213,14 +217,14 @@ const StudentPayment = () => {
                       <FormControl>
                         <Select
                           onValueChange={field.onChange}
-                          defaultValue={field.value}
+                          defaultValue={field.value || ""}
                         >
                           <SelectTrigger className="w-full">
                             <SelectValue placeholder="Select payment method" />
                           </SelectTrigger>
                           <SelectContent className="w-full">
-                            <SelectItem value="cash">Cash</SelectItem>
-                            <SelectItem value="online">Online</SelectItem>
+                            <SelectItem value="CASH">Cash</SelectItem>
+                            <SelectItem value="ONLINE">Online</SelectItem>
                           </SelectContent>
                         </Select>
                       </FormControl>
@@ -247,6 +251,62 @@ const StudentPayment = () => {
                             <SelectItem value="SAT">SAT</SelectItem>
                             <SelectItem value="IELTS">IELTS</SelectItem>
                             <SelectItem value="DUOLINGO">Duolingo</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="paymentStatus"
+                  render={({ field }) => (
+                    <FormItem>
+                      <Label htmlFor="paymentStatus">Payment Status</Label>
+                      <FormControl>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select payment status" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="FULL_PAID">Paid</SelectItem>
+                            <SelectItem value="PARTIAL_PAID">
+                              Partial
+                            </SelectItem>
+                            <SelectItem value="NOT_PAID">Unpaid</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="book"
+                  render={({ field }) => (
+                    <FormItem>
+                      <Label htmlFor="book">Book</Label>
+                      <FormControl>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value || ""}
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select book" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="NO_BOOK_TAKEN">
+                              No Book Taken
+                            </SelectItem>
+                            <SelectItem value="TWO_BOOKS_TAKEN">
+                              Two Books Taken
+                            </SelectItem>
+                            <SelectItem value="ALL_BOOKS_TAKEN">
+                              All Books Taken
+                            </SelectItem>
                           </SelectContent>
                         </Select>
                       </FormControl>

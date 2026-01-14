@@ -8,7 +8,12 @@ export const paymentSchema = z.object({
     .max(15, "Phone number must be at most 15 digits"),
   amount: z.number().min(1, "Amount must be at least 1"),
   paymentDate: z.string().min(1, "Payment date is required"),
-  paymentMethod: z.enum(["cash", "online"]),
+  paymentMethod: z.enum(["CASH", "ONLINE"]).nullable().optional(),
+  paymentStatus: z.enum(["NOT_PAID", "PARTIAL_PAID", "FULL_PAID"]),
+  book: z
+    .enum(["NO_BOOK_TAKEN", "TWO_BOOKS_TAKEN", "ALL_BOOKS_TAKEN"])
+    .nullable()
+    .optional(),
   language: z.enum(["PTE", "SAT", "IELTS", "DUOLINGO"]),
   remarks: z.string().optional(),
 });

@@ -4,6 +4,8 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useCurrentUser } from "@/lib/api/useUser";
+import { Role } from "@/shared/interface/studentResponse";
 import type { Payment } from "@/shared/types/paymentTypes";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Activity, Eye, MessageSquareMore, Wallet } from "lucide-react";
@@ -15,12 +17,15 @@ interface ActionButtonsProps {
 }
 
 const ActionButtons = React.memo<ActionButtonsProps>(({ studentId }) => {
+  const { data: currentUser } = useCurrentUser();
   const navigate = useNavigate();
   3;
 
   const handleNavigation = (path: string) => {
     navigate(path);
   };
+
+  const isAccountant = currentUser?.role === Role.ACCOUNTANT;
 
   return (
     <div className="flex items-center gap-2">
@@ -40,21 +45,23 @@ const ActionButtons = React.memo<ActionButtonsProps>(({ studentId }) => {
         </TooltipContent>
       </Tooltip>
 
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-8 w-8 p-0 text-blue-600 hover:bg-blue-50  cursor-pointer"
-            onClick={() => handleNavigation(`/student-track/${studentId}`)}
-          >
-            <Activity className="w-4 h-4" />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>
-          <p>View Student Track</p>
-        </TooltipContent>
-      </Tooltip>
+      {!isAccountant && (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0 text-blue-600 hover:bg-blue-50  cursor-pointer"
+              onClick={() => handleNavigation(`/student-track/${studentId}`)}
+            >
+              <Activity className="w-4 h-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>View Student Track</p>
+          </TooltipContent>
+        </Tooltip>
+      )}
 
       <Tooltip>
         <TooltipTrigger asChild>
