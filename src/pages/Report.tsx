@@ -103,7 +103,7 @@ export const Report = React.memo(() => {
   return (
     <div className="p-5 space-y-5">
       {/* Role-based Header */}
-      {currentUser?.role !== "superAdmin" && (
+      {/* {currentUser?.role !== "superAdmin" && (
         <div className="bg-blue-50 border border-blue-200 rounded-md p-4">
           <div className="flex items-center gap-2">
             <div className="h-2 w-2 rounded-full bg-blue-500"></div>
@@ -112,7 +112,7 @@ export const Report = React.memo(() => {
             </p>
           </div>
         </div>
-      )}
+      )} */}
 
       {/* Filters */}
       <div className="space-y-4">

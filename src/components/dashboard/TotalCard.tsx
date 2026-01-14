@@ -84,6 +84,10 @@ export const TotalCard = React.memo(({ selectedDate }: TotalCardProps) => {
           subtitle: "IELTS Absent Today",
           total: stats.totalAbsentToday,
         },
+        {
+          subtitle: "Total Mocktest attendees",
+          total: stats.total,
+        },
       ];
     }
 
@@ -101,6 +105,10 @@ export const TotalCard = React.memo(({ selectedDate }: TotalCardProps) => {
         {
           subtitle: "PTE Absent Today",
           total: stats.totalAbsentToday,
+        },
+        {
+          subtitle: "Total Mocktest attendees",
+          total: stats.total,
         },
       ];
     }
@@ -120,6 +128,10 @@ export const TotalCard = React.memo(({ selectedDate }: TotalCardProps) => {
           subtitle: "SAT Absent Today",
           total: stats.totalAbsentToday,
         },
+        {
+          subtitle: "Total Mocktest attendees",
+          total: stats.total,
+        },
       ];
     }
 
@@ -137,6 +149,10 @@ export const TotalCard = React.memo(({ selectedDate }: TotalCardProps) => {
         {
           subtitle: "Duolingo Absent Today",
           total: stats.totalAbsentToday,
+        },
+        {
+          subtitle: "Total Mocktest attendees",
+          total: stats.total,
         },
       ];
     }

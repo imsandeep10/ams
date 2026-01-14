@@ -5,9 +5,16 @@ import StaticQRCode from "@/components/dashboard/GlobalQRCode";
 import StudentRegistrationQRCode from "@/components/dashboard/StudentRegistrationQRCode";
 import MockTestRegistrationQRCode from "@/components/dashboard/MockTestRegistrationQRCode";
 import TodayPresentTable from "@/components/dashboard/TodayPresentTable";
+import { useCurrentUser } from "@/lib/api/useUser";
+import { Role } from "@/shared/interface/studentResponse";
 
 const DashboardPage = React.memo(() => {
   const [date, setDate] = React.useState<Date | undefined>(new Date());
+  const { data: currentUser } = useCurrentUser();
+
+  const isSuperAdmin = currentUser?.role === Role.SUPER_ADMIN;
+  const isAccountant = currentUser?.role === Role.ACCOUNTANT;
+
   return (
     <div className="w-full p-4 md:p-6 lg:p-8">
       {/* Top Section - Stats and Charts */}
@@ -36,13 +43,13 @@ const DashboardPage = React.memo(() => {
       </div>
 
       {/* QR Codes Section - Three QR Codes in a Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        <StaticQRCode />
-        <StudentRegistrationQRCode />
-        <MockTestRegistrationQRCode />
-      </div>
-
-
+      {(isSuperAdmin || isAccountant) && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          <StaticQRCode />
+          <StudentRegistrationQRCode />
+          <MockTestRegistrationQRCode />
+        </div>
+      )}
     </div>
   );
 });
