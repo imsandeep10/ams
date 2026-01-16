@@ -16,6 +16,7 @@ export type User = {
 export const Profile: React.FC = React.memo(() => {
   const { data: currentUser } = useCurrentUser();
   const navigate = useNavigate();
+  const newCurrentUser = currentUser?.data;
 
   return (
     <div className="min-h-screen">
@@ -33,21 +34,21 @@ export const Profile: React.FC = React.memo(() => {
           <CardContent className="pt-10 pb-10 flex flex-col items-center space-y-6">
             {/* Profile Avatar */}
             <div className="relative">
-              {currentUser ? (
+              {newCurrentUser ? (
                 <Avatar className="w-32 h-32 border-4 border-white shadow-lg">
                   <AvatarImage
-                    src={currentUser.profileImage ?? undefined}
-                    alt={currentUser.fullName}
+                    src={newCurrentUser.profileImage ?? undefined}
+                    alt={newCurrentUser.fullName}
                   />
                   <AvatarFallback className="text-2xl">
-                    {currentUser.fullName?.charAt(0) ?? "N/A"}
+                    {newCurrentUser.fullName?.charAt(0) ?? "N/A"}
                   </AvatarFallback>
                 </Avatar>
               ) : (
                 <div className="w-32 h-32 rounded-full bg-gray-200 animate-pulse border-4 border-white shadow-lg"></div>
               )}
 
-              {currentUser && (
+              {newCurrentUser && (
                 <div className="absolute bottom-0 right-0 bg-primary rounded-full p-2 shadow-md">
                   <Camera className="w-4 h-4 text-white" />
                 </div>
@@ -56,9 +57,9 @@ export const Profile: React.FC = React.memo(() => {
 
             {/* Profile Info */}
             <div className="text-center space-y-2 w-full max-w-md">
-              {currentUser ? (
+              {newCurrentUser ? (
                 <h1 className="text-3xl font-bold text-gray-900">
-                  {currentUser.fullName}
+                  {newCurrentUser.fullName}
                 </h1>
               ) : (
                 <div className="h-8 w-48 bg-gray-200 rounded animate-pulse mx-auto"></div>
@@ -66,15 +67,15 @@ export const Profile: React.FC = React.memo(() => {
             </div>
 
             <div className="w-full max-w-md grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-700 mt-6">
-              {currentUser ? (
+              {newCurrentUser ? (
                 <>
                   <div className="flex items-center justify-center sm:justify-start gap-2">
                     <Mail className="w-4 h-4" />
-                    <span>{currentUser.email}</span>
+                    <span>{newCurrentUser.email}</span>
                   </div>
                   <div className="flex items-center justify-center sm:justify-start gap-2">
                     <UserStar className="w-4 h-4" />
-                    <span>{currentUser.role}</span>
+                    <span>{newCurrentUser.role}</span>
                   </div>
                 </>
               ) : (

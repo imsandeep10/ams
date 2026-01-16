@@ -7,6 +7,7 @@ import {
   useGetStudentById,
 } from "@/lib/api/useStudents";
 import { useStudentProgress } from "@/lib/api/useStudents";
+import { useGetPayment } from "@/lib/api/usePayment";
 import {
   Select,
   SelectContent,
@@ -85,6 +86,8 @@ export const StudentTrack = React.memo(() => {
     Number(month)
   );
 
+  const {data: paymentData} = useGetPayment(id!);
+  console.log("Payment Data:", paymentData);
   const { data: studentProgress } = useStudentProgress(id!);
   const { data: currentStudent } = useGetStudentById(id!);
   const { mutate: sendResultScore, isPending: isSendingResult } =
@@ -318,9 +321,9 @@ export const StudentTrack = React.memo(() => {
         <>
           <Card className="border-none shadow-lg dark:from-gray-900 dark:to-gray-800">
             <CardContent className="p-6 space-y-4">
-              <div className="flex flex-col  lg:flex-row w-full lg:justify-between">
+              <div className="flex flex-col xl:flex-row w-full xl:justify-between">
                 {/* first section */}
-                <div className="flex flex-col lg:flex-row items-start md:items-center gap-6">
+                <div className="flex flex-col xl:flex-row items-start md:items-center gap-6">
                   <Avatar className="h-32 w-32 border-1 border-white shadow-lg">
                     <AvatarImage
                       src={attendanceRecord.student.profileImage}
@@ -331,7 +334,7 @@ export const StudentTrack = React.memo(() => {
                     </AvatarFallback>
                   </Avatar>
 
-                  <div className="flex-1 space-y-2 flex flex-col md:items-center lg:items-start">
+                  <div className="flex-1 space-y-2 flex flex-col md:items-center xl:items-start">
                     <h1 className="text-2xl md:text-3xl font-semibold text-gray-900 dark:text-white">
                       {attendanceRecord.student.fullName}
                     </h1>
@@ -349,7 +352,7 @@ export const StudentTrack = React.memo(() => {
                           {attendanceRecord.period.year}
                         </div>
                       </div>
-                      <div className="flex flex-wrap items-center gap-2 md:flex-row sm:justify-center lg:justify-start">
+                      <div className="flex flex-wrap items-center gap-2 md:flex-row sm:justify-center xl:justify-start">
                         <Dialog>
                           <DialogTrigger asChild>
                             <Button className="bg-[#1B5E20] text-white flex items-center gap-2">
@@ -391,8 +394,8 @@ export const StudentTrack = React.memo(() => {
                   </div>
                 </div>
                 {/* second section */}
-                <div className="flex flex-col lg:flex-col gap-6 py-2 lg:mt-0 px-2  rounded-lg justify-evenly">
-                  <div className="flex flex-col lg:flex-row gap-4">
+                <div className="flex flex-col gap-6 py-2 xl:mt-0 px-2 rounded-lg justify-evenly">
+                  <div className="flex flex-col xl:flex-row gap-4">
                     <div className="flex items-center justify-between gap-4">
                       <label
                         htmlFor="Payment"
@@ -400,8 +403,8 @@ export const StudentTrack = React.memo(() => {
                       >
                         Payment:
                       </label>
-                      <Select>
-                        <SelectTrigger className="w-[140px] text-[#0E2A10] bg-[#F1FFF5] border-[#BAFFD3] focus:border-none">
+                      <div >
+                        {/* <SelectTrigger className="w-[140px] text-[#0E2A10] bg-[#F1FFF5] border-[#BAFFD3] focus:border-none">
                           <SelectValue placeholder="Select" />
                         </SelectTrigger>
                         <SelectContent className="bg-[#F1FFF5] text-[#0E2A10] border-[#BAFFD3] ">
@@ -410,8 +413,21 @@ export const StudentTrack = React.memo(() => {
                             <SelectItem value="unpaid">Unpaid</SelectItem>
                             <SelectItem value="pending">Partial</SelectItem>
                           </SelectGroup>
-                        </SelectContent>
-                      </Select>
+                        </SelectContent> */}
+                        {paymentData?.payment === "FULL_PAID" ? (
+                          <span className="px-4 py-2 rounded-md bg-green-100 text-green-800 font-medium">
+                            Paid
+                            </span>
+                        ) : paymentData?.payment === "PARTIAL_PAID" ? (
+                          <span className="px-4 py-2 rounded-md bg-yellow-100 text-yellow-800 font-medium">
+                            Partial
+                          </span>
+                        ) : (
+                          <span className="px-4 py-2 rounded-md bg-red-100 text-red-800 font-medium">
+                            Unpaid
+                          </span>
+                        )}
+                      </div>
                     </div>
                     <div className="flex items-center justify-between gap-4">
                       <label
@@ -452,7 +468,7 @@ export const StudentTrack = React.memo(() => {
                       </Select>
                     </div>
                   </div>
-                  <div className="flex flex-col lg:flex-row gap-4">
+                  <div className="flex flex-col xl:flex-row gap-4">
                     <div className="flex items-center justify-between gap-4">
                       <label
                         htmlFor="DateBookStatus"
@@ -465,7 +481,7 @@ export const StudentTrack = React.memo(() => {
                           <SelectValue placeholder="Select" />
                         </SelectTrigger>
                         <SelectContent className="bg-[#F1FFF5] text-[#0E2A10] border-[#BAFFD3] ">
-                          <SelectGroup>
+                          <SelectGroup value={status}>
                             <SelectItem value="paid">Booked</SelectItem>
                             <SelectItem value="unpaid">Not Booked</SelectItem>
                           </SelectGroup>
@@ -500,7 +516,7 @@ export const StudentTrack = React.memo(() => {
                         </PopoverContent>
                       </Popover>
                     </div>
-                    {/* <div className="flex items-center justify-between gap-4">
+                    <div className="flex items-center justify-between gap-4">
                       <label
                         htmlFor="DateBookStatus"
                         className="font-medium text-[#1B5E20] min-w-[40px]"
@@ -523,12 +539,12 @@ export const StudentTrack = React.memo(() => {
                           </SelectGroup>
                         </SelectContent>
                       </Select>
-                    </div> */}
+                    </div>
                   </div>
                 </div>
               </div>
               {/* progress bar  */}
-              <div className="py-4 mt-4 lg:ml-32 xl:ml-40">
+              <div className="py-4 mt-4 xl:ml-40">
                 {/* header */}
                 <div className="flex justify-between mb-4">
                   <h3>STUDENT PROGRESS TRACK</h3>

@@ -1,53 +1,46 @@
-// import { DataTable } from "@/components/students/studentTables/DataTable";
-import React from "react";
-// import { DataTableSkeleton } from "@/components/common/DataTableSkeleton";
-// import { useSearchParams } from "react-router-dom";
-// import { BookColumn } from "./bookColumn";
-// import { useGetBook } from "@/lib/api/useBooks";
+import { DataTable } from "@/components/students/studentTables/DataTable";
+import React,{useState} from "react";
+import { DataTableSkeleton } from "@/components/common/DataTableSkeleton";
+import { BookColumn } from "./bookColumn";
+import { useGetBook } from "@/lib/api/useBook";
 
-const Payment: React.FC = React.memo(() => {
-//   const [searchParams, setSearchParams] = useSearchParams();
+const bookPage: React.FC = () => {
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
-//   const page = Number(searchParams.get("page") ?? 1);
-//   const limit = Number(searchParams.get("limit") ?? 10);
+  const { data, isPending } = useGetBook(page, pageSize);
+  console.log("Book Data:", data);
 
-//   const [filter, setFilter] = useState({
-//     page,
-//     limit,
-//   });
+  const handlePaginationChange = (newPage: number, newPageSize: number) => {
+    setPage(newPage);
+    setPageSize(newPageSize);
+  };
 
-//   const { data: studentData, isPending } = useGetBook(
-//     filter.page,
-//     filter.limit
-//   );
+  if (isPending) {
+    return (
+      <>
+        <DataTableSkeleton rows={8} />
+      </>
+    );
+  }
 
-//   if (isPending) {
-//     return <DataTableSkeleton />;
-//   }
 
-//   const handlePaginationChange = (newPage: number, newPageSize: number) => {
-//     setFilter({ page: newPage, limit: newPageSize });
-//     setSearchParams({
-//       page: newPage.toString(),
-//       limit: newPageSize.toString(),
-//     });
-//   };
   return (
-    <div>
-      {/* <DataTable
-        columns={BookColumn}
-        data={[]}
-        pageCount={studentData?.pagination.totalPages || 1}
-        pageIndex={studentData?.pagination.page || 0}
-        pageSize={studentData?.pagination.limit || 10}
-        totalRows={studentData?.pagination.total || 0}
-        // onPaginationChange={handlePaginationChange}
-        isAddButton={false}
-        addLink=""
-        addLabel=""
-      /> */}
-    </div>
+      <div className="container mx-auto py-2">
+        <DataTable
+          columns={BookColumn}
+          data={data || []}
+          pageCount={data?.pagination?.totalPages || 1}
+          pageIndex={page - 1}
+          pageSize={pageSize}
+          totalRows={data?.pagination?.total || 0}
+          onPaginationChange={handlePaginationChange}
+          addLink=""
+          addLabel=""
+          isAddButton={false}
+        />
+      </div>
   );
-});
+};
 
-export default Payment;
+export default bookPage;

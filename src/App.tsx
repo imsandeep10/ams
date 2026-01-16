@@ -39,6 +39,7 @@ import {
   StudentRegisterRoute,
   StudentRemarkRoute,
   StudentTrackRoute,
+  BookPage,
 } from "./lazyRoutes/route";
 
 const queryClient = new QueryClient({
@@ -200,7 +201,7 @@ const router = createBrowserRouter([
                 element: <RoleIndexRedirect adminRole={"accountant"} />,
               },
               { path: "dashboard", element: <DashboardPageRoute /> },
-              { path: "students", element: <AllStudentPageRoute /> },
+              { path: "students", element: <AllStudentPageRoute  /> },
               { path: "students/create", element: <CreateStudentRoute /> },
               {
                 path: "students/send-email",
@@ -284,6 +285,10 @@ const router = createBrowserRouter([
         path: "mock-table/mock-test/register",
         element: <IeltsMockTestFormRoute isButton={true} />,
       },
+      {
+            path: "book-data-table",
+            element: <BookPage />,
+          },
         ],
       },
       {

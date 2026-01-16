@@ -1,25 +1,25 @@
 import type { ColumnDef } from "@tanstack/react-table";
-import type { createMockRegisterRespoonse } from "@/shared/types/mockFormTypes";
-// import { useNavigate } from "react-router-dom";
-// import { Edit } from "lucide-react";
+import type { bookInfo } from "@/shared/types/bookTypes";
+import { useNavigate } from "react-router-dom";
+import { Edit } from "lucide-react";
 import React from "react";
-// import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-// import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button";
 
 interface ActionButtonsProps {
   id: string;
 }
 
 const ActionButtons = React.memo<ActionButtonsProps>(() => {
-//   const navigate = useNavigate();
-//   const handleView = () => {
-//     navigate(`/payment`); // add payment edit route here
-//   };
+  const navigate = useNavigate();
+  const handleEdit = () => {
+    navigate(`/payment`); // add payment edit route here
+  };
   return (
   <>
   <div className="flex items-center gap-2">
 
-      {/* <Tooltip>
+      <Tooltip>
         <TooltipTrigger asChild>
           <Button
             variant="ghost"
@@ -33,14 +33,14 @@ const ActionButtons = React.memo<ActionButtonsProps>(() => {
         <TooltipContent>
           <p>Edit Books</p>
         </TooltipContent>
-      </Tooltip> */}
+      </Tooltip>
 
     </div>
   </>
   );
 });
 
-export const BookColumn: ColumnDef<createMockRegisterRespoonse>[] = [
+export const BookColumn: ColumnDef<bookInfo>[] = [
   {
     id: "studentName",
     header: () => {
@@ -48,7 +48,7 @@ export const BookColumn: ColumnDef<createMockRegisterRespoonse>[] = [
     },
     accessorKey: "fullName",
     cell: ({ row }) => {
-      return <span>{row.original.fullName}</span>;
+      return <span>{row.original.user?.fullName}</span>;
     },
   },
   {
@@ -58,41 +58,42 @@ export const BookColumn: ColumnDef<createMockRegisterRespoonse>[] = [
     },
     accessorKey: "whatsappNumber",
     cell: ({ row }) => {
-      return <span>{row.original.whatsappNumber}</span>;
+      return <span>{row.original.user?.phoneNumber}</span>;
     },
   },
-//   {
-//     id: "email",
-//     header: () => {
-//       return <span className="">Email</span>;
-//     },
-//     accessorKey: "email",
-//     cell: ({ row }) => {
-//       return <span>{row.original.email}</span>;
-//     },
-//   },
-//   {
-//     id: "status",
-//     header: () => {
-//       return <span className="">Status</span>;
-//     },
-//     accessorKey: "status",
-//     cell: ({ row }) => {
-//       const theStatus = row.original?.status || [];
-//       if (!theStatus || theStatus.length === 0) {
-//         return <span className="text-sm">N/A</span>;
-//       }
-//       return (
-//         <div className="flex flex-col">
-//           {theStatus?.map((value, index) => (
-//             <span key={index} className="text-sm">
-//               {value}
-//             </span>
-//           ))}
-//         </div>
-//       );
-//     },
-//   },
+  {
+    id: "email",
+    header: () => {
+      return <span className="">Email</span>;
+    },
+    accessorKey: "email",
+    cell: ({ row }) => {
+      return <span>{row.original.user?.email}</span>;
+    },
+  },
+  {
+    id: "status",
+    header: () => {
+      return <span className="">Status</span>;
+    },
+    accessorKey: "status",
+    cell: ({ row }) => {
+      const payment = row.original?.payment;
+      const theStatus = payment ? payment.bookStatus : null;
+      
+      const statusMap: Record<string, string> = {
+        NO_BOOK_TAKEN: "No Book Taken",
+        TWO_BOOKS_TAKEN: "Two Books Taken",
+        ALL_BOOK_TAKEN: "Book Taken",
+      };
+
+      return (
+        <span className="text-sm">
+          {theStatus ? statusMap[theStatus] ?? theStatus : "N/A"}
+        </span>
+      );
+    },
+  },
   {
     id: "actions",
     header: () => <span className="sr-only">Actions</span>,

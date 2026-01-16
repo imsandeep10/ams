@@ -1,4 +1,4 @@
-export const Languages = ["IELTS", "PTE", "DUOLINGO", "SAT"];
+export const Languages = ["IELTS", "PTE", "Duolingo", "SAT"];
 
 export const Countries = [
   "Australia",

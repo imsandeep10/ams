@@ -5,7 +5,7 @@ export const useGetBook = (page: number, limit: number) => {
   return useQuery({
     queryKey: ["books", page, limit],
     queryFn: async () => {
-      const res = await api.get("/api/books", { params: { page, limit } }); // api milauni 
+      const res = await api.get("/api/payment", { params: { page, limit } }); // api milauni 
       if (!res || !res.data) {
         throw new Error("Failed to fetch books");
       }

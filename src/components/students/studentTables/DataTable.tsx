@@ -44,6 +44,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useCurrentUser } from "@/lib/api/useUser";
+import { Role } from "@/shared/interface/studentResponse";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -148,6 +150,7 @@ export function DataTable<TData, TValue>({
     }
   };
 
+  const {data: currentUser} = useCurrentUser()
   return (
     <div className="w-full space-y-4">
       {/* Header Controls */}
@@ -229,7 +232,7 @@ export function DataTable<TData, TValue>({
               </DropdownMenuContent>
             </DropdownMenu>
           )}
-          {isAddButton && (
+          {currentUser?.role !== Role.ACCOUNTANT && isAddButton && (
             <Button
               className="cursor-pointer"
               onClick={() => {

@@ -11,6 +11,7 @@ const IeltsPage: React.FC = () => {
   const [pageSize, setPageSize] = useState(10);
 
   const { data, isPending } = useGetStudentsByLanguage("IELTS", page, pageSize);
+  console.log("IELTS Data:", data);
 
   const handlePaginationChange = (newPage: number, newPageSize: number) => {
     setPage(newPage);

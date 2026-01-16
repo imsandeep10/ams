@@ -91,3 +91,8 @@ export const PaymentPageRoute = lazy(
 export const CustomEmailPageRoute = lazy(
   () => import("../components/students/send-email/customEmail")
 );
+
+// book page
+export const BookPage = lazy(
+  ()=> import("../pages/book-table/bookDataPage").then((module) => ({ default: module.default }))
+)

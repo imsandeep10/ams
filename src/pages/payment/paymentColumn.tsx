@@ -91,9 +91,9 @@ const ActionButtons = React.memo<ActionButtonsProps>(({ studentId }) => {
 });
 
 // Status Badge Component
-const StatusBadge = React.memo<{ status: string }>(({ status }) => {
-  const getStatusStyle = (status: string) => {
-    const upperStatus = status.toUpperCase();
+const StatusBadge = React.memo<{ status: string | undefined }>(({ status }) => {
+  const getStatusStyle = (status: string | undefined) => {
+    const upperStatus = status?.toUpperCase();
     switch (upperStatus) {
       case "PARTIAL":
         return "bg-blue-100 text-blue-800 border-blue-300";
@@ -124,13 +124,13 @@ export const PaymentColumn: ColumnDef<Payment>[] = [
     id: "fullName",
     header: "Full Name",
     accessorKey: "fullName",
-    cell: ({ row }) => <p>{row.original.fullName}</p>,
+    cell: ({ row }) => <p>{row.original.user?.fullName}</p>,
   },
   {
     id: "paymentDate",
     header: "Payment Date",
     accessorKey: "paymentDate",
-    cell: ({ row }) => <p>{row.original.paymentDate}</p>,
+    cell: ({ row }) => <p>{row.original.payment?.createdAt ? new Date(row.original.payment.createdAt).toLocaleDateString() : "N/A"}</p>,
   },
   {
     id: "language",
@@ -142,25 +142,25 @@ export const PaymentColumn: ColumnDef<Payment>[] = [
     id: "balance",
     header: "Balance",
     accessorKey: "balance",
-    cell: ({ row }) => <p>${row.original.balance.toFixed(2)}</p>,
+    cell: ({ row }) => <p>Rs {row.original.payment?.paymentAmount}</p>,
   },
-  {
-    id: "dueDate",
-    header: "Due Date",
-    accessorKey: "dueDate",
-    cell: ({ row }) => <p>{row.original.dueDate}</p>,
-  },
+  // {
+  //   id: "dueDate",
+  //   header: "Due Date",
+  //   accessorKey: "dueDate",
+  //   cell: ({ row }) => <p>{row.original.}</p>,
+  // },
   {
     id: "paymentMethod",
     header: "Payment Method",
     accessorKey: "paymentMethod",
-    cell: ({ row }) => <p>{row.original.paymentMethod}</p>,
+    cell: ({ row }) => <p>{row.original.payment?.paymentMethod}</p>,
   },
   {
     id: "Status",
     header: "Status",
     accessorKey: "Status",
-    cell: ({ row }) => <StatusBadge status={row.original.Status} />,
+    cell: ({ row }) => <StatusBadge status={row.original.payment?.paymentStatus} />,
   },
   {
     id: "actions",
