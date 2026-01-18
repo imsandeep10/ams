@@ -41,7 +41,7 @@ export default function AppLayout() {
     <div className="h-full overflow-hidden flex">
       <SidebarProvider defaultOpen={true}>
         <div>
-          <AppSidebar roleProp={currentUser?.role || undefined} />
+          <AppSidebar roleProp={currentUser?.data?.role || undefined} />
         </div>
         <div className="flex flex-col w-full h-screen overflow-hidden">
           <NavBar />

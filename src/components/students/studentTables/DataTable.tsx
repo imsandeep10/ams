@@ -57,6 +57,8 @@ import {
 import { useExportMockTests } from "@/lib/api/useMockRegister";
 import { Calendar } from "@/components/ui/calendar";
 import type { DateRange } from "react-day-picker";
+import { useCurrentUser } from "@/lib/api/useUser";
+import { Role } from "@/shared/interface/studentResponse";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -72,6 +74,7 @@ interface DataTableProps<TData, TValue> {
   isPaymentFilter?: boolean;
   isDateFilter?: boolean;
   isExport?: boolean;
+  isAddButton?: boolean;
 }
 
 export function DataTable<TData, TValue>({
@@ -86,7 +89,7 @@ export function DataTable<TData, TValue>({
   isMessaging = false,
   isPaymentFilter = false,
   isExport = false,
-
+  isAddButton = true,
   addLabel = "Add Student",
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -166,6 +169,7 @@ export function DataTable<TData, TValue>({
     }
   };
 
+  const { data: currentUser } = useCurrentUser();
   const handleExportMockTests = () =>
     exportData({
       startDate: dateRange?.from?.toISOString().split("T")[0],
@@ -279,20 +283,21 @@ export function DataTable<TData, TValue>({
               </DropdownMenuContent>
             </DropdownMenu>
           )}
-
-          <Button
-            className="cursor-pointer"
-            onClick={() => {
-              if (addLink) {
-                navigate(addLink);
-              } else {
-                navigate(`/create-student?language=${pathname[0]}`);
-              }
-            }}
-          >
-            <span>{addLabel || "Add Student"}</span>
-            <Plus />
-          </Button>
+          {currentUser?.role !== Role.ACCOUNTANT && isAddButton && (
+            <Button
+              className="cursor-pointer"
+              onClick={() => {
+                if (addLink) {
+                  navigate(addLink);
+                } else {
+                  navigate(`/create-student?language=${pathname[0]}`);
+                }
+              }}
+            >
+              <span>{addLabel || "Add Student"}</span>
+              <Plus />
+            </Button>
+          )}
         </div>
       </div>
 
@@ -315,7 +320,7 @@ export function DataTable<TData, TValue>({
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                     </TableHead>
                   );
@@ -335,7 +340,7 @@ export function DataTable<TData, TValue>({
                     <TableCell key={cell.id} className="py-4">
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}
@@ -374,7 +379,7 @@ export function DataTable<TData, TValue>({
                 : Math.min(
                     (table.getState().pagination.pageIndex + 1) *
                       table.getState().pagination.pageSize,
-                    table.getFilteredRowModel().rows.length
+                    table.getFilteredRowModel().rows.length,
                   )}
             </span>{" "}
             of{" "}

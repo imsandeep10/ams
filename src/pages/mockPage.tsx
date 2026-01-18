@@ -23,6 +23,43 @@ const MockPage: React.FC = () => {
     );
   }
 
+  // const statsData = [
+  //   {
+  //     title: "Total Students",
+  //     icon: CalendarIcon,
+  //     value: attendanceRecord?.summary.totalDays || 0,
+  //     borderColor: "border-l-blue-500",
+  //     textColor: "text-gray-900",
+  //   },
+  //   {      title: "Present Days",
+  //     icon: CheckCircle,
+  //     value: attendanceRecord?.summary.presentDays || 0,
+  //     borderColor: "border-l-green-500",
+  //     textColor: "text-green-600",
+  //   },
+  //   {
+  //     title: "Absent Days",
+  //     icon: CheckCircle,
+  //     value: attendanceRecord?.summary.absentDays || 0,
+  //     borderColor: "border-l-red-500",
+  //     textColor: "text-red-600",
+  //   },
+  //   {
+  //     title: "Attendance Rate",
+  //     icon: CheckCircle,
+  //     value: `${attendanceRecord?.summary.attendancePercentage.toFixed(1) || 0}%`,
+  //     borderColor: "border-l-purple-500",
+  //     textColor: "text-purple-600",
+  //   }
+  //   {
+  //     title: "Attendance Rate",
+  //     icon: CheckCircle,
+  //     value: `${attendanceRecord?.summary.attendancePercentage.toFixed(1) || 0}%`,
+  //     borderColor: "border-l-purple-500",
+  //     textColor: "text-purple-600",
+  //   }
+  // ]
+
   return (
     <div className="container mx-auto py-2">
       <DataTable

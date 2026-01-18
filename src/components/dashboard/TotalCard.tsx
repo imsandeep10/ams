@@ -15,11 +15,12 @@ type TotalCardProps = { selectedDate?: Date };
 export const TotalCard = React.memo(({ selectedDate }: TotalCardProps) => {
   const { data: stats, isLoading } = useDashboardStats(selectedDate);
   const { data: currentUser } = useCurrentUser();
+  const newCurrentUser = currentUser?.data;
   const navigate = useNavigate();
 
   const handleCardClick = (subtitle: string) => {
     if (
-      currentUser?.role === "superAdmin" &&
+      newCurrentUser?.role === "superAdmin" &&
       subtitle === "Total Enrolled Students"
     ) {
       navigate("/students");
@@ -32,7 +33,7 @@ export const TotalCard = React.memo(({ selectedDate }: TotalCardProps) => {
     if (!stats) return [];
 
     // For SuperAdmin: show all cards
-    if (currentUser?.role === "superAdmin") {
+    if (newCurrentUser?.role === "superAdmin") {
       return [
         {
           subtitle: "Total Enrolled Students",
@@ -70,7 +71,7 @@ export const TotalCard = React.memo(({ selectedDate }: TotalCardProps) => {
     }
 
     // For IELTS Admin: show only IELTS-related cards
-    if (currentUser?.role === Role.IELTS_ADMIN) {
+    if (newCurrentUser?.role === Role.IELTS_ADMIN) {
       return [
         {
           subtitle: "Total IELTS Enrolled",
@@ -92,7 +93,7 @@ export const TotalCard = React.memo(({ selectedDate }: TotalCardProps) => {
     }
 
     // For PTE Admin: show only PTE-related cards
-    if (currentUser?.role === Role.PTE_ADMIN) {
+    if (newCurrentUser?.role === Role.PTE_ADMIN) {
       return [
         {
           subtitle: "Total PTE Enrolled",
@@ -114,7 +115,7 @@ export const TotalCard = React.memo(({ selectedDate }: TotalCardProps) => {
     }
 
     // For SAT Admin: show only SAT-related cards
-    if (currentUser?.role === Role.SAT_ADMIN) {
+    if (newCurrentUser?.role === Role.SAT_ADMIN) {
       return [
         {
           subtitle: "Total SAT Enrolled",
@@ -136,7 +137,7 @@ export const TotalCard = React.memo(({ selectedDate }: TotalCardProps) => {
     }
 
     // For Duolingo Admin: show only Duolingo-related cards
-    if (currentUser?.role === Role.DUOLINGO_ADMIN) {
+    if (newCurrentUser?.role === Role.DUOLINGO_ADMIN) {
       return [
         {
           subtitle: "Total Duolingo Enrolled",
@@ -172,10 +173,10 @@ export const TotalCard = React.memo(({ selectedDate }: TotalCardProps) => {
         total: stats.totalAbsentToday,
       },
     ];
-  }, [stats, currentUser?.role]);
+  }, [stats, newCurrentUser?.role]);
 
   // Determine number of skeleton cards based on currentUser?.role
-  const skeletonCount = currentUser?.role === "superAdmin" ? 7 : 3;
+  const skeletonCount = newCurrentUser?.role === "superAdmin" ? 7 : 3;
 
   if (isLoading) {
     return (
@@ -200,7 +201,7 @@ export const TotalCard = React.memo(({ selectedDate }: TotalCardProps) => {
           <div
             key={index}
             className={`border flex flex-col bg-primary p-6 py-8 rounded-md hover:shadow-md transition-shadow ${
-              currentUser?.role === "superAdmin" &&
+              newCurrentUser?.role === "superAdmin" &&
               item.subtitle === "Total Enrolled Students"
                 ? "cursor-pointer hover:bg-primary/90"
                 : ""

@@ -60,7 +60,7 @@ export function AdminDataTable<TData, TValue>({
     },
     initialState: {
       pagination: {
-        pageSize: 5,
+        pageSize: 8,
       },
     },
   });

@@ -91,27 +91,12 @@ export const upcomingMockTest = (page: number = 1, limit: number = 10) => {
         throw new Error("Failed to fetch mock test Data");
       }
 
-      const rawData = res.data.data || [];
-
-      const mocktest = rawData.map((value: any) => ({
-        id: value.id,
-        timeSlot: value.timeSlot,
-        mockTestDate: value.mockTestDate,
-        testType: value.testType,
-        moduleCompleted: value.moduleCompleted,
-        fullName: value.fullName,
-        surname: value.surname,
-        whatsappNumber: value.whatsappNumber,
-        examDate: value.examDate,
-        destinationCountry: value.destinationCountry,
-      }));
-
       return {
-        data: mocktest,
-        pagination: res.data.pagination || {
+        data: res.data.data,
+        pagination: res.data.data.pagination || {
           page,
           limit,
-          total: mocktest.length,
+          total: res.data.data.length,
           totalPages: 1,
         },
       };

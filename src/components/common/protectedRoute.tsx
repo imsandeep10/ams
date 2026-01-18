@@ -2,7 +2,7 @@ import { type ReactNode } from "react";
 import { Navigate } from "react-router-dom";
 import { useCurrentUser } from "@/lib/api/useUser";
 import { Skeleton } from "../ui/skeleton";
-import { useQueryClient } from "@tanstack/react-query";
+// import { useQueryClient } from "@tanstack/react-query";
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -11,8 +11,9 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { data: currentUser, isPending: isLoading } = useCurrentUser();
-  const queryClient = useQueryClient();
-  queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+  console.log("ProtectedRoute - Current User:", currentUser);
+  // const queryClient = useQueryClient();
+  // queryClient.invalidateQueries({ queryKey: ["currentUser"] });
 
   if (isLoading) {
     return (
@@ -42,7 +43,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
       </div>
     );
   }
-  if (!currentUser) {
+  if (!currentUser?.data) {
     return <Navigate to="/" replace />;
   }
 

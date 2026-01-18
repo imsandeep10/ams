@@ -1,5 +1,4 @@
-"use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { TrackDataTable } from "@/components/students/studentTrack/TrackDataTable";
 import { trackColumns } from "@/components/students/studentTrack/TrackColumn";
@@ -8,6 +7,7 @@ import {
   useGetStudentById,
 } from "@/lib/api/useStudents";
 import { useStudentProgress } from "@/lib/api/useStudents";
+import { useGetPayment } from "@/lib/api/usePayment";
 import {
   Select,
   SelectContent,
@@ -65,6 +65,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { useSendResultScore } from "@/lib/api/useEmail";
 import { DialogDescription } from "@radix-ui/react-dialog";
+import { StatsCard } from "@/components/recordCards/Card";
+import { Progress } from "@/components/ui/progress";
 
 export const StudentTrack = React.memo(() => {
   const { id } = useParams<{ id: string }>();
@@ -75,7 +77,9 @@ export const StudentTrack = React.memo(() => {
   const currentMonth = currentDate.getMonth() + 1;
   const [year, setYear] = useState(currentYear.toString());
   const [month, setMonth] = useState(currentMonth.toString());
+  const [dateBookStatus, setDateBookStatus] = useState<string>("");
   const navigate = useNavigate();
+  const [progress, setProgress] = React.useState(0);
 
   const { data: attendanceRecord, isPending } = useGetStudentAttendanceTrack(
     id!,
@@ -83,6 +87,8 @@ export const StudentTrack = React.memo(() => {
     Number(month)
   );
 
+  const {data: paymentData} = useGetPayment(id!);
+  console.log("Payment Data:", paymentData);
   const { data: studentProgress } = useStudentProgress(id!);
   const { data: currentStudent } = useGetStudentById(id!);
   const { mutate: sendResultScore, isPending: isSendingResult } =
@@ -151,6 +157,13 @@ export const StudentTrack = React.memo(() => {
   const handleSubmit = (data: SendResultScoreData) => {
     sendResultScore(data);
   };
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setProgress(totalProgressPercentage);
+    }, 300);
+    return () => clearInterval(timer);
+  }, [totalProgressPercentage]);
 
   if (isPending) {
     return (
@@ -250,6 +263,50 @@ export const StudentTrack = React.memo(() => {
     );
   }
 
+  const statsData = [
+    {
+      title: "Total Days",
+      icon: CalendarIcon,
+      value: attendanceRecord?.summary.totalDays || 0,
+      borderColor: "border-l-blue-500",
+      textColor: "text-gray-900",
+      subtext: `Working Days: ${attendanceRecord?.summary.workingDays || 0}`,
+    },
+    {
+      title: "Present Days",
+      icon: CheckCircle,
+      value: attendanceRecord?.summary.presentDays || 0,
+      borderColor: "border-l-green-500",
+      textColor: "text-green-600",
+      subtext: `Out of ${
+        attendanceRecord?.summary.workingDays || 0
+      } working days`,
+    },
+    {
+      title: "Absent Days",
+      icon: XCircle,
+      value: attendanceRecord?.summary.absentDays || 0,
+      borderColor: "border-l-red-500",
+      textColor: "text-red-600",
+      subtext: `Includes weekends: ${
+        attendanceRecord?.summary.weekendDays || 0
+      }`,
+    },
+    {
+      title: "Attendance Rate",
+      icon: TrendingUp,
+      value: `${
+        attendanceRecord?.summary.attendancePercentage.toFixed(1) || 0
+      }%`,
+      borderColor: "border-l-purple-500",
+      textColor: "text-purple-600",
+      subtext: `Working days attendance percentage${
+        attendanceRecord?.summary?.workingDaysAttendancePercentage.toFixed(1) ||
+        0
+      }%`,
+    },
+  ];
+
   return (
     <div className="container mx-auto p-4 md:p-6 space-y-6">
       <Button
@@ -265,9 +322,9 @@ export const StudentTrack = React.memo(() => {
         <>
           <Card className="border-none shadow-lg dark:from-gray-900 dark:to-gray-800">
             <CardContent className="p-6 space-y-4">
-              <div className="flex flex-col  lg:flex-row w-full lg:justify-between">
+              <div className="flex flex-col xl:flex-row w-full xl:justify-between">
                 {/* first section */}
-                <div className="flex flex-col lg:flex-row items-start md:items-center gap-6">
+                <div className="flex flex-col xl:flex-row items-start md:items-center gap-6">
                   <Avatar className="h-32 w-32 border-1 border-white shadow-lg">
                     <AvatarImage
                       src={attendanceRecord.student.profileImage}
@@ -278,7 +335,7 @@ export const StudentTrack = React.memo(() => {
                     </AvatarFallback>
                   </Avatar>
 
-                  <div className="flex-1 space-y-2 flex flex-col md:items-center lg:items-start">
+                  <div className="flex-1 space-y-2 flex flex-col md:items-center xl:items-start">
                     <h1 className="text-2xl md:text-3xl font-semibold text-gray-900 dark:text-white">
                       {attendanceRecord.student.fullName}
                     </h1>
@@ -296,7 +353,7 @@ export const StudentTrack = React.memo(() => {
                           {attendanceRecord.period.year}
                         </div>
                       </div>
-                      <div className="flex flex-wrap items-center gap-2 md:flex-row sm:justify-center lg:justify-start">
+                      <div className="flex flex-wrap items-center gap-2 md:flex-row sm:justify-center xl:justify-start">
                         <Dialog>
                           <DialogTrigger asChild>
                             <Button className="bg-[#1B5E20] text-white flex items-center gap-2">
@@ -338,8 +395,8 @@ export const StudentTrack = React.memo(() => {
                   </div>
                 </div>
                 {/* second section */}
-                <div className="flex flex-col lg:flex-col gap-6 py-2 lg:mt-0 px-2  rounded-lg justify-evenly">
-                  <div className="flex flex-col lg:flex-row gap-4">
+                <div className="flex flex-col gap-6 py-2 xl:mt-0 px-2 rounded-lg justify-evenly">
+                  <div className="flex flex-col xl:flex-row gap-4">
                     <div className="flex items-center justify-between gap-4">
                       <label
                         htmlFor="Payment"
@@ -347,18 +404,31 @@ export const StudentTrack = React.memo(() => {
                       >
                         Payment:
                       </label>
-                      <Select>
-                        <SelectTrigger className="w-[140px] text-[#0E2A10] bg-[#F1FFF5] border-[#BAFFD3] focus:border-none">
+                      <div >
+                        {/* <SelectTrigger className="w-[140px] text-[#0E2A10] bg-[#F1FFF5] border-[#BAFFD3] focus:border-none">
                           <SelectValue placeholder="Select" />
                         </SelectTrigger>
                         <SelectContent className="bg-[#F1FFF5] text-[#0E2A10] border-[#BAFFD3] ">
                           <SelectGroup>
                             <SelectItem value="paid">Paid</SelectItem>
                             <SelectItem value="unpaid">Unpaid</SelectItem>
-                            <SelectItem value="pending">Pending</SelectItem>
+                            <SelectItem value="pending">Partial</SelectItem>
                           </SelectGroup>
-                        </SelectContent>
-                      </Select>
+                        </SelectContent> */}
+                        {paymentData?.payment === "FULL_PAID" ? (
+                          <span className="px-4 py-2 rounded-md bg-green-100 text-green-800 font-medium">
+                            Paid
+                            </span>
+                        ) : paymentData?.payment === "PARTIAL_PAID" ? (
+                          <span className="px-4 py-2 rounded-md bg-yellow-100 text-yellow-800 font-medium">
+                            Partial
+                          </span>
+                        ) : (
+                          <span className="px-4 py-2 rounded-md bg-red-100 text-red-800 font-medium">
+                            Unpaid
+                          </span>
+                        )}
+                      </div>
                     </div>
                     <div className="flex items-center justify-between gap-4">
                       <label
@@ -399,27 +469,30 @@ export const StudentTrack = React.memo(() => {
                       </Select>
                     </div>
                   </div>
-                  <div className="flex flex-col lg:flex-row gap-4">
-                    <div className="flex items-center justify-between gap-4">
+                  <div className="flex flex-col xl:flex-row gap-4">
+                    <div className="flex flex-col xl:flex-row gap-4">
+                      <div className="flex items-center justify-between gap-4">
                       <label
                         htmlFor="DateBookStatus"
                         className="font-medium text-[#1B5E20] min-w-[40px]"
                       >
                         Date Book Status:
                       </label>
-                      <Select>
+                      <Select value={dateBookStatus} onValueChange={setDateBookStatus}>
                         <SelectTrigger className="w-[140px] text-[#0E2A10] bg-[#F1FFF5] border-[#BAFFD3] focus:border-none">
                           <SelectValue placeholder="Select" />
                         </SelectTrigger>
                         <SelectContent className="bg-[#F1FFF5] text-[#0E2A10] border-[#BAFFD3] ">
                           <SelectGroup>
-                            <SelectItem value="paid">Booked</SelectItem>
-                            <SelectItem value="unpaid">Not Booked</SelectItem>
+                            <SelectItem value="booked">Booked</SelectItem>
+                            <SelectItem value="notBooked">Not Booked</SelectItem>
                           </SelectGroup>
                         </SelectContent>
                       </Select>
                     </div>
-                    <div className="flex items-center justify-between gap-4">
+                      {/* date */}
+                    { dateBookStatus === "booked" && (
+                      <div className="flex items-center justify-end gap-4">
                       <Popover
                         open={calendarOpen}
                         onOpenChange={setCalendarOpen}
@@ -427,7 +500,7 @@ export const StudentTrack = React.memo(() => {
                         <PopoverTrigger asChild>
                           <Button
                             variant="outline"
-                            className="w-[140px] justify-start text-left font-normal"
+                            className="w-[140px] bg-[#F1FFF5] border-[#BAFFD3] justify-start text-left font-normal"
                           >
                             <CalendarIcon className="mr-2 h-4 w-4" />
                             {date ? format(date, "PP") : "Pick date"}
@@ -441,11 +514,13 @@ export const StudentTrack = React.memo(() => {
                               setDate(selectedDate);
                               setCalendarOpen(false);
                             }}
-                            className="rounded-md border shadow-sm"
+                            className="rounded-md bg-[#BAFFD3] border-[#BAFFD3] border shadow-sm"
                             captionLayout="dropdown"
                           />
                         </PopoverContent>
                       </Popover>
+                    </div>
+                    )}
                     </div>
                     <div className="flex items-center justify-between gap-4">
                       <label
@@ -472,7 +547,7 @@ export const StudentTrack = React.memo(() => {
                 </div>
               </div>
               {/* progress bar  */}
-              <div className="py-4 mt-4 lg:ml-32 xl:ml-40">
+              <div className="py-4 mt-4 xl:ml-40">
                 {/* header */}
                 <div className="flex justify-between mb-4">
                   <h3>STUDENT PROGRESS TRACK</h3>
@@ -480,27 +555,31 @@ export const StudentTrack = React.memo(() => {
                 </div>
                 {/* progress section */}
                 <div className="relative space-y-2">
-                  <div className="flex justify-between z-10">
+                  <div className="grid grid-cols-5 z-10">
                     {progressBarSteps.map((step, index) => (
-                      <Circle
-                        key={index}
-                        className={`h-4 w-4 stroke-none transition-colors duration-300 ${
-                          step.isCompleted ? "fill-[#22C55E]" : "fill-[#E5E7EB]"
-                        }
+                      <div key={index} className="flex justify-end">
+                        <Circle
+                          className={`h-4 w-4 stroke-none transition-colors duration-300 ${
+                            step.isCompleted
+                              ? "fill-[#22C55E]"
+                              : "fill-[#E5E7EB]"
+                          }
                         `}
-                      />
+                        />
+                      </div>
                     ))}
                     {/* <Circle className="h-4 w-4 fill-[#22C55E] stroke-none" /> */}
                   </div>
-                  <div className="w-full h-2">
-                    <div className="w-full absolute rounded-full h-2 bg-[#E5E7EB] "></div>
-                    <div
-                      className={`w-${totalProgressPercentage}absolute rounded-full h-2 bg-[#22C55E] transition-all duration-500 ease-out`}
-                    ></div>
-                  </div>
-                  <div className="flex justify-between">
+                  <Progress
+                    value={progress}
+                    className="h-2 w-full  bg-[#E5E7EB]"
+                  />
+                  <div className="grid grid-cols-5">
                     {progressBarSteps.map((step, index) => (
-                      <span key={index} className="">
+                      <span
+                        key={index}
+                        className="text-center text-sm max-w-[80px] mx-auto"
+                      >
                         {step.label}
                       </span>
                     ))}
@@ -531,7 +610,7 @@ export const StudentTrack = React.memo(() => {
         attendanceRecord &&
         attendanceRecord.dailyRecords.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Card className="border-l-4 border-l-blue-500 hover:shadow-lg transition-shadow">
+            {/* <Card className="border-l-4 border-l-blue-500 hover:shadow-lg transition-shadow">
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center gap-2">
                   <CalendarIcon className="h-4 w-4" />
@@ -602,7 +681,18 @@ export const StudentTrack = React.memo(() => {
                   />
                 </div>
               </CardContent>
-            </Card>
+            </Card> */}
+            {statsData.map((stat) => (
+              <StatsCard
+                key={stat.title}
+                title={stat.title}
+                icon={stat.icon}
+                value={stat.value}
+                subtext={stat.subtext}
+                borderColor={stat.borderColor}
+                textColor={stat.textColor}
+              />
+            ))}
           </div>
         )}
 

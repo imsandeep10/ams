@@ -93,7 +93,7 @@ export const useGetAllAdmins = () => {
       if (!res || !res.data) {
         throw new Error("Failed to fetch admins");
       }
-      return Array.isArray(res.data) ? res.data : res.data.admins || [];
+      return Array.isArray(res.data.data) ? res.data.data : res.data.data.admins || [];
     },
   });
 };

@@ -25,7 +25,7 @@ import { useCurrentUser } from "@/lib/api/useUser";
 import { useLogout } from "@/lib/api/useAuth";
 
 export const ProfileDropdown = React.memo(() => {
-  const { data: currentUser } = useCurrentUser();
+  const { data: currentUser, isLoading } = useCurrentUser();
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -56,14 +56,24 @@ export const ProfileDropdown = React.memo(() => {
       ieltsAdmin: "IELTS Admin",
       duolingoAdmin: "Duolingo Admin",
       satAdmin: "SAT Admin",
+      accountant: "Accountant",
     };
     return roleMap[role] || role;
   };
 
+  if(isLoading) {
+    return (<div className="w-6 h-6 rounded-full bg-muted animate-spin"></div>)
+  }
+
   // Don't render if user is not loaded
-  if (!currentUser || !currentUser.fullName || !currentUser.email) {
+  if (!currentUser) {
     return null;
   }
+
+  const newCurrentUser = currentUser.data;
+
+  const fullName = newCurrentUser.fullName || "unknown user";
+  const email = newCurrentUser.email || "unknown email";
 
   return (
     <>
@@ -76,11 +86,11 @@ export const ProfileDropdown = React.memo(() => {
             >
               <Avatar className="h-8 w-8">
                 <AvatarImage
-                  src={currentUser.profileImage || ""}
-                  alt={currentUser.fullName}
+                  src={newCurrentUser.profileImage || ""}
+                  alt={fullName}
                 />
                 <AvatarFallback className="bg-primary text-primary-foreground text-sm font-medium">
-                  {getInitials(currentUser.fullName)}
+                  {getInitials(fullName)}
                 </AvatarFallback>
               </Avatar>
             </Button>
@@ -89,13 +99,13 @@ export const ProfileDropdown = React.memo(() => {
             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col space-y-1">
                 <p className="text-sm font-medium leading-none">
-                  {currentUser.fullName}
+                  {fullName}
                 </p>
                 <p className="text-xs leading-none text-muted-foreground">
-                  {currentUser.email}
+                  {email}
                 </p>
                 <p className="text-xs text-primary font-semibold mt-1">
-                  {formatRole(currentUser.role)}
+                  {formatRole(newCurrentUser.role)}
                 </p>
               </div>
             </DropdownMenuLabel>

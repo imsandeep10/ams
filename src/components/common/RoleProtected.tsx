@@ -13,11 +13,16 @@ interface RoleIndexRedirectProps {
 
 // Component for protecting routes based on role
 export function RoleProtected({ allowedRoles, children }: RoleProtectedProps) {
-  const { data: currentUser } = useCurrentUser();
+  const { data: currentUser , isPending: isLoading } = useCurrentUser();
 
   // console.log("Current User:", currentUser);
+  const newCurrentUser = currentUser?.data;
 
-  if (!currentUser || !allowedRoles.includes(currentUser.role)) {
+  if (isLoading) {
+    return null
+  }
+
+  if (!newCurrentUser || !allowedRoles.includes(newCurrentUser.role)) {
     return <Navigate to="/dashboard" replace />;
   }
 
@@ -27,13 +32,14 @@ export function RoleProtected({ allowedRoles, children }: RoleProtectedProps) {
 // Component for role-based index redirection
 export function RoleIndexRedirect({ adminRole }: RoleIndexRedirectProps) {
   const { data: currentUser } = useCurrentUser();
+  const newCurrentUser = currentUser?.data;
   // If current currentUser is superAdmin, show the students listing for this role.
-  if (currentUser?.role === "superAdmin") {
+  if (newCurrentUser?.role === "superAdmin") {
     return <Navigate to="students" replace />;
   }
 
   // If the currentUser is the admin for this role, show the role dashboard.
-  if (currentUser?.role === adminRole) {
+  if (newCurrentUser?.role === adminRole) {
     return <Navigate to="dashboard" replace />;
   }
 
