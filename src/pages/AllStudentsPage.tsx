@@ -4,26 +4,46 @@ import { DataTable } from "@/components/students/studentTables/DataTable";
 import { useGetAllStudents } from "@/lib/api/useStudents";
 import React, { useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import { debounce } from "@tanstack/react-pacer";
 
 const AllStudentsPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const initialPage = Number(searchParams.get("page") ?? 1);
   const initialPageSize = Number(searchParams.get("limit") ?? 10);
-
+  const initialSearch = searchParams.get("student") ?? "";
   const [filter, setFilter] = useState({
     page: initialPage,
     limit: initialPageSize,
+    search: initialSearch,
   });
 
-  const { data, isPending } = useGetAllStudents(filter.page, filter.limit);
+  const { data, isPending } = useGetAllStudents(
+    filter.page,
+    filter.limit,
+    filter.search,
+  );
 
   const handlePaginationChange = (newPage: number, newPageSize: number) => {
-    setFilter({ page: newPage, limit: newPageSize });
+    setFilter({ page: newPage, limit: newPageSize, search: filter.search });
     setSearchParams({
       page: newPage.toString(),
       limit: newPageSize.toString(),
     });
   };
+
+  const handleSearch = debounce(
+    (search: string) => {
+      setFilter({ page: 1, limit: filter.limit, search });
+      setSearchParams({
+        page: "1",
+        limit: filter.limit.toString(),
+        student: search,
+      });
+    },
+    {
+      wait: 500,
+    },
+  );
 
   if (isPending) {
     return (
@@ -42,8 +62,10 @@ const AllStudentsPage: React.FC = () => {
         pageCount={data?.pagination.totalPages || 1}
         pageIndex={initialPage - 1}
         pageSize={initialPageSize}
-        totalRows={data?.pagination.total || 0}
+        totalRows={data?.students.length || 0}
         onPaginationChange={handlePaginationChange}
+        onSearch={handleSearch}
+        searchInputData={filter.search}
       />
     </div>
   );

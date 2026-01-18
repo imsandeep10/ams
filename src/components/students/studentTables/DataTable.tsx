@@ -75,6 +75,14 @@ interface DataTableProps<TData, TValue> {
   isDateFilter?: boolean;
   isExport?: boolean;
   isAddButton?: boolean;
+  onSearch: (search: string) => void;
+  searchInputData: string;
+  filterLabel?: string;
+  onFilterChange?: (filter: string) => void;
+  filterData?: {
+    label: string;
+    value: string;
+  }[];
 }
 
 export function DataTable<TData, TValue>({
@@ -91,6 +99,11 @@ export function DataTable<TData, TValue>({
   isExport = false,
   isAddButton = true,
   addLabel = "Add Student",
+  filterLabel = "Filter",
+  onFilterChange,
+  onSearch,
+  searchInputData,
+  filterData,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -185,8 +198,8 @@ export function DataTable<TData, TValue>({
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             <Input
               placeholder="Search students..."
-              value={globalFilter ?? ""}
-              onChange={(event) => setGlobalFilter(String(event.target.value))}
+              defaultValue={searchInputData}
+              onChange={(event) => onSearch(String(event.target.value))}
               className="pl-10 max-w-sm"
             />
           </div>
@@ -251,35 +264,19 @@ export function DataTable<TData, TValue>({
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button className="cursor-pointer" variant={"outline"}>
-                  <span>Filter Payments</span>
+                  <span>{filterLabel}</span>
                   <ChevronDown />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem
-                  className="cursor-pointer"
-                  onClick={() => navigate("/payment?filter=all")}
-                >
-                  All
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  className="cursor-pointer"
-                  onClick={() => navigate("/payment?filter=paid")}
-                >
-                  Paid
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  className="cursor-pointer"
-                  onClick={() => navigate("/payment?filter=unpaid")}
-                >
-                  UnPaid
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  className="cursor-pointer"
-                  onClick={() => navigate("/payment?filter=partial")}
-                >
-                  Partial
-                </DropdownMenuItem>
+                {filterData?.map((item) => (
+                  <DropdownMenuItem
+                    className="cursor-pointer"
+                    onClick={() => onFilterChange?.(item.value)}
+                  >
+                    {item.label}
+                  </DropdownMenuItem>
+                ))}
               </DropdownMenuContent>
             </DropdownMenu>
           )}

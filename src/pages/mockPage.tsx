@@ -7,7 +7,7 @@ import React, { useState } from "react";
 const MockPage: React.FC = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-
+  const [searchInputData, setSearchInputData] = useState("");
   const { data, isPending } = upcomingMockTest(page, pageSize);
 
   const handlePaginationChange = (newPage: number, newPageSize: number) => {
@@ -74,6 +74,8 @@ const MockPage: React.FC = () => {
         addLabel="Add Mock Test"
         isExport={true}
         isDateFilter={true}
+        onSearch={(search: string) => setSearchInputData(search)}
+        searchInputData={searchInputData}
       />
     </div>
   );

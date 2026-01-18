@@ -2,19 +2,49 @@ import { DataTableSkeleton } from "@/components/common/DataTableSkeleton";
 import { LangugaeColumns } from "@/components/students/languageTables/languageColumns";
 import { DataTable } from "@/components/students/studentTables/DataTable";
 import { useGetStudentsByLanguage } from "@/lib/api/useStudents";
+import { debounce } from "@tanstack/react-pacer";
 import React, { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 const PtePage: React.FC = () => {
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialPage = Number(searchParams.get("page")) || 1;
+  const initialPageSize = Number(searchParams.get("limit")) || 10;
+  const initialSearch = searchParams.get("student") || "";
 
-  const { data, isPending } = useGetStudentsByLanguage("PTE", page, pageSize);
+  const [filter, setFilter] = useState({
+    page: initialPage,
+    limit: initialPageSize,
+    search: initialSearch,
+  });
+  const { data, isPending } = useGetStudentsByLanguage(
+    "PTE",
+    filter.page,
+    filter.limit,
+    filter.search,
+  );
 
   const handlePaginationChange = (newPage: number, newPageSize: number) => {
-    setPage(newPage);
-    setPageSize(newPageSize);
+    setFilter({ page: newPage, limit: newPageSize, search: filter.search });
+    setSearchParams({
+      page: newPage.toString(),
+      limit: newPageSize.toString(),
+    });
   };
 
+  const handleSearch = debounce(
+    (search: string) => {
+      setFilter({ page: 1, limit: filter.limit, search });
+      setSearchParams({
+        page: "1",
+        limit: filter.limit.toString(),
+        student: search,
+      });
+    },
+    {
+      wait: 500,
+    },
+  );
   if (isPending) {
     return (
       <>
@@ -30,10 +60,12 @@ const PtePage: React.FC = () => {
         isMessaging={true}
         data={data?.students || []}
         pageCount={data?.pagination.totalPages || 1}
-        pageIndex={page - 1}
-        pageSize={pageSize}
+        pageIndex={initialPage - 1}
+        pageSize={initialPageSize}
         totalRows={data?.pagination.total || 0}
         onPaginationChange={handlePaginationChange}
+        onSearch={handleSearch}
+        searchInputData={filter.search}
       />
     </div>
   );

@@ -22,7 +22,7 @@ export const useCreateStudents = () => {
     mutationFn: async (data: CreateStudentFormData) => {
       const res = await api.post<CreateStudentResponse>(
         "/api/student/initiate",
-        data
+        data,
       );
       return res.data;
     },
@@ -77,10 +77,11 @@ export const useUpdateStudent = () => {
 export const useGetStudentsByLanguage = (
   language: string,
   page: number = 1,
-  limit: number = 10
+  limit: number = 10,
+  student?: string,
 ) => {
   return useQuery({
-    queryKey: ["students", language, page, limit],
+    queryKey: ["students", language, page, limit, student],
     queryFn: async (): Promise<{
       students: Student[];
       pagination: {
@@ -90,9 +91,12 @@ export const useGetStudentsByLanguage = (
         totalPages: number;
       };
     }> => {
-      const res = await api.get(`/api/students/language/${language}`, {
-        params: { page, limit },
-      });
+      const res = await api.get(
+        `/api/students/language/${language}?term=${student}`,
+        {
+          params: { page, limit },
+        },
+      );
       if (!res?.data?.students) {
         throw new Error("Failed to fetch students");
       }
@@ -132,10 +136,10 @@ export const useGetStudentsByLanguage = (
 export const useGetAllStudents = (
   page: number = 1,
   limit: number = 10,
-  paymentFilter?: string
+  term?: string,
 ) => {
   return useQuery({
-    queryKey: ["all-students", page, limit, paymentFilter],
+    queryKey: ["all-students", page, limit, term],
     queryFn: async (): Promise<{
       students: Student[];
       pagination: {
@@ -145,8 +149,8 @@ export const useGetAllStudents = (
         totalPages: number;
       };
     }> => {
-      const res = await api.get(`/api/student`, {
-        params: { page, limit, paymentFilter },
+      const res = await api.get(`/api/student?term=${term}`, {
+        params: { page, limit },
       });
       if (!res?.data?.students) {
         throw new Error("Failed to fetch students");
@@ -206,7 +210,7 @@ export const useGetStudentAttendance = (params: AttendanceParams = {}) => {
     queryFn: async () => {
       try {
         const res = await api.get(
-          `/api/attendance?page=${page}&limit=${limit}`
+          `/api/attendance?page=${page}&limit=${limit}`,
         );
         return res.data;
       } catch (err) {
@@ -223,14 +227,14 @@ export const useGetStudentAttendance = (params: AttendanceParams = {}) => {
 export const useGetStudentAttendanceTrack = (
   studentId: string,
   year: number,
-  month: number
+  month: number,
 ) => {
   return useQuery({
     queryKey: ["attendance", studentId, year, month],
     queryFn: async () => {
       try {
         const res = await api.get(
-          `/api/attendance-track/monthly/${studentId}?year=${year}&month=${month}`
+          `/api/attendance-track/monthly/${studentId}?year=${year}&month=${month}`,
         );
         console.log("attandence", res.data);
         return res.data;
@@ -260,7 +264,7 @@ export const useStudentProgress = (userId: string) => {
 
 export const useStudentSearch = (
   query: string,
-  options?: { enabled?: boolean }
+  options?: { enabled?: boolean },
 ) => {
   return useQuery({
     queryKey: ["student-search", query],
