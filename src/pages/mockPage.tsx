@@ -1,18 +1,15 @@
 import { DataTableSkeleton } from "@/components/common/DataTableSkeleton";
-import {columnsMockTest} from "@/components/mock-test/mockColumns";
+import { columnsMockTest } from "@/components/mock-test/mockColumns";
 import { DataTable } from "@/components/students/studentTables/DataTable";
-import {upcomingMockTest} from "@/lib/api/useMockRegister";
+import { upcomingMockTest } from "@/lib/api/useMockRegister";
 import React, { useState } from "react";
-import {useExportMockTests} from "@/lib/api/useMockRegister";
 
 const MockPage: React.FC = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-  const { mutate: handleExport, isPending: isExporting } = useExportMockTests();
-
   const { data, isPending } = upcomingMockTest(page, pageSize);
-  
+
   const handlePaginationChange = (newPage: number, newPageSize: number) => {
     setPage(newPage);
     setPageSize(newPageSize);
@@ -28,8 +25,8 @@ const MockPage: React.FC = () => {
 
   return (
     <div className="container mx-auto py-2">
-      <DataTable 
-        columns={columnsMockTest} 
+      <DataTable
+        columns={columnsMockTest}
         data={data?.data || []}
         pageCount={data?.pagination.totalPages || 1}
         pageIndex={page - 1}
@@ -38,8 +35,8 @@ const MockPage: React.FC = () => {
         onPaginationChange={handlePaginationChange}
         addLink="/mock-test/register"
         addLabel="Add Mock Test"
-        onExport={handleExport}
-        isExporting={isExporting}
+        isExport={true}
+        isDateFilter={true}
       />
     </div>
   );

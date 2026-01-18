@@ -119,28 +119,78 @@ export const upcomingMockTest = (page: number = 1, limit: number = 10) => {
   });
 };
 
+interface UseExportMockTestsParams {
+  startDate?: string;
+  endDate?: string;
+}
 export const useExportMockTests = () => {
   return useMutation({
-    mutationFn: async () => {
-      const res = await api.get("/api/mock-test/past/export", {
-        responseType: "blob",
-      });
-      return res.data;
-    },
-    onSuccess: (data) => {
-      const url = window.URL.createObjectURL(new Blob([data]));
+    mutationFn: async ({ startDate, endDate }: UseExportMockTestsParams) => {
+      // Format dates to YYYY-MM-DD format
+      const formattedStartDate = startDate
+        ? new Date(startDate).toISOString().split("T")[0]
+        : undefined;
+      const formattedEndDate = endDate
+        ? new Date(endDate).toISOString().split("T")[0]
+        : undefined;
+
+      const res = await api.post(
+        `/api/mock-test/past/export?${
+          formattedStartDate ? `startDate=${formattedStartDate}&` : ""
+        }${formattedEndDate ? `endDate=${formattedEndDate}` : ""}`,
+        {},
+        {
+          responseType: "blob",
+          headers: {
+            Accept:
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/octet-stream",
+          },
+        }
+      );
+
+      // Verify response is a blob
+      if (!(res.data instanceof Blob)) {
+        throw new Error("Expected blob response but got something else");
+      }
+
+      // Create download link
+      const url = window.URL.createObjectURL(res.data);
       const link = document.createElement("a");
       link.href = url;
       link.setAttribute(
         "download",
-        `mock-tests-${new Date().toLocaleDateString()}.xlsx`
+        `mock-tests-${new Date().toISOString().split("T")[0]}.xlsx`
       );
       document.body.appendChild(link);
       link.click();
-      link.parentNode?.removeChild(link);
+      link.remove();
+      window.URL.revokeObjectURL(url);
     },
     onError: (error: AxiosError) => {
       toast.error(`Error exporting mock tests: ${error.message}`);
     },
   });
 };
+
+// export const useExportMockTests = ({
+//   startDate,
+//   endDate,
+// }: UseExportMockTestsParams) => {
+//   const params = new URLSearchParams();
+//   if (startDate) params.append("startDate", startDate);
+//   if (endDate) params.append("endDate", endDate);
+//   const query = params.toString();
+//   return useQuery({
+//     queryKey: ["export-mock-tests", query],
+//     queryFn: async () => {
+//       const res = await api.get(
+//         `/api/mock-test/past/export?${query.toString()}`,
+//         {
+//           responseType: "blob",
+//         }
+//       );
+//       return res.data;
+//     },
+//     enabled: false,
+//   });
+// };

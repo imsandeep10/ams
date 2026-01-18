@@ -44,6 +44,19 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { useExportMockTests } from "@/lib/api/useMockRegister";
+import { Calendar } from "@/components/ui/calendar";
+import type { DateRange } from "react-day-picker";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -57,8 +70,8 @@ interface DataTableProps<TData, TValue> {
   addLabel?: string;
   isMessaging?: boolean;
   isPaymentFilter?: boolean;
-  onExport?: () => void;
-  isExporting?: boolean;
+  isDateFilter?: boolean;
+  isExport?: boolean;
 }
 
 export function DataTable<TData, TValue>({
@@ -72,8 +85,7 @@ export function DataTable<TData, TValue>({
   addLink,
   isMessaging = false,
   isPaymentFilter = false,
-  onExport,
-  isExporting,
+  isExport = false,
 
   addLabel = "Add Student",
 }: DataTableProps<TData, TValue>) {
@@ -86,8 +98,15 @@ export function DataTable<TData, TValue>({
   const [pageSize, setPageSize] = useState(externalPageSize);
   const pathname = window.location.pathname.split("/").filter(Boolean);
   const isServerSidePagination = !!onPaginationChange;
+
+  const [dateRange, setDateRange] = useState<DateRange | undefined>({
+    from: new Date(),
+    to: new Date(),
+  });
+
   const navigate = useNavigate();
 
+  const { mutate: exportData, isPending: isExporting } = useExportMockTests();
   const table = useReactTable({
     data,
     columns,
@@ -147,6 +166,12 @@ export function DataTable<TData, TValue>({
     }
   };
 
+  const handleExportMockTests = () =>
+    exportData({
+      startDate: dateRange?.from?.toISOString().split("T")[0],
+      endDate: dateRange?.to?.toISOString().split("T")[0],
+    });
+
   return (
     <div className="w-full space-y-4">
       {/* Header Controls */}
@@ -179,16 +204,42 @@ export function DataTable<TData, TValue>({
             </Tooltip>
           )}
           {/* download */}
-          {onExport && (
+          {isExport && (
             <div className="flex justify-center">
-              <Button
-                onClick={onExport}
-                disabled={isExporting}
-                className="cursor-pointer"
-              >
-                <Share />
-                {isExporting ? "Exporting..." : "Export"}
-              </Button>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant={"outline"} className="cursor-pointer">
+                    <Share />
+                    Export
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="min-w-max">
+                  <DialogHeader>
+                    <DialogTitle>Export Data</DialogTitle>
+                    <DialogDescription />
+                    <Calendar
+                      mode="range"
+                      defaultMonth={dateRange?.from}
+                      selected={dateRange}
+                      onSelect={setDateRange}
+                      numberOfMonths={2}
+                      className="rounded-lg border shadow-sm"
+                    />
+                  </DialogHeader>
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button variant="outline">Cancel</Button>
+                    </DialogClose>
+                    <Button
+                      onClick={handleExportMockTests}
+                      disabled={isExporting}
+                    >
+                      {isExporting ? "Exporting..." : "Confirm"}
+                      Export
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </div>
           )}
 
@@ -228,6 +279,7 @@ export function DataTable<TData, TValue>({
               </DropdownMenuContent>
             </DropdownMenu>
           )}
+
           <Button
             className="cursor-pointer"
             onClick={() => {

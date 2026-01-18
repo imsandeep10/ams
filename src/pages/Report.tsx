@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -15,6 +15,7 @@ import {
   useGetReport,
   useGetStudentGrowth,
   useGetPeriodReport,
+  downloadReport,
 } from "@/lib/api/useReport";
 import { StudentGrowthChart } from "@/components/report/StudentGrowthChart";
 import ReportChart from "@/components/report/ReportChart";
@@ -100,6 +101,13 @@ export const Report = React.memo(() => {
     [studentGrowthData]
   );
 
+  const handleExportReport = () => {
+    downloadReport({
+      year: selectedYear,
+      month: selectedMonth,
+    });
+  };
+
   return (
     <div className="p-5 space-y-5">
       {/* Role-based Header */}
@@ -121,7 +129,7 @@ export const Report = React.memo(() => {
             {/* Year Selector */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button className="flex items-center py-2" variant="outline">
+                <Button className="flex items-center py-2">
                   <span>{selectedYear}</span>
                   <ChevronDown className="ml-2 h-4 w-4" />
                 </Button>
@@ -141,7 +149,7 @@ export const Report = React.memo(() => {
             {/* Month Selector */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button className="flex items-center py-2" variant="outline">
+                <Button className="flex items-center py-2">
                   <span>
                     {new Date(2000, selectedMonth - 1).toLocaleString(
                       "default",
@@ -167,6 +175,15 @@ export const Report = React.memo(() => {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
+
+          <Button
+            variant="outline"
+            className="flex items-center gap-2"
+            onClick={handleExportReport}
+          >
+            <Download className="h-4 w-4" />
+            Export Report
+          </Button>
         </div>
 
         <div className="bg-white border border-gray-200 rounded-md p-4 shadow-sm">
