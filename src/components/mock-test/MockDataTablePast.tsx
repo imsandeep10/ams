@@ -71,10 +71,10 @@ export function MockDataTablePast<TData, TValue>({
       const date = new Date(
         currentDate.getFullYear(),
         currentDate.getMonth() - i,
-        1
+        1,
       );
       const value = `${date.getFullYear()}-${String(
-        date.getMonth() + 1
+        date.getMonth() + 1,
       ).padStart(2, "0")}`;
       const label = date.toLocaleDateString("en-US", {
         year: "numeric",
@@ -172,22 +172,21 @@ export function MockDataTablePast<TData, TValue>({
 
   const handleExportToExcel = async () => {
     try {
-      const res = await api.get("/api/mock-test/past/export",{
+      const res = await api.get("/api/mock-test/past/export", {
         responseType: "blob",
       });
 
-      const url = window.URL.createObjectURL(new Blob([res.data]));//wrap the backend response by blob
+      const url = window.URL.createObjectURL(new Blob([res.data])); //wrap the backend response by blob
       const link = document.createElement("a"); // creating invisible a tag
       link.href = url; //href open blob url
       link.setAttribute("download", "past_mock_test_students.xlsx"); // type download and file name
       document.body.appendChild(link); // yo chai birsiye
       link.click(); // invisible link open directly by js
-      link.parentNode?.removeChild(link);// link clicked now remove the a tag
+      link.parentNode?.removeChild(link); // link clicked now remove the a tag
       window.URL.revokeObjectURL(url); // cleaning ram prevent memory leak
 
       toast.success("Exported successfully");
     } catch (error) {
-      console.log("Export error:", error);
       toast.error("Failed to export data");
     }
   };
@@ -218,7 +217,7 @@ export function MockDataTablePast<TData, TValue>({
     sortedData.length === 0 ? 0 : (currentPage - 1) * pageSize + 1;
   const endItem = Math.min(
     currentPage * pageSize,
-    serverPagination?.total ?? sortedData.length
+    serverPagination?.total ?? sortedData.length,
   );
 
   return (
@@ -270,7 +269,7 @@ export function MockDataTablePast<TData, TValue>({
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                     </TableHead>
                   );
@@ -290,7 +289,7 @@ export function MockDataTablePast<TData, TValue>({
                     <TableCell key={cell.id} className="py-4">
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}

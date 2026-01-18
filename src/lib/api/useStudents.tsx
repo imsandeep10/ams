@@ -236,7 +236,6 @@ export const useGetStudentAttendanceTrack = (
         const res = await api.get(
           `/api/attendance-track/monthly/${studentId}?year=${year}&month=${month}`,
         );
-        console.log("attandence", res.data);
         return res.data;
       } catch (err: any) {
         toast.error("Failed to fetch attendance:", err);
@@ -256,7 +255,7 @@ export const useStudentProgress = (userId: string) => {
         const res = await api.get(`/api/student-progress/${userId}`);
         return res.data;
       } catch (err: any) {
-        console.log(err);
+        console.error(err);
       }
     },
   });

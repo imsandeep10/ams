@@ -12,9 +12,11 @@ const MockRegisterData: React.FC = () => {
   const pastLimit = 10;
 
   const { data: mockUpcoming, isPending, error } = useGetMockUpcoming();
-  const { data: mockPast, isLoading, isError } = useGetMockPast(pastPage, pastLimit);
-  
-  // console.log("MockRegisterData render", mockPast);
+  const {
+    data: mockPast,
+    isLoading,
+    isError,
+  } = useGetMockPast(pastPage, pastLimit);
 
   const columnsUpcoming = useMemo(() => getMockColumnUpcoming(), []);
   const columnsPast = useMemo(() => getMockColumnPast(), []);
@@ -34,19 +36,21 @@ const MockRegisterData: React.FC = () => {
   }
 
   // Extract the data array from the paginated response
-  const mockArrayUpcoming = Array.isArray(mockUpcoming) 
-    ? mockUpcoming 
-    : (mockUpcoming?.data && Array.isArray(mockUpcoming.data)) 
-      ? mockUpcoming.data 
+  const mockArrayUpcoming = Array.isArray(mockUpcoming)
+    ? mockUpcoming
+    : mockUpcoming?.data && Array.isArray(mockUpcoming.data)
+      ? mockUpcoming.data
       : [];
-      
+
   const mockArrayPast = Array.isArray(mockPast)
     ? mockPast
-    : (mockPast?.data && Array.isArray(mockPast.data))
+    : mockPast?.data && Array.isArray(mockPast.data)
       ? mockPast.data
       : [];
 
-  const pastPagination = !Array.isArray(mockPast) ? mockPast?.pagination : undefined;
+  const pastPagination = !Array.isArray(mockPast)
+    ? mockPast?.pagination
+    : undefined;
 
   return (
     <div className="container mx-auto py-6 space-y-10">

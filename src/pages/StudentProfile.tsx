@@ -25,8 +25,13 @@ export const StudentProfile = React.memo(() => {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const { data: student, isLoading, error } = useGetStudentById(id || "");
+  const {
+    data: student,
+    isPending: isStudentLoading,
+    error,
+  } = useGetStudentById(id || "");
 
+  console.log(student);
   const studentData = student
     ? {
         fullName: student?.user?.fullName || "N/A",
@@ -45,7 +50,7 @@ export const StudentProfile = React.memo(() => {
       }
     : null;
 
-  if (isLoading)
+  if (isStudentLoading)
     return (
       <div className="min-h-screen p-4 md:p-6 lg:p-8">
         <div className="w-full mx-auto">
@@ -182,40 +187,70 @@ export const StudentProfile = React.memo(() => {
       .slice(0, 2);
   };
 
+  const getDocumentStatus = (status: string | null | undefined) => {
+    switch (status) {
+      case "DOCUMENT_NOT_RECEIVED":
+        return "NOT RECEIVED";
+      case "DOCUMENT_RECEIVED":
+        return "RECEIVED";
+      case "WITHDRAWN":
+        return "WITHDRAWN";
+      case "VISA_LODGE":
+      case "VISA_RECEIVED":
+        return "RECEIVED";
+      default:
+        return "N/A";
+    }
+  };
+
+  const getVisaStatus = (status: string | null | undefined) => {
+    switch (status) {
+      case "VISA_LODGE":
+        return "LODGED";
+      case "VISA_RECEIVED":
+        return "RECEIVED";
+      case "WITHDRAWN":
+        return "WITHDRAWN";
+      case "DOCUMENT_NOT_RECEIVED":
+      case "DOCUMENT_RECEIVED":
+        return "PENDING";
+      default:
+        return "N/A";
+    }
+  };
+
+  const documentStatus = getDocumentStatus(student?.currentApplicationStatus);
+  const visaStatus = getVisaStatus(student?.currentApplicationStatus);
+
   const otherInfoCardData = [
     {
       icon: LiaMoneyBillWaveAltSolid,
       title: "PAYMENT",
-      status: "PAID IN FULL",
-      otherInfo: "Last updated: Jan 25,2025",
+      status: student?.payment?.paymentStatus?.replaceAll("_", " ") ?? "N/A",
     },
     {
       icon: FileText,
       title: "DOCUMENTS",
-      status: "RECEIVED",
-      otherInfo: "Verification completed",
+      status: documentStatus,
     },
     {
       icon: PlaneTakeoff,
       title: "VISA STATUS",
-      status: "ACCEPTED",
-      otherInfo: "Last updated: Jan 25,2025",
+      status: visaStatus,
     },
     {
       icon: BookOpenText,
       title: "BOOK STATUS",
-      status: "RECEIVED",
-      otherInfo: "Set #4 Received",
+      status: student?.payment?.bookStatus.replaceAll("_", " ") ?? "N/A",
     },
     {
       icon: Calendar,
       title: "DATEBOOK",
-      status: "Dec 10,2023",
-      otherInfo: "Sheduled",
+      status: student?.currentStudentStatus ?? "N/A",
     },
   ];
   return (
-    <div className="min-h-screen  p-4 md:p-6 lg:p-8">
+    <div className="min-h-screen">
       <div className="w-full mx-auto">
         <Button
           variant="ghost"
@@ -226,7 +261,7 @@ export const StudentProfile = React.memo(() => {
           Back
         </Button>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="col-span-1 flex flex-col gap-6">
             <Card className="rounded-md border border-gray-300 shadow-xs">
               <CardContent className="gap-4 flex flex-col">
@@ -345,7 +380,6 @@ export const StudentProfile = React.memo(() => {
                     icon={item.icon}
                     title={item.title}
                     status={item.status}
-                    otherInfo={item.otherInfo}
                     key={item.title}
                   />
                 ))}
@@ -377,17 +411,32 @@ interface otherInfoCardProps {
   status?: string;
   otherInfo?: string;
 }
-const OtherInfoCard = ({
-  icon: ICON,
-  title,
-  status,
-  otherInfo,
-}: otherInfoCardProps) => {
+const OtherInfoCard = ({ icon: ICON, title, status }: otherInfoCardProps) => {
   const statusColor = (str?: string) => {
     if (!str) return null;
     switch (str.toLowerCase()) {
       case "paid in full":
         return <p className="text-yellow-500 font-medium text-lg">{str}</p>;
+      case "not paid":
+        return <p className="text-red-500 font-medium text-lg">{str}</p>;
+      case "partial paid":
+        return <p className="text-orange-500 font-medium text-lg">{str}</p>;
+      case "book taken":
+        return <p className="text-green-500 font-medium text-lg">{str}</p>;
+      case "book not taken":
+        return <p className="text-red-500 font-medium text-lg">{str}</p>;
+      case "pending":
+        return <p className="text-orange-500 font-medium text-lg">{str}</p>;
+      case "rejected":
+        return <p className="text-red-500 font-medium text-lg">{str}</p>;
+      case "not sent":
+        return <p className="text-gray-500 font-medium text-lg">{str}</p>;
+      case "not received":
+        return <p className="text-gray-500 font-medium text-lg">{str}</p>;
+      case "not accepted":
+        return <p className="text-gray-500 font-medium text-lg">{str}</p>;
+      case "sent":
+        return <p className="text-blue-500 font-medium text-lg">{str}</p>;
       case "received":
         return <p className="text-green-500 font-medium text-lg">{str}</p>;
       case "accepted":
@@ -398,14 +447,13 @@ const OtherInfoCard = ({
   };
   return (
     <Card className="p-2 gap-0">
-      <CardHeader className="flex items-center gap-2 px-2">
+      <CardHeader className="flex items-center justify-start gap-2 p-0">
         <ICON className="text-muted-foreground w-6 h-6 shrink-0" />
-        <CardTitle className="font-medium">{title}</CardTitle>
+        <CardTitle className="font-medium text-sm lg:text-base">
+          {title}
+        </CardTitle>
       </CardHeader>
-      <CardContent className="p-2">
-        {statusColor(status)}
-        <p className="text-muted-foreground">{otherInfo}</p>
-      </CardContent>
+      <CardContent className="p-2">{statusColor(status)}</CardContent>
     </Card>
   );
 };

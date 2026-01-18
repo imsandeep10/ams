@@ -8,7 +8,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -16,51 +22,61 @@ import { Textarea } from "@/components/ui/textarea";
 import { type PaymentFormData, paymentSchema } from "@/schema/paymentSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Calendar1 } from "lucide-react";
+// import { Calendar } from "@/components/ui/calendar";
+// import {
+//   Popover,
+//   PopoverContent,
+//   PopoverTrigger,
+// } from "@/components/ui/popover";
+// import { Calendar1 } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { useGetStudentById } from "@/lib/api/useStudents";
 import { useEffect } from "react";
+import { usePatchPayment } from "@/lib/api/usePayment";
 
 const StudentPayment = () => {
   const { id } = useParams<{ id: string }>();
 
   const { data: studentData, isPending: isLoading } = useGetStudentById(id!);
-
+  const { mutate: patchPayment, isPending: isUpdating } = usePatchPayment();
   const form = useForm<PaymentFormData>({
     resolver: zodResolver(paymentSchema),
     defaultValues: {
       fullName: studentData?.user.fullName || "",
       phoneNumber: studentData?.user.phoneNumber || "",
       amount: 0,
-      paymentDate: undefined,
       paymentMethod: null,
       paymentStatus: "NOT_PAID",
       book: null,
-      language: studentData?.language!,
+      language: studentData?.language,
       remarks: "",
     },
   });
 
   const onSubmit = (data: PaymentFormData) => {
-    console.log(data);
+    if (!data) {
+      console.error("Form data is null");
+      return;
+    }
+    patchPayment({
+      studentId: studentData!.id,
+      paymentStatus: data.paymentStatus ?? "NOT_PAID",
+      remarks: data.remarks,
+      paymentAmount: data.amount,
+      bookStatus: data.book ?? "NO_BOOK_TAKEN",
+    });
   };
 
+  console.log(studentData?.language);
   useEffect(() => {
     form.reset({
       fullName: studentData?.user.fullName || "",
       phoneNumber: studentData?.user.phoneNumber || "",
       amount: 0,
-      paymentDate: undefined,
       paymentMethod: null,
       paymentStatus: "NOT_PAID",
       book: null,
-      language: studentData?.language!,
+      language: studentData?.language,
       remarks: "",
     });
   }, [studentData, form]);
@@ -122,6 +138,7 @@ const StudentPayment = () => {
                           disabled
                         />
                       </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -139,6 +156,7 @@ const StudentPayment = () => {
                           disabled
                         />
                       </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -158,10 +176,11 @@ const StudentPayment = () => {
                           }
                         />
                       </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
-                <FormField
+                {/* <FormField
                   control={form.control}
                   name="paymentDate"
                   render={({ field }) => (
@@ -207,7 +226,7 @@ const StudentPayment = () => {
                       </FormControl>
                     </FormItem>
                   )}
-                />
+                /> */}
                 <FormField
                   control={form.control}
                   name="paymentMethod"
@@ -228,6 +247,7 @@ const StudentPayment = () => {
                           </SelectContent>
                         </Select>
                       </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -238,22 +258,9 @@ const StudentPayment = () => {
                     <FormItem>
                       <Label htmlFor="language">Language</Label>
                       <FormControl>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                          disabled
-                        >
-                          <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Select language" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="PTE">PTE</SelectItem>
-                            <SelectItem value="SAT">SAT</SelectItem>
-                            <SelectItem value="IELTS">IELTS</SelectItem>
-                            <SelectItem value="DUOLINGO">Duolingo</SelectItem>
-                          </SelectContent>
-                        </Select>
+                        <Input {...field} disabled />
                       </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -266,7 +273,7 @@ const StudentPayment = () => {
                       <FormControl>
                         <Select
                           onValueChange={field.onChange}
-                          defaultValue={field.value}
+                          value={field.value || "NOT_PAID"}
                         >
                           <SelectTrigger className="w-full">
                             <SelectValue placeholder="Select payment status" />
@@ -280,6 +287,7 @@ const StudentPayment = () => {
                           </SelectContent>
                         </Select>
                       </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -295,7 +303,7 @@ const StudentPayment = () => {
                           defaultValue={field.value || ""}
                         >
                           <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Select book" />
+                            <SelectValue placeholder="Select book status" />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="NO_BOOK_TAKEN">
@@ -310,6 +318,7 @@ const StudentPayment = () => {
                           </SelectContent>
                         </Select>
                       </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -332,7 +341,17 @@ const StudentPayment = () => {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full h-auto">
+              <Button
+                type="submit"
+                className="w-full h-auto"
+                disabled={isUpdating}
+                onClick={() => {
+                  console.log("Button clicked");
+                  console.log("Form values:", form.getValues());
+                  console.log("Form errors:", form.formState.errors);
+                  console.log("Is form valid:", form.formState.isValid);
+                }}
+              >
                 Save
               </Button>
             </form>

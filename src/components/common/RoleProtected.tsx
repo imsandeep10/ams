@@ -13,13 +13,12 @@ interface RoleIndexRedirectProps {
 
 // Component for protecting routes based on role
 export function RoleProtected({ allowedRoles, children }: RoleProtectedProps) {
-  const { data: currentUser , isPending: isLoading } = useCurrentUser();
+  const { data: currentUser, isPending: isLoading } = useCurrentUser();
 
-  // console.log("Current User:", currentUser);
   const newCurrentUser = currentUser?.data;
 
   if (isLoading) {
-    return null
+    return null;
   }
 
   if (!newCurrentUser || !allowedRoles.includes(newCurrentUser.role)) {

@@ -56,7 +56,7 @@ function CreateAdminFormComponent({ mode }: props) {
 
   const form = useForm<CreateAdminFormData>({
     resolver: zodResolver(
-      mode === "create" ? createAdminSchemaWithPassword : editAdminSchema
+      mode === "create" ? createAdminSchemaWithPassword : editAdminSchema,
     ),
     defaultValues: {
       fullName: "",
@@ -174,7 +174,7 @@ function CreateAdminFormComponent({ mode }: props) {
         throw error;
       }
     },
-    [uploadImage, form]
+    [uploadImage, form],
   );
 
   const handleRemoveImage = useCallback(() => {
@@ -209,7 +209,7 @@ function CreateAdminFormComponent({ mode }: props) {
         toast.error(errorMessage);
       }
     },
-    [createAdmins, updateAdmin, mode, id, navigate]
+    [createAdmins, updateAdmin, mode, id, navigate],
   );
 
   // Get initials for avatar fallback
@@ -438,7 +438,7 @@ function CreateAdminFormComponent({ mode }: props) {
                             await handleImageUpload(file);
                           } catch (error) {
                             // Error handled in handleImageUpload
-                            console.log("Image upload error:", error);
+                            console.error("Image upload error:", error);
                           }
                         }
                       }}
@@ -473,10 +473,10 @@ function CreateAdminFormComponent({ mode }: props) {
                   ? "Updating..."
                   : "Submitting..."
                 : isUploading
-                ? "Uploading..."
-                : mode === "edit"
-                ? "Update Admin"
-                : "Create Admin"}
+                  ? "Uploading..."
+                  : mode === "edit"
+                    ? "Update Admin"
+                    : "Create Admin"}
             </Button>
           </div>
         </form>

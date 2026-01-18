@@ -19,6 +19,7 @@ export interface StudentResponse {
   preferredCountry: string;
   remark: string;
   yearOfCompletion: string;
+  payment: PaymentResponse;
   user: UserResponse;
 }
 
@@ -53,3 +54,15 @@ export const Role = {
   DUOLINGO_ADMIN: "duolingoAdmin",
 } as const;
 export type Role = (typeof Role)[keyof typeof Role];
+
+export interface PaymentResponse {
+  bookStatus: "NO_BOOK_TAKEN" | "TWO_BOOKS_TAKEN" | "ALL_BOOKS_TAKEN";
+  createdAt: string;
+  id: string;
+  paymentAmount: string;
+  paymentMethod: "CASH" | "ONLINE" | null;
+  paymentStatus: "PAID" | "FULL_PAID" | "PARTIAL_PAID" | "NOT_PAID";
+  remarks: string | null;
+  studentId: string;
+  updatedAt: string;
+}

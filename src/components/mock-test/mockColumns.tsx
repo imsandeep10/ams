@@ -50,8 +50,7 @@ export const columnsMockTest: ColumnDef<createMockRegisterRespoonse>[] = [
     },
     accessorKey: "whatsappNumber",
     cell: ({ row }) => {
-      return (
-      <span>{row.original.whatsappNumber}</span>)
+      return <span>{row.original.whatsappNumber}</span>;
     },
   },
   {
@@ -62,14 +61,13 @@ export const columnsMockTest: ColumnDef<createMockRegisterRespoonse>[] = [
     accessorKey: "moduleCompleted",
     cell: ({ row }) => {
       const moduleComplete = row.original.modulesCompleted;
-      console.log("moduleComplete", moduleComplete);
       if (!moduleComplete || moduleComplete.length === 0) {
         return <span className="text-sm">N/A</span>;
       }
       return (
         <div className="flex flex-col">
           {moduleComplete.map((module, index) => (
-            <span key={index} className="text-sm" >
+            <span key={index} className="text-sm">
               {module}
             </span>
           ))}

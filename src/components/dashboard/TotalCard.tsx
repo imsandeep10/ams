@@ -27,8 +27,6 @@ export const TotalCard = React.memo(({ selectedDate }: TotalCardProps) => {
     }
   };
 
-  console.log("Dashboard Stats:", stats);
-
   const cards = useMemo<CardData[]>(() => {
     if (!stats) return [];
 

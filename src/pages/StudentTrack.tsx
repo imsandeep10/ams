@@ -7,7 +7,6 @@ import {
   useGetStudentById,
 } from "@/lib/api/useStudents";
 import { useStudentProgress } from "@/lib/api/useStudents";
-import { useGetPayment } from "@/lib/api/usePayment";
 import {
   Select,
   SelectContent,
@@ -67,6 +66,7 @@ import { useSendResultScore } from "@/lib/api/useEmail";
 import { DialogDescription } from "@radix-ui/react-dialog";
 import { StatsCard } from "@/components/recordCards/Card";
 import { Progress } from "@/components/ui/progress";
+import { useGetPaymentById } from "@/lib/api/usePayment";
 
 export const StudentTrack = React.memo(() => {
   const { id } = useParams<{ id: string }>();
@@ -84,11 +84,10 @@ export const StudentTrack = React.memo(() => {
   const { data: attendanceRecord, isPending } = useGetStudentAttendanceTrack(
     id!,
     Number(year),
-    Number(month)
+    Number(month),
   );
 
-  const {data: paymentData} = useGetPayment(id!);
-  console.log("Payment Data:", paymentData);
+  const { data: paymentData } = useGetPaymentById(id!);
   const { data: studentProgress } = useStudentProgress(id!);
   const { data: currentStudent } = useGetStudentById(id!);
   const { mutate: sendResultScore, isPending: isSendingResult } =
@@ -149,7 +148,7 @@ export const StudentTrack = React.memo(() => {
   ];
 
   const completedSteps = progressBarSteps.filter(
-    (step) => step.isCompleted
+    (step) => step.isCompleted,
   ).length;
   const totalProgressPercentage =
     (completedSteps / progressBarSteps.length) * 100;
@@ -404,7 +403,7 @@ export const StudentTrack = React.memo(() => {
                       >
                         Payment:
                       </label>
-                      <div >
+                      <div>
                         {/* <SelectTrigger className="w-[140px] text-[#0E2A10] bg-[#F1FFF5] border-[#BAFFD3] focus:border-none">
                           <SelectValue placeholder="Select" />
                         </SelectTrigger>
@@ -418,7 +417,7 @@ export const StudentTrack = React.memo(() => {
                         {paymentData?.payment === "FULL_PAID" ? (
                           <span className="px-4 py-2 rounded-md bg-green-100 text-green-800 font-medium">
                             Paid
-                            </span>
+                          </span>
                         ) : paymentData?.payment === "PARTIAL_PAID" ? (
                           <span className="px-4 py-2 rounded-md bg-yellow-100 text-yellow-800 font-medium">
                             Partial
@@ -472,55 +471,63 @@ export const StudentTrack = React.memo(() => {
                   <div className="flex flex-col xl:flex-row gap-4">
                     <div className="flex flex-col xl:flex-row gap-4">
                       <div className="flex items-center justify-between gap-4">
-                      <label
-                        htmlFor="DateBookStatus"
-                        className="font-medium text-[#1B5E20] min-w-[40px]"
-                      >
-                        Date Book Status:
-                      </label>
-                      <Select value={dateBookStatus} onValueChange={setDateBookStatus}>
-                        <SelectTrigger className="w-[140px] text-[#0E2A10] bg-[#F1FFF5] border-[#BAFFD3] focus:border-none">
-                          <SelectValue placeholder="Select" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-[#F1FFF5] text-[#0E2A10] border-[#BAFFD3] ">
-                          <SelectGroup>
-                            <SelectItem value="booked">Booked</SelectItem>
-                            <SelectItem value="notBooked">Not Booked</SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </div>
+                        <label
+                          htmlFor="DateBookStatus"
+                          className="font-medium text-[#1B5E20] min-w-[40px]"
+                        >
+                          Date Book Status:
+                        </label>
+                        <Select
+                          value={dateBookStatus}
+                          onValueChange={setDateBookStatus}
+                        >
+                          <SelectTrigger className="w-[140px] text-[#0E2A10] bg-[#F1FFF5] border-[#BAFFD3] focus:border-none">
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-[#F1FFF5] text-[#0E2A10] border-[#BAFFD3] ">
+                            <SelectGroup>
+                              <SelectItem value="booked">Booked</SelectItem>
+                              <SelectItem value="notBooked">
+                                Not Booked
+                              </SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      </div>
                       {/* date */}
-                    { dateBookStatus === "booked" && (
-                      <div className="flex items-center justify-end gap-4">
-                      <Popover
-                        open={calendarOpen}
-                        onOpenChange={setCalendarOpen}
-                      >
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant="outline"
-                            className="w-[140px] bg-[#F1FFF5] border-[#BAFFD3] justify-start text-left font-normal"
+                      {dateBookStatus === "booked" && (
+                        <div className="flex items-center justify-end gap-4">
+                          <Popover
+                            open={calendarOpen}
+                            onOpenChange={setCalendarOpen}
                           >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {date ? format(date, "PP") : "Pick date"}
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={date}
-                            onSelect={(selectedDate) => {
-                              setDate(selectedDate);
-                              setCalendarOpen(false);
-                            }}
-                            className="rounded-md bg-[#BAFFD3] border-[#BAFFD3] border shadow-sm"
-                            captionLayout="dropdown"
-                          />
-                        </PopoverContent>
-                      </Popover>
-                    </div>
-                    )}
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant="outline"
+                                className="w-[140px] bg-[#F1FFF5] border-[#BAFFD3] justify-start text-left font-normal"
+                              >
+                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                {date ? format(date, "PP") : "Pick date"}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent
+                              className="w-auto p-0"
+                              align="start"
+                            >
+                              <Calendar
+                                mode="single"
+                                selected={date}
+                                onSelect={(selectedDate) => {
+                                  setDate(selectedDate);
+                                  setCalendarOpen(false);
+                                }}
+                                className="rounded-md bg-[#BAFFD3] border-[#BAFFD3] border shadow-sm"
+                                captionLayout="dropdown"
+                              />
+                            </PopoverContent>
+                          </Popover>
+                        </div>
+                      )}
                     </div>
                     <div className="flex items-center justify-between gap-4">
                       <label

@@ -2,7 +2,7 @@ export const language = {
   IELTS: "IELTS",
   PTE: "PTE",
   SAT: "SAT",
-  DUOLINGO: "DUOLINGO",
+  Duolingo: "Duolingo",
 } as const;
 
 export type LanguageEnum = (typeof language)[keyof typeof language];
