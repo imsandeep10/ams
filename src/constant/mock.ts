@@ -22,7 +22,7 @@ export const MODULE_OPTIONS: ModulesCompleted[] = [
   "Reading",
   "Writing",
   "Speaking",
-  "None",
+  // "None",
 ] as const;
 
 export const DESTINATION_COUNTRY_OPTIONS: DestinationCountry[] = [

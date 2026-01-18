@@ -77,6 +77,7 @@ export const StudentTrack = React.memo(() => {
   const currentMonth = currentDate.getMonth() + 1;
   const [year, setYear] = useState(currentYear.toString());
   const [month, setMonth] = useState(currentMonth.toString());
+  const [dateBookStatus, setDateBookStatus] = useState<string>("");
   const navigate = useNavigate();
   const [progress, setProgress] = React.useState(0);
 
@@ -469,26 +470,29 @@ export const StudentTrack = React.memo(() => {
                     </div>
                   </div>
                   <div className="flex flex-col xl:flex-row gap-4">
-                    <div className="flex items-center justify-between gap-4">
+                    <div className="flex flex-col xl:flex-row gap-4">
+                      <div className="flex items-center justify-between gap-4">
                       <label
                         htmlFor="DateBookStatus"
                         className="font-medium text-[#1B5E20] min-w-[40px]"
                       >
                         Date Book Status:
                       </label>
-                      <Select>
+                      <Select value={dateBookStatus} onValueChange={setDateBookStatus}>
                         <SelectTrigger className="w-[140px] text-[#0E2A10] bg-[#F1FFF5] border-[#BAFFD3] focus:border-none">
                           <SelectValue placeholder="Select" />
                         </SelectTrigger>
                         <SelectContent className="bg-[#F1FFF5] text-[#0E2A10] border-[#BAFFD3] ">
-                          <SelectGroup value={status}>
-                            <SelectItem value="paid">Booked</SelectItem>
-                            <SelectItem value="unpaid">Not Booked</SelectItem>
+                          <SelectGroup>
+                            <SelectItem value="booked">Booked</SelectItem>
+                            <SelectItem value="notBooked">Not Booked</SelectItem>
                           </SelectGroup>
                         </SelectContent>
                       </Select>
                     </div>
-                    <div className="flex items-center justify-between gap-4">
+                      {/* date */}
+                    { dateBookStatus === "booked" && (
+                      <div className="flex items-center justify-end gap-4">
                       <Popover
                         open={calendarOpen}
                         onOpenChange={setCalendarOpen}
@@ -496,7 +500,7 @@ export const StudentTrack = React.memo(() => {
                         <PopoverTrigger asChild>
                           <Button
                             variant="outline"
-                            className="w-[140px] justify-start text-left font-normal"
+                            className="w-[140px] bg-[#F1FFF5] border-[#BAFFD3] justify-start text-left font-normal"
                           >
                             <CalendarIcon className="mr-2 h-4 w-4" />
                             {date ? format(date, "PP") : "Pick date"}
@@ -510,11 +514,13 @@ export const StudentTrack = React.memo(() => {
                               setDate(selectedDate);
                               setCalendarOpen(false);
                             }}
-                            className="rounded-md border shadow-sm"
+                            className="rounded-md bg-[#BAFFD3] border-[#BAFFD3] border shadow-sm"
                             captionLayout="dropdown"
                           />
                         </PopoverContent>
                       </Popover>
+                    </div>
+                    )}
                     </div>
                     <div className="flex items-center justify-between gap-4">
                       <label
@@ -530,9 +536,6 @@ export const StudentTrack = React.memo(() => {
                         <SelectContent className="bg-[#F1FFF5] text-[#0E2A10] border-[#BAFFD3] ">
                           <SelectGroup>
                             <SelectItem value="received">Received</SelectItem>
-                            <SelectItem value="notReceived">
-                              Not Received
-                            </SelectItem>
                             <SelectItem value="notReceived">
                               Not Received
                             </SelectItem>

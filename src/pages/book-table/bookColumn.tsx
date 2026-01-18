@@ -99,7 +99,7 @@ export const BookColumn: ColumnDef<bookInfo>[] = [
     header: () => <span className="sr-only">Actions</span>,
     accessorKey: "id",
     cell: ({ row }) => {
-      return <ActionButtons id={row.original.id} />;
+      return <ActionButtons id={row.original.payment?.id ?? ""} />;
     },
   },
 ];

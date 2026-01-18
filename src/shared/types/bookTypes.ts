@@ -5,5 +5,8 @@ export type bookInfo = {
     email: string;
     phoneNumber: string;
  },
- payment: string;
+ payment: {
+      bookStatus: string;
+      id: string;
+ };
 };

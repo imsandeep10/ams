@@ -1,5 +1,5 @@
 import { DataTable } from "@/components/students/studentTables/DataTable";
-import React, { useState } from "react";
+import React from "react";
 import { PaymentColumn } from "./paymentColumn";
 import {useGetAllPayments} from "@/lib/api/usePayment";
 import { DataTableSkeleton } from "@/components/common/DataTableSkeleton";
@@ -30,13 +30,15 @@ const Payment: React.FC = React.memo(() => {
     return <DataTableSkeleton />;
   }
 
-  // const handlePaginationChange = (newPage: number, newPageSize: number) => {
-  //   setFilter({ page: newPage, limit: newPageSize });
-  //   setSearchParams({
-  //     page: newPage.toString(),
-  //     limit: newPageSize.toString(),
-  //   });
-  // };
+  const handlePaginationChange = (newPage: number, newPageSize: number) => {
+    // setFilter({ page: newPage, limit: newPageSize });
+    // setSearchParams({
+    //   page: newPage.toString(),
+    //   limit: newPageSize.toString(),
+    // });
+
+    console.log(newPage, newPageSize)
+  };
   return (
     <div>
       <DataTable
@@ -47,7 +49,7 @@ const Payment: React.FC = React.memo(() => {
         pageIndex={paymentData?.pagination?.page || 0}
         pageSize={paymentData?.pagination?.limit || 10}
         totalRows={paymentData?.pagination?.total || 0}
-        // onPaginationChange={handlePaginationChange}
+        onPaginationChange={handlePaginationChange}
         isAddButton={false}
         addLink=""
         addLabel=""

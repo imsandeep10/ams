@@ -7,7 +7,6 @@ import { useExportMockTests } from "@/lib/api/useMockRegister";
 // import { StatsCard } from "@/components/recordCards/Card";
 // import { CalendarIcon } from "lucide-react";
 
-// maile garako yo ho
 const MockPage: React.FC = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
