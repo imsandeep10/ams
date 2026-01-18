@@ -1,23 +1,41 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import type { bookInfo } from "@/shared/types/bookTypes";
 import { useNavigate } from "react-router-dom";
-import { Edit } from "lucide-react";
+import { Edit, Eye } from "lucide-react";
 import React from "react";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 
 interface ActionButtonsProps {
-  id: string;
+  studentId: string;
 }
 
-const ActionButtons = React.memo<ActionButtonsProps>(() => {
+const ActionButtons = React.memo<ActionButtonsProps>(({ studentId }) => {
   const navigate = useNavigate();
-  const handleEdit = () => {
-    navigate(`/payment`); // add payment edit route here
+  const handleEdit = (path: string) => {
+    navigate(path);
   };
   return (
-  <>
-  <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2">
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-8 w-8 p-0 text-green-900 hover:bg-green-50  cursor-pointer"
+            onClick={() => handleEdit(`/student-profile/${studentId}`)}
+          >
+            <Eye className="w-4 h-4" />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>View Profile</p>
+        </TooltipContent>
+      </Tooltip>
 
       <Tooltip>
         <TooltipTrigger asChild>
@@ -25,7 +43,7 @@ const ActionButtons = React.memo<ActionButtonsProps>(() => {
             variant="ghost"
             size="sm"
             className="h-8 w-8 p-0 text-yellow-500 hover:bg-yellow-50  cursor-pointer"
-            onClick={handleEdit}
+            onClick={() => handleEdit(`/student-payment/${studentId}`)}
           >
             <Edit className="w-4 h-4" />
           </Button>
@@ -34,9 +52,7 @@ const ActionButtons = React.memo<ActionButtonsProps>(() => {
           <p>Edit Books</p>
         </TooltipContent>
       </Tooltip>
-
     </div>
-  </>
   );
 });
 
@@ -44,7 +60,7 @@ export const BookColumn: ColumnDef<bookInfo>[] = [
   {
     id: "studentName",
     header: () => {
-      return <span className="">Student Name</span>;
+      return <span>Student Name</span>;
     },
     accessorKey: "fullName",
     cell: ({ row }) => {
@@ -54,7 +70,7 @@ export const BookColumn: ColumnDef<bookInfo>[] = [
   {
     id: "whatsappNumber",
     header: () => {
-      return <span className="">WhatsApp Number</span>;
+      return <span>WhatsApp Number</span>;
     },
     accessorKey: "whatsappNumber",
     cell: ({ row }) => {
@@ -64,7 +80,7 @@ export const BookColumn: ColumnDef<bookInfo>[] = [
   {
     id: "email",
     header: () => {
-      return <span className="">Email</span>;
+      return <span>Email</span>;
     },
     accessorKey: "email",
     cell: ({ row }) => {
@@ -74,13 +90,13 @@ export const BookColumn: ColumnDef<bookInfo>[] = [
   {
     id: "status",
     header: () => {
-      return <span className="">Status</span>;
+      return <span>Status</span>;
     },
     accessorKey: "status",
     cell: ({ row }) => {
       const payment = row.original?.payment;
       const theStatus = payment ? payment.bookStatus : null;
-      
+
       const statusMap: Record<string, string> = {
         NO_BOOK_TAKEN: "No Book Taken",
         TWO_BOOKS_TAKEN: "Two Books Taken",
@@ -89,17 +105,17 @@ export const BookColumn: ColumnDef<bookInfo>[] = [
 
       return (
         <span className="text-sm">
-          {theStatus ? statusMap[theStatus] ?? theStatus : "N/A"}
+          {theStatus ? (statusMap[theStatus] ?? theStatus) : "N/A"}
         </span>
       );
     },
   },
   {
     id: "actions",
-    header: () => <span className="sr-only">Actions</span>,
+    header: () => <span>Actions</span>,
     accessorKey: "id",
     cell: ({ row }) => {
-      return <ActionButtons id={row.original.payment?.id ?? ""} />;
+      return <ActionButtons studentId={row.original.id} />;
     },
   },
 ];

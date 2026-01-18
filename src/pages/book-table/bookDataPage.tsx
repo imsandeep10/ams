@@ -61,7 +61,7 @@ const bookPage: React.FC = () => {
         pageCount={data?.pagination?.totalPages || 1}
         pageIndex={initialPage - 1}
         pageSize={initialPageSize}
-        totalRows={data?.pagination?.total || 0}
+        totalRows={data.length || 0}
         onPaginationChange={handlePaginationChange}
         addLink=""
         addLabel=""
