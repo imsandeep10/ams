@@ -27,6 +27,7 @@ export type CurrentStudentStatus =
   (typeof CurrentStudentStatus)[keyof typeof CurrentStudentStatus];
 
 export const CurrentApplicationStatus = {
+  DOCUMENT_NOT_RECEIVED: "DOCUMENT_NOT_RECEIVED",
   WITHDRAWN: "WITHDRAWN",
   DOCUMENT_RECEIVED: "DOCUMENT_RECEIVED",
   VISA_LODGE: "VISA_LODGE",

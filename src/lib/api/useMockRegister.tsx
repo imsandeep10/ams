@@ -83,6 +83,12 @@ export const upcomingMockTest = (page: number = 1, limit: number = 10) => {
         total: number;
         totalPages: number;
       };
+      numberOfStudentsInEachModule: {
+        totalSpeaking: number;
+        totalListening: number;
+        totalReading: number;
+        totalWriting: number;
+      };
     }> => {
       const res = await api.get(`/api/mock-test/upcoming`, {
         params: { page, limit },
@@ -98,6 +104,12 @@ export const upcomingMockTest = (page: number = 1, limit: number = 10) => {
           limit,
           total: res.data.data.length,
           totalPages: 1,
+        },
+        numberOfStudentsInEachModule: res.data.numberOfStudentsInEachModule || {
+          totalSpeaking: 0,
+          totalListening: 0,
+          totalReading: 0,
+          totalWriting: 0,
         },
       };
     },
