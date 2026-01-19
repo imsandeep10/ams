@@ -5,7 +5,7 @@ import { trackColumns } from "@/components/students/studentTrack/TrackColumn";
 import {
   useGetStudentAttendanceTrack,
   useGetStudentById,
-  useUpdateStudent
+  useUpdateStudent,
 } from "@/lib/api/useStudents";
 import { useStudentProgress } from "@/lib/api/useStudents";
 import { useGetPaymentById } from "@/lib/api/usePayment";
@@ -82,31 +82,29 @@ export const StudentTrack = React.memo(() => {
   const { data: attendanceRecord, isPending } = useGetStudentAttendanceTrack(
     id!,
     Number(year),
-    Number(month)
+    Number(month),
   );
 
-  const {data: paymentData} = useGetPaymentById(id!);
-  const { mutate:updateStudent} = useUpdateStudent();
+  const { data: paymentData } = useGetPaymentById(id!);
+  const { mutate: updateStudent } = useUpdateStudent();
   const { data: studentProgress } = useStudentProgress(id!);
   const { data: currentStudent } = useGetStudentById(id!);
-  console.log("crrentStudent", currentStudent);
-  
+
   const { mutate: sendResultScore, isPending: isSendingResult } =
-  useSendResultScore();
-  
+    useSendResultScore();
+
   const form = useForm<SendResultScoreData>({
     defaultValues: {
       email: currentStudent?.user.email || "",
       score: 0,
     },
     values: currentStudent
-    ? {
-      email: currentStudent?.user.email || "",
-      score: 0,
-    }
-    : undefined,
+      ? {
+          email: currentStudent?.user.email || "",
+          score: 0,
+        }
+      : undefined,
   });
-  
 
   // Generate year options (current year and past 5 years)
   const yearOptions = Array.from({ length: 6 }, (_, i) => currentYear - i);
@@ -150,7 +148,7 @@ export const StudentTrack = React.memo(() => {
   ];
 
   const completedSteps = progressBarSteps.filter(
-    (step) => step.isCompleted
+    (step) => step.isCompleted,
   ).length;
   const totalProgressPercentage =
     (completedSteps / progressBarSteps.length) * 100;
@@ -167,14 +165,15 @@ export const StudentTrack = React.memo(() => {
   }, [totalProgressPercentage]);
 
   const handleCurrentApplicationStatusChange = (value: string) => {
-    updateStudent({id: id!, data: { currentApplicationStatus: value } as any });
-  }
+    updateStudent({
+      id: id!,
+      data: { currentApplicationStatus: value } as any,
+    });
+  };
 
   const handleCurrentStudentStatusChange = (value: string) => {
-    updateStudent({id: id!, data: { currentStudentStatus: value } as any });
-  }
-
- 
+    updateStudent({ id: id!, data: { currentStudentStatus: value } as any });
+  };
 
   if (isPending) {
     return (
@@ -408,18 +407,18 @@ export const StudentTrack = React.memo(() => {
                 {/* second section */}
                 <div className="flex flex-col  gap-6 py-2 xl:mt-0 px-2 rounded-lg justify-evenly">
                   <div className="flex flex-col xl:flex-row gap-4">
-                    <div className="flex items-center justify-start gap-4">
+                    <div className="flex items-center justify-between gap-4">
                       <label
                         htmlFor="Payment"
                         className="font-medium text-[#1B5E20] min-w-[40px]"
                       >
                         Payment:
                       </label>
-                      <div >
+                      <div>
                         {paymentData?.payment === "FULL_PAID" ? (
                           <span className="px-4 py-2 rounded-md bg-green-100 text-green-800 font-medium">
                             Paid
-                            </span>
+                          </span>
                         ) : paymentData?.payment === "PARTIAL_PAID" ? (
                           <span className="px-4 py-2 rounded-md bg-yellow-100 text-yellow-800 font-medium">
                             Partial
@@ -431,60 +430,86 @@ export const StudentTrack = React.memo(() => {
                         )}
                       </div>
                     </div>
-                    <div className="flex items-center justify-start gap-4">
+                    <div className="flex items-center justify-between gap-4">
                       <label
                         htmlFor="CurrentApplicationStatus"
                         className="font-medium text-[#1B5E20] min-w-[40px]"
                       >
                         Application Status:
                       </label>
-                      <Select value={currentStudent?.currentApplicationStatus || ""} onValueChange={handleCurrentApplicationStatusChange}>
+                      <Select
+                        value={currentStudent?.currentApplicationStatus || ""}
+                        onValueChange={handleCurrentApplicationStatusChange}
+                      >
                         <SelectTrigger className="w-[200px] text-[#1B2E5E] bg-[#F1F8FF] border-[#BADEFF] focus:border-none">
                           <SelectValue placeholder="Select" />
                         </SelectTrigger>
                         <SelectContent className="text-[#1B2E5E] bg-[#F1F8FF] border-[#BADEFF]">
                           <SelectGroup>
-                            <SelectItem value="DOCUMENT_NOT_RECEIVED">Document Not Received</SelectItem>
+                            <SelectItem value="DOCUMENT_NOT_RECEIVED">
+                              Document Not Received
+                            </SelectItem>
                             <SelectItem value="WITHDRAWN">Withdrawn</SelectItem>
-                            <SelectItem value="DOCUMENT_RECEIVED">Document Received</SelectItem>
-                            <SelectItem value="VISA_LODGE">Visa Lodge</SelectItem>
-                            <SelectItem value="VISA_RECEIVED">Visa Received</SelectItem>
+                            <SelectItem value="DOCUMENT_RECEIVED">
+                              Document Received
+                            </SelectItem>
+                            <SelectItem value="VISA_LODGE">
+                              Visa Lodge
+                            </SelectItem>
+                            <SelectItem value="VISA_RECEIVED">
+                              Visa Received
+                            </SelectItem>
                           </SelectGroup>
                         </SelectContent>
                       </Select>
                     </div>
                   </div>
-                    <div>
-                      <div className="flex items-center justify-start gap-4">
+                  <div>
+                    <div className="flex items-center justify-between gap-4">
                       <label
                         htmlFor="CurrentStudentStatus"
                         className="font-medium text-[#1B5E20] min-w-[40px]"
                       >
                         Student Status:
                       </label>
-                      <Select value={currentStudent?.currentStudentStatus || ""} onValueChange={handleCurrentStudentStatusChange}>
+                      <Select
+                        value={currentStudent?.currentStudentStatus || ""}
+                        onValueChange={handleCurrentStudentStatusChange}
+                      >
                         <SelectTrigger className="w-[180px] text-[#0E2A10] bg-[#F1FFF5] border-[#BAFFD3] focus:border-none">
                           <SelectValue placeholder="Select" />
                         </SelectTrigger>
                         <SelectContent className="bg-[#F1FFF5] text-[#0E2A10] border-[#BAFFD3] ">
                           <SelectGroup>
-                            <SelectItem value="COURSE_COMPLETED">Course Completed</SelectItem>
-                            <SelectItem value="DATE_BOOKED">Date Booked</SelectItem>
-                            <SelectItem value="ATTEND_EXAM">Attend Exam</SelectItem>
-                            <SelectItem value="RESULT_RECEIVED">Result Received</SelectItem>
+                            <SelectItem value="COURSE_COMPLETED">
+                              Course Completed
+                            </SelectItem>
+                            <SelectItem value="DATE_BOOKED">
+                              Date Booked
+                            </SelectItem>
+                            <SelectItem value="ATTEND_EXAM">
+                              Attend Exam
+                            </SelectItem>
+                            <SelectItem value="RESULT_RECEIVED">
+                              Result Received
+                            </SelectItem>
                           </SelectGroup>
                         </SelectContent>
                       </Select>
                     </div>
-                    </div>
+                  </div>
                 </div>
               </div>
               {/* progress bar  */}
               <div className="py-4 mt-4 xl:ml-40">
                 {/* header */}
                 <div className="flex justify-between mb-3">
-                  <h3 className="text-[#494e55] font-semibold">STUDENT PROGRESS TRACK</h3>
-                  <h3 className="font-semibold">{Math.round(totalProgressPercentage)}%</h3>
+                  <h3 className="text-[#494e55] font-semibold">
+                    STUDENT PROGRESS TRACK
+                  </h3>
+                  <h3 className="font-semibold">
+                    {Math.round(totalProgressPercentage)}%
+                  </h3>
                 </div>
                 {/* progress section */}
                 <div className="relative space-y-2">
@@ -512,9 +537,8 @@ export const StudentTrack = React.memo(() => {
                       <span
                         key={index}
                         className={`text-center text-sm max-w-[80px] mx-auto transition-colors duration-300 ${
-                            step.isCompleted
-                              ? "text-[#1B5E20]"
-                              : "text-gray-700"}
+                          step.isCompleted ? "text-[#1B5E20]" : "text-gray-700"
+                        }
                               `}
                       >
                         {step.label}
@@ -525,7 +549,6 @@ export const StudentTrack = React.memo(() => {
               </div>
             </CardContent>
           </Card>
-
         </>
       )}
 
@@ -534,7 +557,6 @@ export const StudentTrack = React.memo(() => {
         attendanceRecord &&
         attendanceRecord.dailyRecords.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            
             {statsData.map((stat) => (
               <StatsCard
                 key={stat.title}
