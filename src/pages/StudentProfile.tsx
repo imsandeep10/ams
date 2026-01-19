@@ -495,12 +495,6 @@ const OtherInfoCard = ({ icon: ICON, title, status }: otherInfoCardProps) => {
             {str}
           </p>
         );
-      case "sent":
-        return (
-          <p className="text-blue-500 font-normal lg:font-medium md:text-md">
-            {str}
-          </p>
-        );
       case "rejected":
         return (
           <p className="text-red-500 font-normal lg:font-medium md:text-md">

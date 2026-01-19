@@ -2,7 +2,7 @@ import * as z from "zod";
 
 export const emailSchema = z.object({
   to: z.string().email("Invalid email address").array(),
-  subject: z
+  customSubject: z
     .string()
     .min(1, "Subject is required")
     .max(255, "Subject is too long"),

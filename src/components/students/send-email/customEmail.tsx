@@ -115,10 +115,10 @@ const CustomEmailPage = () => {
                 name="customSubject"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel htmlFor="subject">Subject:</FormLabel>
+                    <FormLabel htmlFor="customSubject">Subject:</FormLabel>
                     <FormControl>
                       <Input
-                        id="subject"
+                        id="customSubject"
                         placeholder="Enter subject"
                         {...field}
                       />

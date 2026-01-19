@@ -36,7 +36,7 @@ const EmailPage: React.FC = React.memo(() => {
     resolver: zodResolver(emailSchema),
     defaultValues: {
       to: [],
-      subject: "",
+      customSubject: "",
       message: "",
       from: currentStudent?.fullName || "",
     },
@@ -104,13 +104,13 @@ const EmailPage: React.FC = React.memo(() => {
               />
               <FormField
                 control={form.control}
-                name="subject"
+                name="customSubject"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel htmlFor="subject">Subject:</FormLabel>
+                    <FormLabel htmlFor="customSubject">Subject:</FormLabel>
                     <FormControl>
                       <Input
-                        id="subject"
+                        id="customSubject"
                         placeholder="Enter subject"
                         {...field}
                       />
