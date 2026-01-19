@@ -249,12 +249,12 @@ export const StudentProfile = React.memo(() => {
     {
       icon: BookOpenText,
       title: "BOOK STATUS",
-      status: student?.payment?.bookStatus.replaceAll("_", " ") ?? "N/A",
+      status: student?.payment?.bookStatus?.replaceAll("_", " ") ?? "N/A",
     },
     {
       icon: Calendar,
       title: "DATEBOOK",
-      status: student?.currentStudentStatus.replaceAll("_", " ") ?? "N/A",
+      status: student?.currentStudentStatus?.replaceAll("_", " ") ?? "N/A",
     },
   ];
 
@@ -268,14 +268,23 @@ export const StudentProfile = React.memo(() => {
   for (let i = 0; i < student?.remark?.length; i++) {
     const splittedRemarks = student?.remark[i].split(" ");
 
-    remarkData.push({
-      id: i + 1,
-      date: splittedRemarks[0].replace(/[\[\]]/g, ""),
-      role: splittedRemarks[1].replace(/[\[\]]/g, ""),
-      remark: splittedRemarks
-        .join(" ")
-        .slice(splittedRemarks[0].length + splittedRemarks[1].length + 2),
-    });
+    if (student?.remark !== null) {
+      remarkData.push({
+        id: i + 1,
+        date: splittedRemarks[0]?.replace(/[\[\]]/g, ""),
+        role: splittedRemarks[1]?.replace(/[\[\]]/g, ""),
+        remark: splittedRemarks
+          .join(" ")
+          .slice(splittedRemarks[0].length + splittedRemarks[1].length + 2),
+      });
+    } else {
+      remarkData.push({
+        id: i + 1,
+        date: "N/A",
+        role: "N/A",
+        remark: "N/A",
+      });
+    }
   }
 
   return (
