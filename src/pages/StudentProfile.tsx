@@ -311,15 +311,15 @@ export const StudentProfile = React.memo(() => {
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <Mail />
+                  <Mail className="shrink-0" />
                   <p>{studentData?.email}</p>
                 </div>
                 <div className="flex gap-2">
-                  <Phone />
+                  <Phone className="shrink-0" />
                   <p>{studentData?.contactNumber}</p>
                 </div>
                 <div className="flex gap-2">
-                  <MapPin />
+                  <MapPin className="shrink-0" />
                   <p>{studentData?.address}</p>
                 </div>
               </CardContent>

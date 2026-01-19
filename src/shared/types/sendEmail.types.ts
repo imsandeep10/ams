@@ -2,7 +2,7 @@ import * as zod from "zod";
 
 export const SendEmailSchema = zod.object({
   email: zod.string().min(1, "Student ID is required"),
-  subject: zod.string().min(1, "Subject is required"),
+  customSubject: zod.string().min(1, "Subject is required"),
   body: zod.string().min(1, "Email body is required"),
 });
 

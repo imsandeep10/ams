@@ -29,13 +29,13 @@ const CustomEmailPage = () => {
     resolver: zodResolver(SendEmailSchema),
     defaultValues: {
       email: "",
-      subject: "",
+      customSubject: "",
       body: "",
     },
     values: currentStudent
       ? {
           email: currentStudent?.user.email || "",
-          subject: "",
+          customSubject: "",
           body: "",
         }
       : undefined,
@@ -112,7 +112,7 @@ const CustomEmailPage = () => {
               />
               <FormField
                 control={form.control}
-                name="subject"
+                name="customSubject"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel htmlFor="subject">Subject:</FormLabel>
