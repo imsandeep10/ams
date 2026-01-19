@@ -11,7 +11,6 @@ const MockPage: React.FC = () => {
   const [pageSize, setPageSize] = useState(10);
   const [searchInputData, setSearchInputData] = useState("");
   const { data, isPending } = upcomingMockTest(page, pageSize);
-  console.log("mock data", data);
 
   const handlePaginationChange = (newPage: number, newPageSize: number) => {
     setPage(newPage);
@@ -45,7 +44,7 @@ const MockPage: React.FC = () => {
       title: "Total Listening",
       icon: CheckCircle,
       value: data?.numberOfStudentsInEachModule.totalListening || 0,
-     borderColor: "border-l-[#22C55E]",
+      borderColor: "border-l-[#22C55E]",
       textColor: "text-[#22C55E]",
     },
     {
@@ -66,21 +65,21 @@ const MockPage: React.FC = () => {
 
   return (
     <div className="container mx-auto py-2">
-        {/* stats cards */}
-        {data && data.data.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-4">
-            {statsData.map((stat) => (
-              <StatsCard
-                key={stat.title}
-                title={stat.title}
-                icon={stat.icon}
-                value={stat.value}
-                borderColor={stat.borderColor}
-                textColor={stat.textColor}
-              />
-            ))}
-          </div>
-        )}
+      {/* stats cards */}
+      {data && data.data.length > 0 && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-4">
+          {statsData.map((stat) => (
+            <StatsCard
+              key={stat.title}
+              title={stat.title}
+              icon={stat.icon}
+              value={stat.value}
+              borderColor={stat.borderColor}
+              textColor={stat.textColor}
+            />
+          ))}
+        </div>
+      )}
       <DataTable
         columns={columnsMockTest}
         data={data?.data || []}
