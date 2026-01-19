@@ -67,7 +67,6 @@ const StudentPayment = () => {
     });
   };
 
-  console.log(studentData?.language);
   useEffect(() => {
     form.reset({
       fullName: studentData?.user.fullName || "",
@@ -345,12 +344,6 @@ const StudentPayment = () => {
                 type="submit"
                 className="w-full h-auto"
                 disabled={isUpdating}
-                onClick={() => {
-                  console.log("Button clicked");
-                  console.log("Form values:", form.getValues());
-                  console.log("Form errors:", form.formState.errors);
-                  console.log("Is form valid:", form.formState.isValid);
-                }}
               >
                 Save
               </Button>

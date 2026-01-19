@@ -39,7 +39,6 @@ export const StudentProfile = React.memo(() => {
     error,
   } = useGetStudentById(id || "");
 
-  console.log(student);
   const studentData = student
     ? {
         fullName: student?.user?.fullName || "N/A",
