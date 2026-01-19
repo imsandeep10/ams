@@ -5,8 +5,10 @@ import { trackColumns } from "@/components/students/studentTrack/TrackColumn";
 import {
   useGetStudentAttendanceTrack,
   useGetStudentById,
+  useUpdateStudent
 } from "@/lib/api/useStudents";
 import { useStudentProgress } from "@/lib/api/useStudents";
+import { useGetPayment } from "@/lib/api/usePayment";
 import {
   Select,
   SelectContent,
@@ -15,11 +17,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+// import {
+//   Popover,
+//   PopoverContent,
+//   PopoverTrigger,
+// } from "@/components/ui/popover";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -29,7 +31,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Calendar } from "@/components/ui/calendar";
+// import { Calendar } from "@/components/ui/calendar";
 import {
   Clock,
   User,
@@ -43,10 +45,9 @@ import {
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { format } from "date-fns";
+// import { format } from "date-fns";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
@@ -67,46 +68,45 @@ import { useSendResultScore } from "@/lib/api/useEmail";
 import { DialogDescription } from "@radix-ui/react-dialog";
 import { StatsCard } from "@/components/recordCards/Card";
 import { Progress } from "@/components/ui/progress";
-import { useGetPaymentById } from "@/lib/api/usePayment";
 
 export const StudentTrack = React.memo(() => {
   const { id } = useParams<{ id: string }>();
-  const [date, setDate] = useState<Date | undefined>(undefined);
-  const [isEmailDialogOpen, setIsEmailDialogOpen] = useState<boolean>(false);
-  const [calendarOpen, setCalendarOpen] = useState(false);
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
   const currentMonth = currentDate.getMonth() + 1;
   const [year, setYear] = useState(currentYear.toString());
   const [month, setMonth] = useState(currentMonth.toString());
-  const [dateBookStatus, setDateBookStatus] = useState<string>("");
   const navigate = useNavigate();
   const [progress, setProgress] = React.useState(0);
 
   const { data: attendanceRecord, isPending } = useGetStudentAttendanceTrack(
     id!,
     Number(year),
-    Number(month),
+    Number(month)
   );
 
-  const { data: paymentData } = useGetPaymentById(id!);
+  const {data: paymentData} = useGetPayment(id!);
+  const { mutate:updateStudent} = useUpdateStudent();
   const { data: studentProgress } = useStudentProgress(id!);
   const { data: currentStudent } = useGetStudentById(id!);
+  console.log("crrentStudent", currentStudent);
+  
   const { mutate: sendResultScore, isPending: isSendingResult } =
-    useSendResultScore();
-
+  useSendResultScore();
+  
   const form = useForm<SendResultScoreData>({
     defaultValues: {
       email: currentStudent?.user.email || "",
       score: 0,
     },
     values: currentStudent
-      ? {
-          email: currentStudent?.user.email || "",
-          score: 0,
-        }
-      : undefined,
+    ? {
+      email: currentStudent?.user.email || "",
+      score: 0,
+    }
+    : undefined,
   });
+  
 
   // Generate year options (current year and past 5 years)
   const yearOptions = Array.from({ length: 6 }, (_, i) => currentYear - i);
@@ -132,7 +132,7 @@ export const StudentTrack = React.memo(() => {
   const progressBarSteps = [
     {
       label: "3 Days Attendance",
-      isCompleted: studentProgress?.percentageForAttendance >= 6.67,
+      isCompleted: studentProgress?.percentageForAttendance >= 1.35,
     },
     {
       label: "45 Days Attendance",
@@ -150,7 +150,7 @@ export const StudentTrack = React.memo(() => {
   ];
 
   const completedSteps = progressBarSteps.filter(
-    (step) => step.isCompleted,
+    (step) => step.isCompleted
   ).length;
   const totalProgressPercentage =
     (completedSteps / progressBarSteps.length) * 100;
@@ -165,6 +165,16 @@ export const StudentTrack = React.memo(() => {
     }, 300);
     return () => clearInterval(timer);
   }, [totalProgressPercentage]);
+
+  const handleCurrentApplicationStatusChange = (value: string) => {
+    updateStudent({id: id!, data: { currentApplicationStatus: value } as any });
+  }
+
+  const handleCurrentStudentStatusChange = (value: string) => {
+    updateStudent({id: id!, data: { currentStudentStatus: value } as any });
+  }
+
+ 
 
   if (isPending) {
     return (
@@ -301,7 +311,7 @@ export const StudentTrack = React.memo(() => {
       }%`,
       borderColor: "border-l-purple-500",
       textColor: "text-purple-600",
-      subtext: `Working days attendance percentage${
+      subtext: `Working days attendance percentage: ${
         attendanceRecord?.summary?.workingDaysAttendancePercentage.toFixed(1) ||
         0
       }%`,
@@ -388,8 +398,6 @@ export const StudentTrack = React.memo(() => {
                               form={form}
                               handleSubmit={handleSubmit}
                               isSending={isSendingResult}
-                              isOpenEmailDialog={isEmailDialogOpen}
-                              setIsOpenEmailDialog={setIsEmailDialogOpen}
                             />
                           </DialogContent>
                         </Dialog>
@@ -398,20 +406,20 @@ export const StudentTrack = React.memo(() => {
                   </div>
                 </div>
                 {/* second section */}
-                <div className="flex flex-col gap-6 py-2 xl:mt-0 px-2 rounded-lg justify-evenly">
+                <div className="flex flex-col  gap-6 py-2 xl:mt-0 px-2 rounded-lg justify-evenly">
                   <div className="flex flex-col xl:flex-row gap-4">
-                    <div className="flex items-center justify-between gap-4">
+                    <div className="flex items-center justify-start gap-4">
                       <label
                         htmlFor="Payment"
                         className="font-medium text-[#1B5E20] min-w-[40px]"
                       >
                         Payment:
                       </label>
-                      <div>
+                      <div >
                         {paymentData?.payment === "FULL_PAID" ? (
                           <span className="px-4 py-2 rounded-md bg-green-100 text-green-800 font-medium">
                             Paid
-                          </span>
+                            </span>
                         ) : paymentData?.payment === "PARTIAL_PAID" ? (
                           <span className="px-4 py-2 rounded-md bg-yellow-100 text-yellow-800 font-medium">
                             Partial
@@ -423,136 +431,60 @@ export const StudentTrack = React.memo(() => {
                         )}
                       </div>
                     </div>
-                    <div className="flex items-center justify-between gap-4">
+                    <div className="flex items-center justify-start gap-4">
                       <label
-                        htmlFor="VisaStatus"
+                        htmlFor="CurrentApplicationStatus"
                         className="font-medium text-[#1B5E20] min-w-[40px]"
                       >
-                        Visa Status:
+                        Application Status:
                       </label>
-                      <Select>
-                        <SelectTrigger className="w-[140px] text-[#1B2E5E] bg-[#F1F8FF] border-[#BADEFF] focus:border-none">
+                      <Select value={currentStudent?.currentApplicationStatus || ""} onValueChange={handleCurrentApplicationStatusChange}>
+                        <SelectTrigger className="w-[200px] text-[#1B2E5E] bg-[#F1F8FF] border-[#BADEFF] focus:border-none">
                           <SelectValue placeholder="Select" />
                         </SelectTrigger>
                         <SelectContent className="text-[#1B2E5E] bg-[#F1F8FF] border-[#BADEFF]">
                           <SelectGroup>
-                            <SelectItem value="paid">Accepted</SelectItem>
-                            <SelectItem value="unpaid">Rejected</SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="flex items-center justify-between gap-4">
-                      <label
-                        htmlFor="Docs"
-                        className="font-medium text-[#1B5E20] min-w-[40px]"
-                      >
-                        Docs:
-                      </label>
-                      <Select>
-                        <SelectTrigger className="w-[140px] text-[#0E2A10] bg-[#F1FFF5] border-[#BAFFD3] focus:border-none">
-                          <SelectValue placeholder="Select" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-[#F1FFF5] text-[#0E2A10] border-[#BAFFD3] ">
-                          <SelectGroup>
-                            <SelectItem value="paid">Received</SelectItem>
-                            <SelectItem value="unpaid">Not Received</SelectItem>
+                            <SelectItem value="DOCUMENT_NOT_RECEIVED">Document Not Received</SelectItem>
+                            <SelectItem value="WITHDRAWN">Withdrawn</SelectItem>
+                            <SelectItem value="DOCUMENT_RECEIVED">Document Received</SelectItem>
+                            <SelectItem value="VISA_LODGE">Visa Lodge</SelectItem>
+                            <SelectItem value="VISA_RECEIVED">Visa Received</SelectItem>
                           </SelectGroup>
                         </SelectContent>
                       </Select>
                     </div>
                   </div>
-                  <div className="flex flex-col xl:flex-row gap-4">
-                    <div className="flex flex-col xl:flex-row gap-4">
-                      <div className="flex items-center justify-between gap-4">
-                        <label
-                          htmlFor="DateBookStatus"
-                          className="font-medium text-[#1B5E20] min-w-[40px]"
-                        >
-                          Date Book Status:
-                        </label>
-                        <Select
-                          value={dateBookStatus}
-                          onValueChange={setDateBookStatus}
-                        >
-                          <SelectTrigger className="w-[140px] text-[#0E2A10] bg-[#F1FFF5] border-[#BAFFD3] focus:border-none">
-                            <SelectValue placeholder="Select" />
-                          </SelectTrigger>
-                          <SelectContent className="bg-[#F1FFF5] text-[#0E2A10] border-[#BAFFD3] ">
-                            <SelectGroup>
-                              <SelectItem value="booked">Booked</SelectItem>
-                              <SelectItem value="notBooked">
-                                Not Booked
-                              </SelectItem>
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      {/* date */}
-                      {dateBookStatus === "booked" && (
-                        <div className="flex items-center justify-end gap-4">
-                          <Popover
-                            open={calendarOpen}
-                            onOpenChange={setCalendarOpen}
-                          >
-                            <PopoverTrigger asChild>
-                              <Button
-                                variant="outline"
-                                className="w-[140px] bg-[#F1FFF5] border-[#BAFFD3] justify-start text-left font-normal"
-                              >
-                                <CalendarIcon className="mr-2 h-4 w-4" />
-                                {date ? format(date, "PP") : "Pick date"}
-                              </Button>
-                            </PopoverTrigger>
-                            <PopoverContent
-                              className="w-auto p-0"
-                              align="start"
-                            >
-                              <Calendar
-                                mode="single"
-                                selected={date}
-                                onSelect={(selectedDate) => {
-                                  setDate(selectedDate);
-                                  setCalendarOpen(false);
-                                }}
-                                className="rounded-md bg-[#BAFFD3] border-[#BAFFD3] border shadow-sm"
-                                captionLayout="dropdown"
-                              />
-                            </PopoverContent>
-                          </Popover>
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex items-center justify-between gap-4">
+                    <div>
+                      <div className="flex items-center justify-start gap-4">
                       <label
-                        htmlFor="DateBookStatus"
+                        htmlFor="CurrentStudentStatus"
                         className="font-medium text-[#1B5E20] min-w-[40px]"
                       >
-                        Book:
+                        Student Status:
                       </label>
-                      <Select>
-                        <SelectTrigger className="w-[140px] text-[#0E2A10] bg-[#F1FFF5] border-[#BAFFD3] focus:border-none">
+                      <Select value={currentStudent?.currentStudentStatus || ""} onValueChange={handleCurrentStudentStatusChange}>
+                        <SelectTrigger className="w-[180px] text-[#0E2A10] bg-[#F1FFF5] border-[#BAFFD3] focus:border-none">
                           <SelectValue placeholder="Select" />
                         </SelectTrigger>
                         <SelectContent className="bg-[#F1FFF5] text-[#0E2A10] border-[#BAFFD3] ">
                           <SelectGroup>
-                            <SelectItem value="received">Received</SelectItem>
-                            <SelectItem value="notReceived">
-                              Not Received
-                            </SelectItem>
+                            <SelectItem value="COURSE_COMPLETED">Course Completed</SelectItem>
+                            <SelectItem value="DATE_BOOKED">Date Booked</SelectItem>
+                            <SelectItem value="ATTEND_EXAM">Attend Exam</SelectItem>
+                            <SelectItem value="RESULT_RECEIVED">Result Received</SelectItem>
                           </SelectGroup>
                         </SelectContent>
                       </Select>
                     </div>
-                  </div>
+                    </div>
                 </div>
               </div>
               {/* progress bar  */}
               <div className="py-4 mt-4 xl:ml-40">
                 {/* header */}
-                <div className="flex justify-between mb-4">
-                  <h3>STUDENT PROGRESS TRACK</h3>
-                  <h3>{Math.round(totalProgressPercentage)}%</h3>
+                <div className="flex justify-between mb-3">
+                  <h3 className="text-[#7E838F] font-semibold">STUDENT PROGRESS TRACK</h3>
+                  <h3 className="font-semibold">{Math.round(totalProgressPercentage)}%</h3>
                 </div>
                 {/* progress section */}
                 <div className="relative space-y-2">
@@ -579,7 +511,11 @@ export const StudentTrack = React.memo(() => {
                     {progressBarSteps.map((step, index) => (
                       <span
                         key={index}
-                        className="text-center text-sm max-w-[80px] mx-auto"
+                        className={`text-center text-sm max-w-[80px] mx-auto transition-colors duration-300 ${
+                            step.isCompleted
+                              ? "text-[#1B5E20]"
+                              : "text-gray-700"}
+                              `}
                       >
                         {step.label}
                       </span>
@@ -589,6 +525,7 @@ export const StudentTrack = React.memo(() => {
               </div>
             </CardContent>
           </Card>
+
         </>
       )}
 
@@ -597,6 +534,7 @@ export const StudentTrack = React.memo(() => {
         attendanceRecord &&
         attendanceRecord.dailyRecords.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            
             {statsData.map((stat) => (
               <StatsCard
                 key={stat.title}
@@ -702,17 +640,13 @@ const SendScoreEmailDialog = ({
   isSending,
   form,
   handleSubmit,
-  isOpenEmailDialog,
-  setIsOpenEmailDialog,
 }: {
   isSending: boolean;
   form: any;
   handleSubmit: (data: SendResultScoreData) => void;
-  isOpenEmailDialog: boolean;
-  setIsOpenEmailDialog: (open: boolean) => void;
 }) => {
   return (
-    <Dialog open={isOpenEmailDialog} onOpenChange={setIsOpenEmailDialog}>
+    <Dialog>
       <DialogTrigger asChild>
         <Card className="gap-0 cursor-pointer">
           <CardHeader>
@@ -759,25 +693,13 @@ const SendScoreEmailDialog = ({
                 </FormItem>
               )}
             />
-            <div className="flex justify-end gap-4">
-              <DialogClose asChild>
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full flex-1"
-                >
-                  Cancel
-                </Button>
-              </DialogClose>
-              <Button
-                type="submit"
-                className="w-full bg-[#1B5E20] text-white flex-1"
-                disabled={isSending}
-                onClick={() => setIsOpenEmailDialog(false)}
-              >
-                {isSending ? "Sending..." : "Send Score"}
-              </Button>
-            </div>
+            <Button
+              type="submit"
+              className="w-full bg-[#1B5E20] text-white"
+              disabled={isSending}
+            >
+              {isSending ? "Sending..." : "Send Score"}
+            </Button>
           </form>
         </Form>
       </DialogContent>
