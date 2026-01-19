@@ -46,6 +46,7 @@ import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
@@ -71,6 +72,7 @@ import { useGetPaymentById } from "@/lib/api/usePayment";
 export const StudentTrack = React.memo(() => {
   const { id } = useParams<{ id: string }>();
   const [date, setDate] = useState<Date | undefined>(undefined);
+  const [isEmailDialogOpen, setIsEmailDialogOpen] = useState<boolean>(false);
   const [calendarOpen, setCalendarOpen] = useState(false);
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
@@ -386,6 +388,8 @@ export const StudentTrack = React.memo(() => {
                               form={form}
                               handleSubmit={handleSubmit}
                               isSending={isSendingResult}
+                              isOpenEmailDialog={isEmailDialogOpen}
+                              setIsOpenEmailDialog={setIsEmailDialogOpen}
                             />
                           </DialogContent>
                         </Dialog>
@@ -404,16 +408,6 @@ export const StudentTrack = React.memo(() => {
                         Payment:
                       </label>
                       <div>
-                        {/* <SelectTrigger className="w-[140px] text-[#0E2A10] bg-[#F1FFF5] border-[#BAFFD3] focus:border-none">
-                          <SelectValue placeholder="Select" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-[#F1FFF5] text-[#0E2A10] border-[#BAFFD3] ">
-                          <SelectGroup>
-                            <SelectItem value="paid">Paid</SelectItem>
-                            <SelectItem value="unpaid">Unpaid</SelectItem>
-                            <SelectItem value="pending">Partial</SelectItem>
-                          </SelectGroup>
-                        </SelectContent> */}
                         {paymentData?.payment === "FULL_PAID" ? (
                           <span className="px-4 py-2 rounded-md bg-green-100 text-green-800 font-medium">
                             Paid
@@ -595,20 +589,6 @@ export const StudentTrack = React.memo(() => {
               </div>
             </CardContent>
           </Card>
-
-          {/* Join Date Message */}
-          {/* {attendanceRecord.message && (
-            <Card className="border-l-4 border-l-amber-500 bg-amber-50 dark:bg-amber-950">
-              <CardContent className="p-4">
-                <div className="flex items-start gap-3">
-                  <CalendarIcon className="h-5 w-5 text-amber-600 dark:text-amber-400 mt-0.5" />
-                  <p className="text-sm text-amber-800 dark:text-amber-200 font-medium">
-                    {attendanceRecord.message}
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          )} */}
         </>
       )}
 
@@ -617,78 +597,6 @@ export const StudentTrack = React.memo(() => {
         attendanceRecord &&
         attendanceRecord.dailyRecords.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {/* <Card className="border-l-4 border-l-blue-500 hover:shadow-lg transition-shadow">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center gap-2">
-                  <CalendarIcon className="h-4 w-4" />
-                  Total Days
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold text-gray-900 dark:text-white">
-                  {attendanceRecord.summary.totalDays}
-                </div>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                  Working Days: {attendanceRecord.summary.workingDays}
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-l-4 border-l-green-500 hover:shadow-lg transition-shadow">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4" />
-                  Present Days
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold text-green-600 dark:text-green-400">
-                  {attendanceRecord.summary.presentDays}
-                </div>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                  Out of {attendanceRecord.summary.workingDays} working days
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-l-4 border-l-red-500 hover:shadow-lg transition-shadow">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center gap-2">
-                  <XCircle className="h-4 w-4" />
-                  Absent Days
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold text-red-600 dark:text-red-400">
-                  {attendanceRecord.summary.absentDays}
-                </div>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                  Includes weekends: {attendanceRecord.summary.weekendDays}
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-l-4 border-l-purple-500 hover:shadow-lg transition-shadow">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400 flex items-center gap-2">
-                  <TrendingUp className="h-4 w-4" />
-                  Attendance Rate
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold text-purple-600 dark:text-purple-400">
-                  {attendanceRecord.summary.attendancePercentage.toFixed(1)}%
-                </div>
-                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-2">
-                  <div
-                    className="bg-purple-600 h-2 rounded-full transition-all duration-500"
-                    style={{
-                      width: `${attendanceRecord.summary.attendancePercentage}%`,
-                    }}
-                  />
-                </div>
-              </CardContent>
-            </Card> */}
             {statsData.map((stat) => (
               <StatsCard
                 key={stat.title}
@@ -794,13 +702,17 @@ const SendScoreEmailDialog = ({
   isSending,
   form,
   handleSubmit,
+  isOpenEmailDialog,
+  setIsOpenEmailDialog,
 }: {
   isSending: boolean;
   form: any;
   handleSubmit: (data: SendResultScoreData) => void;
+  isOpenEmailDialog: boolean;
+  setIsOpenEmailDialog: (open: boolean) => void;
 }) => {
   return (
-    <Dialog>
+    <Dialog open={isOpenEmailDialog} onOpenChange={setIsOpenEmailDialog}>
       <DialogTrigger asChild>
         <Card className="gap-0 cursor-pointer">
           <CardHeader>
@@ -847,13 +759,25 @@ const SendScoreEmailDialog = ({
                 </FormItem>
               )}
             />
-            <Button
-              type="submit"
-              className="w-full bg-[#1B5E20] text-white"
-              disabled={isSending}
-            >
-              {isSending ? "Sending..." : "Send Score"}
-            </Button>
+            <div className="flex justify-end gap-4">
+              <DialogClose asChild>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full flex-1"
+                >
+                  Cancel
+                </Button>
+              </DialogClose>
+              <Button
+                type="submit"
+                className="w-full bg-[#1B5E20] text-white flex-1"
+                disabled={isSending}
+                onClick={() => setIsOpenEmailDialog(false)}
+              >
+                {isSending ? "Sending..." : "Send Score"}
+              </Button>
+            </div>
           </form>
         </Form>
       </DialogContent>
