@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   ArrowLeft,
   Mail,
@@ -10,10 +10,17 @@ import {
   PlaneTakeoff,
   BookOpenText,
   Calendar,
+  ChevronDown,
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useGetStudentById } from "@/lib/api/useStudents";
@@ -22,6 +29,7 @@ import { LiaMoneyBillWaveAltSolid } from "react-icons/lia";
 import RemarkCard from "@/components/remarks/remarkCard";
 
 export const StudentProfile = React.memo(() => {
+  const [currentIndex, setCurrentIndex] = useState(0);
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -246,9 +254,30 @@ export const StudentProfile = React.memo(() => {
     {
       icon: Calendar,
       title: "DATEBOOK",
-      status: student?.currentStudentStatus ?? "N/A",
+      status: student?.currentStudentStatus.replaceAll("_", " ") ?? "N/A",
     },
   ];
+
+  const remarkData: {
+    id: number;
+    date: string;
+    role: string;
+    remark: string;
+  }[] = [];
+
+  for (let i = 0; i < student?.remark?.length; i++) {
+    const splittedRemarks = student?.remark[i].split(" ");
+
+    remarkData.push({
+      id: i + 1,
+      date: splittedRemarks[0].replace(/[\[\]]/g, ""),
+      role: splittedRemarks[1].replace(/[\[\]]/g, ""),
+      remark: splittedRemarks
+        .join(" ")
+        .slice(splittedRemarks[0].length + splittedRemarks[1].length + 2),
+    });
+  }
+
   return (
     <div className="min-h-screen">
       <div className="w-full mx-auto">
@@ -374,7 +403,7 @@ export const StudentProfile = React.memo(() => {
                   Other Information
                 </CardTitle>
               </CardHeader>
-              <CardContent className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 md:gap-4">
+              <CardContent className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2">
                 {otherInfoCardData.map((item) => (
                   <OtherInfoCard
                     icon={item.icon}
@@ -385,16 +414,31 @@ export const StudentProfile = React.memo(() => {
                 ))}
               </CardContent>
             </Card>
-            <Card className="rounded-md border border-gray-300 shadow-xs">
-              <CardHeader className="flex justify-between items-center">
+            <Card className="rounded-md border border-gray-300 shadow-xs gap-2">
+              <CardHeader>
                 <CardTitle className="font-medium text-lg">Remarks</CardTitle>
-                <CardTitle className="font-medium text-lg">
-                  View Full History
-                </CardTitle>
               </CardHeader>
-              <CardContent>
-                <RemarkCard />
+              <CardContent className="space-y-3">
+                {student?.remark && student.remark.length > 0 ? (
+                  remarkData
+                    .slice(0, currentIndex + 3)
+                    .map((r) => <RemarkCard key={r.id} {...r} />)
+                ) : (
+                  <p className="text-gray-600">No remarks available.</p>
+                )}
               </CardContent>
+
+              <CardFooter className="mt-4">
+                <Button
+                  onClick={() => setCurrentIndex(currentIndex + 3)}
+                  variant={"outline"}
+                  size={"icon-lg"}
+                  className={`rounded-full mx-auto ${currentIndex + 3 >= remarkData.length ? "" : "animate-bounce"}`}
+                  disabled={currentIndex + 3 >= remarkData.length}
+                >
+                  <ChevronDown className="" />
+                </Button>
+              </CardFooter>
             </Card>
           </div>
         </div>
@@ -416,33 +460,95 @@ const OtherInfoCard = ({ icon: ICON, title, status }: otherInfoCardProps) => {
     if (!str) return null;
     switch (str.toLowerCase()) {
       case "paid in full":
-        return <p className="text-yellow-500 font-medium text-lg">{str}</p>;
+        return (
+          <p className="text-yellow-500 font-normal lg:font-medium md:text-md">
+            {str}
+          </p>
+        );
       case "not paid":
-        return <p className="text-red-500 font-medium text-lg">{str}</p>;
+        return (
+          <p className="text-red-500 font-normal lg:font-medium md:text-md">
+            {str}
+          </p>
+        );
       case "partial paid":
-        return <p className="text-orange-500 font-medium text-lg">{str}</p>;
+        return (
+          <p className="text-orange-500 font-normal lg:font-medium md:text-md">
+            {str}
+          </p>
+        );
       case "book taken":
-        return <p className="text-green-500 font-medium text-lg">{str}</p>;
+        return (
+          <p className="text-green-500 font-normal lg:font-medium md:text-md">
+            {str}
+          </p>
+        );
       case "book not taken":
-        return <p className="text-red-500 font-medium text-lg">{str}</p>;
+        return (
+          <p className="text-red-500 font-normal lg:font-medium md:text-md">
+            {str}
+          </p>
+        );
       case "pending":
-        return <p className="text-orange-500 font-medium text-lg">{str}</p>;
-      case "rejected":
-        return <p className="text-red-500 font-medium text-lg">{str}</p>;
-      case "not sent":
-        return <p className="text-gray-500 font-medium text-lg">{str}</p>;
-      case "not received":
-        return <p className="text-gray-500 font-medium text-lg">{str}</p>;
-      case "not accepted":
-        return <p className="text-gray-500 font-medium text-lg">{str}</p>;
+        return (
+          <p className="text-orange-500 font-normal lg:font-medium md:text-md">
+            {str}
+          </p>
+        );
       case "sent":
-        return <p className="text-blue-500 font-medium text-lg">{str}</p>;
+        return (
+          <p className="text-blue-500 font-normal lg:font-medium md:text-md">
+            {str}
+          </p>
+        );
+      case "rejected":
+        return (
+          <p className="text-red-500 font-normal lg:font-medium md:text-md">
+            {str}
+          </p>
+        );
+      case "not sent":
+        return (
+          <p className="text-gray-500 font-normal lg:font-medium md:text-md">
+            {str}
+          </p>
+        );
+      case "not received":
+        return (
+          <p className="text-gray-500 font-normal lg:font-medium md:text-md">
+            {str}
+          </p>
+        );
+      case "not accepted":
+        return (
+          <p className="text-gray-500 font-normal lg:font-medium md:text-md">
+            {str}
+          </p>
+        );
+      case "sent":
+        return (
+          <p className="text-blue-500 font-normal lg:font-medium md:text-md">
+            {str}
+          </p>
+        );
       case "received":
-        return <p className="text-green-500 font-medium text-lg">{str}</p>;
+        return (
+          <p className="text-green-500 font-normal lg:font-medium md:text-md">
+            {str}
+          </p>
+        );
       case "accepted":
-        return <p className="text-blue-500 font-medium text-lg">{str}</p>;
+        return (
+          <p className="text-blue-500 font-normal lg:font-medium md:text-md">
+            {str}
+          </p>
+        );
       default:
-        return <p className="text-gray-500 font-medium text-lg">{str}</p>;
+        return (
+          <p className="text-gray-500 font-normal lg:font-medium md:text-md">
+            {str}
+          </p>
+        );
     }
   };
   return (
@@ -453,7 +559,9 @@ const OtherInfoCard = ({ icon: ICON, title, status }: otherInfoCardProps) => {
           {title}
         </CardTitle>
       </CardHeader>
-      <CardContent className="p-2">{statusColor(status)}</CardContent>
+      <CardContent className="p-2 font-medium md:text-sm lg:text-base ">
+        {statusColor(status)}
+      </CardContent>
     </Card>
   );
 };

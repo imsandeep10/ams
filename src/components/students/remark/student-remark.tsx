@@ -10,13 +10,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useGetStudentById } from "@/lib/api/useStudents";
@@ -25,30 +18,25 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
+import { usePostRemark } from "@/lib/api/useEmail";
 
 const StudentRemark: React.FC = React.memo(() => {
   const { id } = useParams<{ id: string }>();
   const { data: studentData, isPending: isLoading } = useGetStudentById(id!);
-
+  const { mutate: postRemark, isPending: isPostingRemark } = usePostRemark(id!);
   const form = useForm<RemarksFormData>({
     resolver: zodResolver(remarksSchema),
     defaultValues: {
-      studentId: studentData?.id || "",
-      subject: "",
-      priorityStatus: "low",
       remark: "",
     },
   });
 
   const onSubmit = (data: RemarksFormData) => {
-    console.log(data);
+    postRemark(data);
   };
 
   useEffect(() => {
     form.reset({
-      studentId: studentData?.id || "",
-      subject: "",
-      priorityStatus: "low",
       remark: "",
     });
   }, [studentData, form]);
@@ -120,53 +108,6 @@ const StudentRemark: React.FC = React.memo(() => {
                   <Label>Phone Number</Label>
                   <Input value={studentData?.user.phoneNumber} disabled />
                 </div>
-                <FormField
-                  control={form.control}
-                  name="subject"
-                  render={({ field }) => (
-                    <FormItem className="space-y-2">
-                      <Label htmlFor="subject">
-                        Subject <span className="text-red-500">*</span>
-                      </Label>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          id="subject"
-                          placeholder="Enter subject"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="priorityStatus"
-                  render={({ field }) => (
-                    <FormItem className="space-y-2">
-                      <Label htmlFor="priorityStatus">
-                        Priority Status <span className="text-red-500">*</span>
-                      </Label>
-                      <FormControl>
-                        <Select
-                          onValueChange={field.onChange}
-                          value={field.value}
-                          defaultValue={field.value}
-                        >
-                          <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Select priority status" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="low">Low</SelectItem>
-                            <SelectItem value="medium">Medium</SelectItem>
-                            <SelectItem value="high">High</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
               </div>
               <div className="space-y-4 md:space-y-6">
                 <FormField
@@ -190,8 +131,12 @@ const StudentRemark: React.FC = React.memo(() => {
                     </FormItem>
                   )}
                 />
-                <Button type="submit" className="w-full h-auto py-3">
-                  Save
+                <Button
+                  type="submit"
+                  className="w-full h-auto py-3"
+                  disabled={isPostingRemark}
+                >
+                  {isPostingRemark ? "Saving Remark..." : "Save Remark"}
                 </Button>
               </div>
             </form>

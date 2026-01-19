@@ -1,22 +1,32 @@
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { Badge } from "../ui/badge";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
 
-const RemarkCard = React.memo(() => {
-  return (
-    <Card className="gap-0">
-      <CardHeader className="flex justify-between items-center">
-        <CardTitle className="text-xl font-medium">
-          Speaking Improvement
-        </CardTitle>
-        <Badge className="py-1 px-4 text-md">Progress</Badge>
-      </CardHeader>
-      <CardContent className="gap-0">
-        <p className="text-gray-500 line-clamp-1">hello</p>
-        <p className="text-gray-700 line-clamp-4">hello</p>
-      </CardContent>
-    </Card>
-  );
-});
+const RemarkCard = React.memo(
+  ({ remark, date, role }: { remark: string; date: string; role: string }) => {
+    return (
+      <Card className="gap-0 py-2 rounded-md border border-gray-300 shadow-xs">
+        <CardHeader className="flex flex-row justify-between items-center">
+          <CardTitle className="font-medium text-lg">{role}</CardTitle>
+          <CardDescription className="text-gray-600">
+            {new Date(date).toLocaleDateString("eng", {
+              year: "numeric",
+              month: "short",
+              day: "2-digit",
+            })}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <CardDescription>{remark}</CardDescription>
+        </CardContent>
+      </Card>
+    );
+  },
+);
 
 export default RemarkCard;
