@@ -50,7 +50,7 @@ const EmailPage: React.FC = React.memo(() => {
   const form = useForm<EmailFormData>({
     resolver: zodResolver(emailSchema),
     defaultValues: {
-      studentFilter:
+      languageFilter:
         studentFilter(currentUser?.data?.role ?? Role.ADMIN) ?? "all",
       customSubject: "",
       body: "",
@@ -98,7 +98,7 @@ const EmailPage: React.FC = React.memo(() => {
 
                 <FormField
                   control={form.control}
-                  name="studentFilter"
+                  name="languageFilter"
                   render={({ field }) => (
                     <FormItem className="h-full">
                       <FormLabel
