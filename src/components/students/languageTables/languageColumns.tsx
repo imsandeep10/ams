@@ -43,7 +43,7 @@ const StatusBadge = React.memo<{ status: "Present" | "Absent" }>(
       />
       {status}
     </div>
-  )
+  ),
 );
 
 StatusBadge.displayName = "StatusBadge";
@@ -80,8 +80,8 @@ const ActionButtons = React.memo<ActionButtonsProps>(
       navigate(path);
     };
 
-    const isAccountant = currentUserData?.role === Role.ACCOUNTANT;
-    const isIeltsAdmin = currentUserData?.role === Role.IELTS_ADMIN;
+    const isAccountant = currentUserData?.data.role === Role.ACCOUNTANT;
+    const isIeltsAdmin = currentUserData?.data.role === Role.IELTS_ADMIN;
     return (
       <div className="flex items-center gap-2">
         <Tooltip>
@@ -125,7 +125,7 @@ const ActionButtons = React.memo<ActionButtonsProps>(
                 className="h-8 w-8 p-0 text-yellow-500 hover:bg-yellow-50  cursor-pointer"
                 onClick={() =>
                   handleNavigation(
-                    `/edit-student/${studentId}?language=${studentLanguage}`
+                    `/edit-student/${studentId}?language=${studentLanguage}`,
                   )
                 }
               >
@@ -197,7 +197,7 @@ const ActionButtons = React.memo<ActionButtonsProps>(
         />
       </div>
     );
-  }
+  },
 );
 
 ActionButtons.displayName = "ActionButtons";

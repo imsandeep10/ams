@@ -32,12 +32,12 @@ export const Report = React.memo(() => {
   const currentDate = useMemo(() => new Date(), []);
   const [selectedYear, setSelectedYear] = useState(currentDate.getFullYear());
   const [selectedMonth, setSelectedMonth] = useState(
-    currentDate.getMonth() + 1
+    currentDate.getMonth() + 1,
   );
   const [periodType, setPeriodType] = useState<ReportPeriodType>("monthly");
 
   const programName = useMemo(() => {
-    switch (currentUser?.role) {
+    switch (currentUser?.data.role) {
       case Role.IELTS_ADMIN:
         return "IELTS";
       case Role.PTE_ADMIN:
@@ -55,7 +55,7 @@ export const Report = React.memo(() => {
 
   const reportDate = useMemo(
     () => new Date(selectedYear, selectedMonth - 1),
-    [selectedYear, selectedMonth]
+    [selectedYear, selectedMonth],
   );
 
   const growthParams = useMemo(
@@ -65,7 +65,7 @@ export const Report = React.memo(() => {
       endYear: selectedYear,
       endMonth: 12,
     }),
-    [selectedYear]
+    [selectedYear],
   );
 
   const {
@@ -98,7 +98,7 @@ export const Report = React.memo(() => {
 
   const growthChartData = useMemo(
     () => studentGrowthData?.data?.growth || [],
-    [studentGrowthData]
+    [studentGrowthData],
   );
 
   const handleExportReport = () => {
@@ -155,7 +155,7 @@ export const Report = React.memo(() => {
                       "default",
                       {
                         month: "long",
-                      }
+                      },
                     )}
                   </span>
                   <ChevronDown className="ml-2 h-4 w-4" />
@@ -222,15 +222,15 @@ export const Report = React.memo(() => {
           <ReportChart
             data={
               periodType !== "monthly"
-                ? periodReportData?.data ?? null
-                : languagePrograms?.data ?? null
+                ? (periodReportData?.data ?? null)
+                : (languagePrograms?.data ?? null)
             }
             title={
               periodType !== "monthly"
-                ? periodReportData?.title ?? "Daily/Weekly Report"
-                : currentUser?.role === "superAdmin"
-                ? languagePrograms?.title ?? "Program Comparison"
-                : `${programName} Program Report`
+                ? (periodReportData?.title ?? "Daily/Weekly Report")
+                : currentUser?.data.role === "superAdmin"
+                  ? (languagePrograms?.title ?? "Program Comparison")
+                  : `${programName} Program Report`
             }
             isLoading={
               periodType !== "monthly" ? isPeriodLoading : isReportLoading
@@ -266,7 +266,7 @@ export const Report = React.memo(() => {
                       ((periodReportData.data.present || 0) +
                         (periodReportData.data.absent || 0))) *
                     100
-                  ).toFixed(1)
+                  ).toFixed(1),
                 ),
                 Number(
                   (
@@ -274,7 +274,7 @@ export const Report = React.memo(() => {
                       ((periodReportData.data.present || 0) +
                         (periodReportData.data.absent || 0))) *
                     100
-                  ).toFixed(1)
+                  ).toFixed(1),
                 ),
               ]}
             />

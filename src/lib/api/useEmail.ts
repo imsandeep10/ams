@@ -4,6 +4,7 @@ import api from "../axiosInstance";
 import { toast } from "sonner";
 import type { CustomEmailData } from "@/shared/types/sendEmail.types";
 import type { RemarksFormData } from "@/schema/remarks.schema";
+import type { EmailFormData } from "@/schema/emailSchema";
 
 export const useCustomSingleEmail = () => {
   return useMutation<AxiosResponse, AxiosError, CustomEmailData>({
@@ -17,6 +18,24 @@ export const useCustomSingleEmail = () => {
     },
     onError: (error: AxiosError) => {
       toast.error(`Failed to send custom email: ${error.message}`);
+    },
+  });
+};
+
+export const useSendEmailToAll = () => {
+  const queryClient = useQueryClient();
+  return useMutation<AxiosResponse, AxiosError, EmailFormData>({
+    mutationKey: ["sendEmailToAll"],
+    mutationFn: async (data: EmailFormData) => {
+      const res = await api.post("/api/student/message-students-bulk", data);
+      return res.data;
+    },
+    onSuccess: () => {
+      toast.success("Email sent to all students successfully!");
+      queryClient.invalidateQueries({ queryKey: ["students"] });
+    },
+    onError: (error: AxiosError) => {
+      toast.error(`Failed to send email to all students: ${error.message}`);
     },
   });
 };

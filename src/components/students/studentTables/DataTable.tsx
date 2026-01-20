@@ -216,7 +216,7 @@ export function DataTable<TData, TValue>({
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Single/Bulk Email</p>
+                <p>Bulk Email</p>
               </TooltipContent>
             </Tooltip>
           )}
@@ -280,7 +280,7 @@ export function DataTable<TData, TValue>({
               </DropdownMenuContent>
             </DropdownMenu>
           )}
-          {currentUser?.role !== Role.ACCOUNTANT && isAddButton && (
+          {currentUser?.data?.role !== Role.ACCOUNTANT && isAddButton && (
             <Button
               className="cursor-pointer"
               onClick={() => {

@@ -12,8 +12,8 @@ const DashboardPage = React.memo(() => {
   const [date, setDate] = React.useState<Date | undefined>(new Date());
   const { data: currentUser } = useCurrentUser();
 
-  const isSuperAdmin = currentUser?.role === Role.SUPER_ADMIN;
-  const isAccountant = currentUser?.role === Role.ACCOUNTANT;
+  const isSuperAdmin = currentUser?.data.role === Role.SUPER_ADMIN;
+  const isAccountant = currentUser?.data.role === Role.ACCOUNTANT;
 
   return (
     <div className="w-full p-4 md:p-6 lg:p-8">

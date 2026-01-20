@@ -24,7 +24,7 @@ const ActionButtons = React.memo<ActionButtonsProps>(({ studentId }) => {
     navigate(path);
   };
 
-  const isAccountant = currentUser?.role === Role.ACCOUNTANT;
+  const isAccountant = currentUser?.data.role === Role.ACCOUNTANT;
 
   return (
     <div className="flex items-center gap-2">
@@ -116,7 +116,7 @@ const StatusBadge = React.memo<{ status: string | undefined }>(({ status }) => {
   return (
     <div
       className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-semibold border ${getStatusStyle(
-        status
+        status,
       )}`}
     >
       <p className="text-center">{status}</p>
@@ -137,7 +137,13 @@ export const PaymentColumn: ColumnDef<Payment>[] = [
     id: "paymentDate",
     header: "Payment Date",
     accessorKey: "paymentDate",
-    cell: ({ row }) => <p>{row.original.payment?.createdAt ? new Date(row.original.payment.createdAt).toLocaleDateString() : "N/A"}</p>,
+    cell: ({ row }) => (
+      <p>
+        {row.original.payment?.createdAt
+          ? new Date(row.original.payment.createdAt).toLocaleDateString()
+          : "N/A"}
+      </p>
+    ),
   },
   {
     id: "language",
@@ -167,7 +173,9 @@ export const PaymentColumn: ColumnDef<Payment>[] = [
     id: "Status",
     header: "Status",
     accessorKey: "Status",
-    cell: ({ row }) => <StatusBadge status={row.original.payment?.paymentStatus} />,
+    cell: ({ row }) => (
+      <StatusBadge status={row.original.payment?.paymentStatus} />
+    ),
   },
   {
     id: "actions",

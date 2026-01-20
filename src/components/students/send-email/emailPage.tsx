@@ -11,39 +11,57 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
-  MultiSelect,
-  MultiSelectContent,
-  MultiSelectGroup,
-  MultiSelectItem,
-  MultiSelectTrigger,
-  MultiSelectValue,
-} from "@/components/ui/multi-select";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { useStudentSearch } from "@/lib/api/useStudents";
+import { useSendEmailToAll } from "@/lib/api/useEmail";
 import { useCurrentUser } from "@/lib/api/useUser";
 import { emailSchema, type EmailFormData } from "@/schema/emailSchema";
+import { Role } from "@/shared/interface/studentResponse";
 import { zodResolver } from "@hookform/resolvers/zod";
-// import { useGetStudentsByLanguage } from "@/lib/api/useStudents";
 import React from "react";
 import { useForm } from "react-hook-form";
 
 const EmailPage: React.FC = React.memo(() => {
-  // const { data: studentData, isPending } = useGetStudentsByLanguage();
-  // const [emailFilter, setEmailFilter] = useState<string>("");
-  const { data: studentByEmail } = useStudentSearch("");
-  const { data: currentStudent } = useCurrentUser();
+  const { mutateAsync: sendEmailToAll } = useSendEmailToAll();
+  const { data: currentUser } = useCurrentUser();
+
+  const studentFilter = (role: string) => {
+    switch (role) {
+      case Role.SUPER_ADMIN:
+        return "all";
+      case Role.DUOLINGO_ADMIN:
+        return "Duolingo";
+      case Role.IELTS_ADMIN:
+        return "IELTS";
+      case Role.PTE_ADMIN:
+        return "PTE";
+      case Role.SAT_ADMIN:
+        return "SAT";
+      default:
+        return "all";
+    }
+  };
+
   const form = useForm<EmailFormData>({
     resolver: zodResolver(emailSchema),
     defaultValues: {
-      to: [],
+      studentFilter:
+        studentFilter(currentUser?.data?.role ?? Role.ADMIN) ?? "all",
       customSubject: "",
-      message: "",
-      from: currentStudent?.fullName || "",
+      body: "",
     },
   });
 
-  // setEmailFilter("");
-
+  const handleSubmit = (data: EmailFormData) => {
+    sendEmailToAll(data).finally(() => {
+      form.reset();
+    });
+  };
   return (
     <div>
       <BackButton />
@@ -55,73 +73,68 @@ const EmailPage: React.FC = React.memo(() => {
         <CardContent>
           <Form {...form}>
             <form
-              onSubmit={form.handleSubmit((data) => {
-                console.log(data);
-              })}
+              onSubmit={form.handleSubmit(handleSubmit)}
               className="space-y-8"
             >
-              <FormField
-                control={form.control}
-                name="to"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel
-                      htmlFor="emailId"
-                      className="block mb-2 font-medium text-sm"
-                    >
-                      Email id:
-                    </FormLabel>
-                    <FormControl>
-                      <MultiSelect
-                        onValuesChange={field.onChange}
-                        values={field.value}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="customSubject"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel htmlFor="customSubject">Subject:</FormLabel>
+                      <FormControl>
+                        <Input
+                          id="customSubject"
+                          placeholder="Enter subject"
+                          className="h-full"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="studentFilter"
+                  render={({ field }) => (
+                    <FormItem className="h-full">
+                      <FormLabel
+                        htmlFor="emailId"
+                        className="blockfont-medium text-sm"
                       >
-                        <MultiSelectTrigger className="w-full">
-                          <MultiSelectValue placeholder="Select emails" />
-                        </MultiSelectTrigger>
-                        <MultiSelectContent
-                          search={{
-                            placeholder: "Search emails",
-                            emptyMessage: "No emails found",
-                          }}
+                        Email id:
+                      </FormLabel>
+                      <FormControl>
+                        <Select
+                          onValueChange={field.onChange}
+                          {...field}
+                          disabled={
+                            currentUser?.data?.role !== Role.SUPER_ADMIN
+                          }
                         >
-                          <MultiSelectGroup>
-                            {studentByEmail?.map((item: any) => (
-                              <MultiSelectItem
-                                key={item.email}
-                                value={item.email}
-                              >
-                                {item.email}
-                              </MultiSelectItem>
-                            ))}
-                          </MultiSelectGroup>
-                        </MultiSelectContent>
-                      </MultiSelect>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select a student" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="all">All Students</SelectItem>
+                            <SelectItem value="PTE">PTE</SelectItem>
+                            <SelectItem value="IELTS">IELTS</SelectItem>
+                            <SelectItem value="SAT">SAT</SelectItem>
+                            <SelectItem value="Duolingo">Duolingo</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
               <FormField
                 control={form.control}
-                name="customSubject"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel htmlFor="customSubject">Subject:</FormLabel>
-                    <FormControl>
-                      <Input
-                        id="customSubject"
-                        placeholder="Enter subject"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="message"
+                name="body"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel htmlFor="message">Message:</FormLabel>
