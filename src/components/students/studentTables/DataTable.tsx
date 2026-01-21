@@ -83,6 +83,7 @@ interface DataTableProps<TData, TValue> {
     label: string;
     value: string;
   }[];
+  dataFilter?: React.ReactNode;
 }
 
 export function DataTable<TData, TValue>({
@@ -282,6 +283,7 @@ export function DataTable<TData, TValue>({
           )}
           {currentUser?.data?.role !== Role.ACCOUNTANT && isAddButton && (
             <Button
+              variant={"outline"}
               className="cursor-pointer"
               onClick={() => {
                 if (addLink) {

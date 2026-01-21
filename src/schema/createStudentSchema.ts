@@ -26,7 +26,7 @@ export const createStudentFormSchema = z.object({
       {
         message:
           "GPA must be between 0.0 and 4.0 or Percentage must be between 0 and 100",
-      }
+      },
     ),
   preferredCountry: z.string().min(1, "Preferred country is required"),
   faculty: z.string().min(1, "Faculty is required"),

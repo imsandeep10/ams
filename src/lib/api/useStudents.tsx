@@ -136,10 +136,23 @@ export const useGetStudentsByLanguage = (
 export const useGetAllStudents = (
   page: number = 1,
   limit: number = 10,
-  term?: string,
+  language?: string,
+  preferredCountry?: string,
+  faculty?: string,
+  yearOfCompletion?: string,
+  includeQrCode?: boolean,
 ) => {
   return useQuery({
-    queryKey: ["all-students", page, limit, term],
+    queryKey: [
+      "all-students",
+      page,
+      limit,
+      language,
+      preferredCountry,
+      faculty,
+      yearOfCompletion,
+      includeQrCode,
+    ],
     queryFn: async (): Promise<{
       students: Student[];
       pagination: {
@@ -149,8 +162,16 @@ export const useGetAllStudents = (
         totalPages: number;
       };
     }> => {
-      const res = await api.get(`/api/student?term=${term}`, {
-        params: { page, limit },
+      const res = await api.get(`/api/students/filter`, {
+        params: {
+          page,
+          limit,
+          language,
+          preferredCountry,
+          faculty,
+          yearOfCompletion,
+          includeQrCode,
+        },
       });
       if (!res?.data?.students) {
         throw new Error("Failed to fetch students");
