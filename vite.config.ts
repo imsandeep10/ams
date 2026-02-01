@@ -15,7 +15,7 @@ export default defineConfig({
     host: true,
     proxy: {
       "/api": {
-        target: "https://zooming-clarity-production-2779.up.railway.app", // base url
+        target: "http://192.168.1.82:3001", // base url
         changeOrigin: true,
         secure: false,
       },

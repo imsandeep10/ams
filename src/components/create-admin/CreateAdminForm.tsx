@@ -41,6 +41,33 @@ interface props {
 const createAdminSchemaWithPassword = createAdminSchema;
 const editAdminSchema = createAdminSchema.omit({ password: true });
 
+// Extract valid roles configuration outside component (rendering-hoist-jsx)
+const VALID_ROLES = [
+  "satAdmin",
+  "duolingoAdmin",
+  "ieltsAdmin",
+  "pteAdmin",
+  "accountant",
+] as const;
+
+const ROLE_LABELS: Record<string, string> = {
+  satAdmin: "SAT Admin",
+  duolingoAdmin: "Duolingo Admin",
+  ieltsAdmin: "IELTS Admin",
+  pteAdmin: "PTE Admin",
+  accountant: "Accountant",
+};
+
+// Helper function outside component
+const getInitials = (name: string): string => {
+  return name
+    .split(" ")
+    .map((part) => part.charAt(0))
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+};
+
 function CreateAdminFormComponent({ mode }: props) {
   const { mutateAsync: uploadImage, isPending: isUploading } = useUploadImage();
   const { mutateAsync: createAdmins } = useCreateAdmins();
@@ -70,80 +97,41 @@ function CreateAdminFormComponent({ mode }: props) {
     mode: "onBlur",
   });
 
-  // Populate form with admin data when in edit mode - FIXED VERSION
+  console.log(adminData?.data);
+  // Populate form with admin data when in edit mode (single effect, no duplicates)
   useEffect(() => {
-    if (mode === "edit" && adminData && !isLoading && !isFormInitialized) {
-      // Ensure we have valid role values
-      const validRoles = [
-        "satAdmin",
-        "duolingoAdmin",
-        "ieltsAdmin",
-        "pteAdmin",
-        "accountant",
-      ];
-      const adminRole =
-        adminData.role && validRoles.includes(adminData.role)
-          ? adminData.role
+    if (
+      mode === "edit" &&
+      adminData?.data &&
+      !isLoading &&
+      !isFormInitialized
+    ) {
+      // Use static VALID_ROLES array with proper type assertion
+      const adminRole: (typeof VALID_ROLES)[number] =
+        adminData?.data.role &&
+        VALID_ROLES.includes(adminData?.data.role as any)
+          ? (adminData?.data.role as (typeof VALID_ROLES)[number])
           : "satAdmin";
 
-      const formValues = {
-        fullName: adminData.fullName || "",
-        email: adminData.email || "",
-        phoneNumber: adminData.phoneNumber || "",
-        address: adminData.address || "",
-        role: adminRole, // Use validated role
-        profileImageId: adminData.profileImageId || "",
-        password: "", // Keep password empty in edit mode
-      };
-
-      // Use setTimeout to ensure the reset happens after component mount
-      setTimeout(() => {
-        form.reset(formValues);
-        setIsFormInitialized(true);
-      }, 0);
-
-      // Set preview image if exists
-      if (adminData.profileImage?.url) {
-        setPreviewImage(adminData.profileImage.url);
-      } else if (adminData.profileImage?.filename) {
-        setPreviewImage(`/api/files/${adminData.profileImage.filename}`);
-      }
-    }
-  }, [adminData, isLoading, mode, form, isFormInitialized]);
-
-  // Alternative approach - set values individually
-  useEffect(() => {
-    if (mode === "edit" && adminData && !isLoading && !isFormInitialized) {
-      const validRoles = [
-        "satAdmin",
-        "duolingoAdmin",
-        "ieltsAdmin",
-        "pteAdmin",
-        "accountant",
-      ];
-      const adminRole =
-        adminData.role && validRoles.includes(adminData.role)
-          ? adminData.role
-          : "satAdmin";
-
-      // Set values individually to avoid reset issues
-      form.setValue("fullName", adminData.fullName || "");
-      form.setValue("email", adminData.email || "");
-      form.setValue("phoneNumber", adminData.phoneNumber || "");
-      form.setValue("address", adminData.address || "");
-      form.setValue("role", adminRole);
-      form.setValue("profileImageId", adminData.profileImageId || "");
-      form.setValue("password", "");
+      // Use form.reset() to properly populate all fields and reset form state
+      form.reset({
+        fullName: adminData?.data.fullName || "",
+        email: adminData?.data.email || "",
+        phoneNumber: adminData?.data.phoneNumber || "",
+        address: adminData?.data.address || "",
+        role: adminRole,
+        profileImageId: adminData?.data.profileImageId || "",
+        password: "",
+      });
 
       setIsFormInitialized(true);
 
-      if (adminData.profileImage?.url) {
-        setPreviewImage(adminData.profileImage.url);
-      } else if (adminData.profileImage?.filename) {
-        setPreviewImage(`/api/files/${adminData.profileImage.filename}`);
+      // Set preview image if exists
+      if (adminData?.data.profileImage?.url) {
+        setPreviewImage(adminData?.data.profileImage.url);
       }
     }
-  }, [adminData, isLoading, mode, form, isFormInitialized]);
+  }, [adminData, isLoading, mode, isFormInitialized]);
 
   const { isSubmitting, isDirty } = form.formState;
 
@@ -174,7 +162,7 @@ function CreateAdminFormComponent({ mode }: props) {
         throw error;
       }
     },
-    [uploadImage, form],
+    [uploadImage, form, setUploadError, setPreviewImage],
   );
 
   const handleRemoveImage = useCallback(() => {
@@ -183,7 +171,7 @@ function CreateAdminFormComponent({ mode }: props) {
       shouldDirty: true,
       shouldValidate: true,
     });
-  }, [form]);
+  }, [form, setPreviewImage]);
 
   const onSubmit = useCallback(
     async (values: CreateAdminFormData) => {
@@ -212,15 +200,8 @@ function CreateAdminFormComponent({ mode }: props) {
     [createAdmins, updateAdmin, mode, id, navigate],
   );
 
-  // Get initials for avatar fallback
-  const getInitials = (name: string): string => {
-    return name
-      .split(" ")
-      .map((part) => part.charAt(0))
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
-  };
+  // Memoize full name for avatar fallback (rerender-defer-reads)
+  const fullName = form.watch("fullName");
 
   if (mode === "edit" && isLoading) {
     return <div className="p-8">Loading admin data...</div>;
@@ -248,11 +229,6 @@ function CreateAdminFormComponent({ mode }: props) {
             <h3 className="text-lg font-semibold text-gray-800 mb-4">
               {mode === "edit" ? "Edit Admin" : "Create New Admin"}
             </h3>
-            {/* Debug info - remove in production */}
-            <div className="text-xs text-muted-foreground mb-2">
-              Debug - Role in form: "{form.watch("role")}" | Expected:
-              "duolingoAdmin"
-            </div>
           </div>
 
           {/* Full Name */}
@@ -355,55 +331,53 @@ function CreateAdminFormComponent({ mode }: props) {
             )}
           />
 
-          {/* Role - Fixed Select Component */}
-          <FormField
-            control={form.control}
-            name="role"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Role</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger className="w-full transition-colors focus:ring-2">
-                      <SelectValue placeholder="Select Role">
-                        {field.value === "duolingoAdmin" && "Duolingo Admin"}
-                        {field.value === "satAdmin" && "SAT Admin"}
-                        {field.value === "ieltsAdmin" && "IELTS Admin"}
-                        {field.value === "pteAdmin" && "PTE Admin"}
-                        {field.value === "accountant" && "Accountant"}
-                        {!field.value && "Select Role"}
-                      </SelectValue>
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="satAdmin">SAT Admin</SelectItem>
-                    <SelectItem value="duolingoAdmin">
-                      Duolingo Admin
-                    </SelectItem>
-                    <SelectItem value="ieltsAdmin">IELTS Admin</SelectItem>
-                    <SelectItem value="pteAdmin">PTE Admin</SelectItem>
-                    <SelectItem value="accountant">Accountant</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          {/* Role - Optimized Select Component */}
+          {mode === "create" && (
+            <FormField
+              control={form.control}
+              name="role"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Role</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger className="w-full transition-colors focus:ring-2">
+                        <SelectValue placeholder="Select Role">
+                          {field.value
+                            ? ROLE_LABELS[field.value]
+                            : "Select Role"}
+                        </SelectValue>
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {VALID_ROLES.map((role) => (
+                        <SelectItem key={role} value={role}>
+                          {ROLE_LABELS[role]}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
 
           {/* Profile Image */}
           <div className="md:col-span-2 space-y-4">
             <FormLabel>Profile Image (Optional)</FormLabel>
 
             {/* Image Preview */}
-            {(previewImage || (mode === "edit" && adminData?.profileImage)) && (
+            {(previewImage ||
+              (mode === "edit" && adminData?.data?.profileImage)) && (
               <div className="flex items-center gap-4 mb-4">
                 <Avatar className="h-16 w-16 border">
                   <AvatarImage
-                    src={previewImage || adminData?.profileImage?.url}
+                    src={previewImage || adminData?.data?.profileImage?.url}
                     alt="Profile preview"
                   />
                   <AvatarFallback className="text-sm">
-                    {getInitials(form.watch("fullName") || "Admin")}
+                    {getInitials(fullName || "Admin")}
                   </AvatarFallback>
                 </Avatar>
                 <Button
