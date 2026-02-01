@@ -14,12 +14,12 @@ export const AdminProfile = React.memo(() => {
 
   const adminData = admin
     ? {
-        fullName: admin.fullName || "N/A",
-        email: admin.email || "N/A",
-        phoneNumber: admin.phoneNumber || "N/A",
-        profileImage: admin.profileImage?.url || "profile.svg",
-        address: admin.address || "N/A",
-        role: admin.role || "N/A",
+        fullName: admin.data.fullName || "N/A",
+        email: admin.data.email || "N/A",
+        phoneNumber: admin.data.phoneNumber || "N/A",
+        profileImage: admin.data.profileImage?.url || "profile.svg",
+        address: admin.data.address || "N/A",
+        role: admin.data.role || "N/A",
       }
     : null;
 

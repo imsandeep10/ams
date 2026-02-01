@@ -36,6 +36,7 @@ export interface UserResponse {
   profileImage: {
     id: string;
     url: string;
+    filename: string;
   };
   profileImageId: string | null;
   role: Role;
@@ -44,7 +45,6 @@ export interface UserResponse {
 }
 
 export const Role = {
-  ADMIN: "admin",
   STUDENT: "student",
   SUPER_ADMIN: "superAdmin",
   ACCOUNTANT: "accountant",
