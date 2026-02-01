@@ -51,7 +51,7 @@ const EmailPage: React.FC = React.memo(() => {
     resolver: zodResolver(emailSchema),
     defaultValues: {
       languageFilter:
-        studentFilter(currentUser?.data?.role ?? Role.ADMIN) ?? "all",
+        studentFilter(currentUser?.data?.role ?? Role.SUPER_ADMIN) ?? "all",
       customSubject: "",
       body: "",
     },

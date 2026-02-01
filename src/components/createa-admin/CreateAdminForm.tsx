@@ -56,7 +56,7 @@ function CreateAdminFormComponent({ mode }: props) {
 
   const form = useForm<CreateAdminFormData>({
     resolver: zodResolver(
-      mode === "create" ? createAdminSchemaWithPassword : editAdminSchema
+      mode === "create" ? createAdminSchemaWithPassword : editAdminSchema,
     ),
     defaultValues: {
       fullName: "",
@@ -81,17 +81,17 @@ function CreateAdminFormComponent({ mode }: props) {
         "pteAdmin",
       ];
       const adminRole =
-        adminData.role && validRoles.includes(adminData.role)
-          ? adminData.role
+        adminData.data.role && validRoles.includes(adminData.data.role)
+          ? (adminData.data.role as "satAdmin" | "duolingoAdmin" | "ieltsAdmin" | "pteAdmin")
           : "satAdmin";
 
       const formValues = {
-        fullName: adminData.fullName || "",
-        email: adminData.email || "",
-        phoneNumber: adminData.phoneNumber || "",
-        address: adminData.address || "",
+        fullName: adminData.data.fullName || "",
+        email: adminData.data.email || "",
+        phoneNumber: adminData.data.phoneNumber || "",
+        address: adminData.data.address || "",
         role: adminRole, // Use validated role
-        profileImageId: adminData.profileImageId || "",
+        profileImageId: adminData.data.profileImageId || "",
         password: "", // Keep password empty in edit mode
       };
 
@@ -102,10 +102,10 @@ function CreateAdminFormComponent({ mode }: props) {
       }, 0);
 
       // Set preview image if exists
-      if (adminData.profileImage?.url) {
-        setPreviewImage(adminData.profileImage.url);
-      } else if (adminData.profileImage?.filename) {
-        setPreviewImage(`/api/files/${adminData.profileImage.filename}`);
+      if (adminData.data.profileImage?.url) {
+        setPreviewImage(adminData.data.profileImage.url);
+      } else if (adminData.data.profileImage) {
+        setPreviewImage(`/api/files/${adminData.data.profileImage.filename}`);
       }
     }
   }, [adminData, isLoading, mode, form, isFormInitialized]);
@@ -120,25 +120,28 @@ function CreateAdminFormComponent({ mode }: props) {
         "pteAdmin",
       ];
       const adminRole =
-        adminData.role && validRoles.includes(adminData.role)
-          ? adminData.role
+        adminData.data.role && validRoles.includes(adminData.data.role)
+          ? adminData.data.role
           : "satAdmin";
 
       // Set values individually to avoid reset issues
-      form.setValue("fullName", adminData.fullName || "");
-      form.setValue("email", adminData.email || "");
-      form.setValue("phoneNumber", adminData.phoneNumber || "");
-      form.setValue("address", adminData.address || "");
-      form.setValue("role", adminRole);
-      form.setValue("profileImageId", adminData.profileImageId || "");
+      form.setValue("fullName", adminData.data.fullName || "");
+      form.setValue("email", adminData.data.email || "");
+      form.setValue("phoneNumber", adminData.data.phoneNumber || "");
+      form.setValue("address", adminData.data.address || "");
+      form.setValue(
+        "role",
+        adminRole as "satAdmin" | "duolingoAdmin" | "ieltsAdmin" | "pteAdmin",
+      );
+      form.setValue("profileImageId", adminData.data.profileImageId || "");
       form.setValue("password", "");
 
       setIsFormInitialized(true);
 
-      if (adminData.profileImage?.url) {
-        setPreviewImage(adminData.profileImage.url);
-      } else if (adminData.profileImage?.filename) {
-        setPreviewImage(`/api/files/${adminData.profileImage.filename}`);
+      if (adminData.data.profileImage?.url) {
+        setPreviewImage(adminData.data.profileImage.url);
+      } else if (adminData.data.profileImage?.filename) {
+        setPreviewImage(`/api/files/${adminData.data.profileImage.filename}`);
       }
     }
   }, [adminData, isLoading, mode, form, isFormInitialized]);
@@ -172,7 +175,7 @@ function CreateAdminFormComponent({ mode }: props) {
         throw error;
       }
     },
-    [uploadImage, form]
+    [uploadImage, form],
   );
 
   const handleRemoveImage = useCallback(() => {
@@ -207,7 +210,7 @@ function CreateAdminFormComponent({ mode }: props) {
         toast.error(errorMessage);
       }
     },
-    [createAdmins, updateAdmin, mode, id, navigate]
+    [createAdmins, updateAdmin, mode, id, navigate],
   );
 
   // Get initials for avatar fallback
@@ -391,11 +394,12 @@ function CreateAdminFormComponent({ mode }: props) {
             <FormLabel>Profile Image</FormLabel>
 
             {/* Image Preview */}
-            {(previewImage || (mode === "edit" && adminData?.profileImage)) && (
+            {(previewImage ||
+              (mode === "edit" && adminData?.data.profileImage)) && (
               <div className="flex items-center gap-4 mb-4">
                 <Avatar className="h-16 w-16 border">
                   <AvatarImage
-                    src={previewImage || adminData?.profileImage?.url}
+                    src={previewImage || adminData?.data.profileImage?.url}
                     alt="Profile preview"
                   />
                   <AvatarFallback className="text-sm">
@@ -468,10 +472,10 @@ function CreateAdminFormComponent({ mode }: props) {
                   ? "Updating..."
                   : "Submitting..."
                 : isUploading
-                ? "Uploading..."
-                : mode === "edit"
-                ? "Update Admin"
-                : "Create Admin"}
+                  ? "Uploading..."
+                  : mode === "edit"
+                    ? "Update Admin"
+                    : "Create Admin"}
             </Button>
           </div>
         </form>

@@ -3,7 +3,8 @@ import type { CreateAdminResponse } from "@/shared/types/createAdminTypes";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
-import api from "../axiosInstance";
+import api, { type ApiResponse } from "../axiosInstance";
+import type { UserResponse } from "@/shared/interface/studentResponse";
 
 type UpdateAdminPayload = {
   id: string;
@@ -35,7 +36,7 @@ export const useChangeAdminPw = () => {
     mutationFn: async (data: { email: string; newPassword: string }) => {
       const res = await api.post(
         `/api/reset-password/admin/change-password`,
-        data
+        data,
       );
       return res.data;
     },
@@ -74,7 +75,7 @@ export const useUpdateAdmin = () => {
 export const useGetAdminById = (id: string) => {
   return useQuery({
     queryKey: ["admin", id],
-    queryFn: async ({ queryKey }) => {
+    queryFn: async ({ queryKey }): Promise<ApiResponse<UserResponse>> => {
       const [, adminId] = queryKey;
       const res = await api.get(`/api/user/admin/${adminId}`);
       if (!res?.data) throw new Error("Admins not found");
@@ -93,7 +94,9 @@ export const useGetAllAdmins = () => {
       if (!res || !res.data) {
         throw new Error("Failed to fetch admins");
       }
-      return Array.isArray(res.data.data) ? res.data.data : res.data.data.admins || [];
+      return Array.isArray(res.data.data)
+        ? res.data.data
+        : res.data.data.admins || [];
     },
   });
 };
