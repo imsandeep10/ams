@@ -26,7 +26,7 @@ const LanguageBadge = React.memo<{ language: string }>(({ language }) => {
   return (
     <div
       className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-semibold border ${getLanguageStyle(
-        language
+        language,
       )}`}
     >
       <p className="text-center">{language}</p>
@@ -63,8 +63,8 @@ export const columns: ColumnDef<Student>[] = [
     cell: ({ row }) => {
       const student = row.original;
       return (
-        <div className="flex flex-col gap-1 cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors">
-          <p className="font-semibold">{student.name}</p>
+        <div className="flex flex-col gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors">
+          <p className="text-sm font-medium">{student.name}</p>
         </div>
       );
     },

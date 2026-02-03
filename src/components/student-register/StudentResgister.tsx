@@ -67,7 +67,10 @@ function StudentRegister({ mode }: props) {
       preferredCountry: "",
       faculty: "",
       classTime: "",
-      language: pathLanguage || "",
+      language:
+        pathLanguage && Languages.includes(pathLanguage as any)
+          ? (pathLanguage as any)
+          : undefined,
       interestedCourse: "",
       academicQualification: "",
       yearOfCompletion: "",
@@ -91,7 +94,7 @@ function StudentRegister({ mode }: props) {
         preferredCountry: StudentData.preferredCountry || "",
         faculty: StudentData.faculty || "",
         classTime: StudentData.classTime || "",
-        language: StudentData.language || "",
+        language: StudentData.language || undefined,
         interestedCourse: StudentData.interestedCourse || "",
         academicQualification: StudentData.academicQualification || "",
         yearOfCompletion: StudentData.yearOfCompletion || "",
@@ -128,7 +131,7 @@ function StudentRegister({ mode }: props) {
         throw error;
       }
     },
-    [uploadImage, form]
+    [uploadImage, form],
   );
 
   const onSubmit = useCallback(
@@ -147,7 +150,7 @@ function StudentRegister({ mode }: props) {
         toast.error(error?.response?.data?.message);
       }
     },
-    [createStudents, updateStudent, mode, id, pathLanguage]
+    [createStudents, updateStudent, mode, id, pathLanguage],
   );
 
   return (
@@ -346,6 +349,8 @@ function StudentRegister({ mode }: props) {
                   <FormControl>
                     <Input
                       placeholder="3.5"
+                      type="text"
+                      step="0.01"
                       {...field}
                       className="transition-colors focus:ring-2"
                     />
@@ -475,10 +480,10 @@ function StudentRegister({ mode }: props) {
                     ? "Updating..."
                     : "Submitting..."
                   : isUploading
-                  ? "Uploading..."
-                  : mode === "edit"
-                  ? "Update Student"
-                  : "Submit"}
+                    ? "Uploading..."
+                    : mode === "edit"
+                      ? "Update Student"
+                      : "Submit"}
               </Button>
             </div>
           </form>

@@ -91,7 +91,9 @@ function CreateStudentFormComponent({ mode }: props) {
           StudentData.user?.profileImage?.url ||
           StudentData.user?.profileImageId ||
           "",
-        gpaOrPercentage: StudentData.gpaOrPercentage || "",
+        gpaOrPercentage: StudentData.gpaOrPercentage
+          ? String(StudentData.gpaOrPercentage)
+          : "",
         preferredCountry: StudentData.preferredCountry || "",
         faculty: StudentData.faculty || "",
         classTime: StudentData.classTime || "",
@@ -417,7 +419,8 @@ function CreateStudentFormComponent({ mode }: props) {
                 <Label>GPA</Label>
                 <FormControl>
                   <Input
-                    placeholder="3.5 "
+                    placeholder="3.5"
+                    type="text"
                     {...field}
                     className="transition-colors focus:ring-2"
                   />

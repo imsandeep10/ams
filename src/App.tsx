@@ -137,6 +137,10 @@ const router = createBrowserRouter([
                 path: "mock-data-table",
                 element: <MockPage />,
               },
+              {
+                path: "mock-data-table/mock-test/register",
+                element: <IeltsMockTestFormRoute isButton={true} />,
+              },
             ],
           },
           {
@@ -201,7 +205,7 @@ const router = createBrowserRouter([
                 element: <RoleIndexRedirect adminRole={"accountant"} />,
               },
               { path: "dashboard", element: <DashboardPageRoute /> },
-              { path: "students", element: <AllStudentPageRoute  /> },
+              { path: "students", element: <AllStudentPageRoute /> },
               { path: "students/create", element: <CreateStudentRoute /> },
               {
                 path: "students/send-email",
@@ -282,10 +286,10 @@ const router = createBrowserRouter([
             element: <MockPage />,
           },
           {
-        path: "mock-data-table/mock-test/register",
-        element: <IeltsMockTestFormRoute isButton={true} />,
-      },
-      {
+            path: "mock-data-table/mock-test/register",
+            element: <IeltsMockTestFormRoute isButton={true} />,
+          },
+          {
             path: "book-data-table",
             element: <BookPage />,
           },

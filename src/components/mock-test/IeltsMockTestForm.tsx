@@ -35,8 +35,7 @@ import {
 import { useNavigate } from "react-router-dom";
 
 // Subcomponents
-interface LabeledInputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
+interface LabeledInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   id: string;
   label: string;
   required?: boolean;
@@ -59,7 +58,7 @@ const LabeledInput = React.forwardRef<HTMLInputElement, LabeledInputProps>(
       />
       {error && <p className="text-sm text-red-500">{error}</p>}
     </div>
-  )
+  ),
 );
 
 LabeledInput.displayName = "LabeledInput";
@@ -111,7 +110,9 @@ const SelectedModuleTag: React.FC<SelectedModuleTagProps> = ({
 interface IeltsMockTestFormProps {
   isButton?: boolean;
 }
-export default function IeltsMockTestForm({ isButton = false }: IeltsMockTestFormProps) {
+export default function IeltsMockTestForm({
+  isButton = false,
+}: IeltsMockTestFormProps) {
   const [submitted, setSubmitted] = React.useState(false);
   const { mutate, isPending } = useMockRegister();
   const navigate = useNavigate();
@@ -171,28 +172,31 @@ export default function IeltsMockTestForm({ isButton = false }: IeltsMockTestFor
 
   const handleModuleRemove = (moduleToRemove: ModulesCompleted, field: any) => {
     const newValue = field.value.filter(
-      (module: ModulesCompleted) => module !== moduleToRemove
+      (module: ModulesCompleted) => module !== moduleToRemove,
     );
     field.onChange(newValue);
   };
 
   return (
     <>
-    
       {isButton ? (
         <Button
-        variant="ghost"
-        onClick={() => navigate(-1)}
-        className="mb-6 hover:bg-gray-200 cursor-pointer"
-      >
-        <ArrowLeft className="w-5 h-5 mr-2" />
-        Back
-      </Button>
-      ):null}
+          variant="ghost"
+          onClick={() => navigate(-1)}
+          className="mb-6 hover:bg-gray-200 cursor-pointer"
+        >
+          <ArrowLeft className="w-5 h-5 mr-2" />
+          Back
+        </Button>
+      ) : null}
       <div className="vh-screen overflow-auto bg-[#E8F6E9] md:p-8">
         <div className="max-w-3xl mx-auto">
-          <Card className={`shadow-lg ${isButton ? " px-12 py-8" : " px-2 py-8"}`}>
-            <CardHeader className={`flex flex-col items-center mb-4 ${isButton ? "" : ""}`}>
+          <Card
+            className={`shadow-lg ${isButton ? " px-12 py-8" : " px-2 py-8"}`}
+          >
+            <CardHeader
+              className={`flex flex-col items-center mb-4 ${isButton ? "" : ""}`}
+            >
               <CardTitle className="text-3xl font-bold text-gray-900">
                 IELTS Mock Test Registration
               </CardTitle>
@@ -435,7 +439,7 @@ export default function IeltsMockTestForm({ isButton = false }: IeltsMockTestFor
                 <Button
                   type="submit"
                   disabled={isPending}
-                  className="w-full cursor-pointer bg-primary/90 hover:bg-primary text-lg py-6 transition-colors"
+                  className="w-full cursor-pointer bg-primary/90 hover:bg-primary text-md py-2 h-auto transition-colors"
                 >
                   {isPending ? (
                     <>

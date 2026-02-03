@@ -183,7 +183,6 @@ export function DataTable<TData, TValue>({
     }
   };
 
-  const { data: currentUser } = useCurrentUser();
   const handleExportMockTests = () =>
     exportData({
       startDate: dateRange?.from?.toISOString().split("T")[0],
@@ -281,7 +280,7 @@ export function DataTable<TData, TValue>({
               </DropdownMenuContent>
             </DropdownMenu>
           )}
-          {currentUser?.data?.role !== Role.ACCOUNTANT && isAddButton && (
+          {isAddButton && (
             <Button
               variant={"outline"}
               className="cursor-pointer"

@@ -9,7 +9,6 @@ import {
   FileText,
   PlaneTakeoff,
   BookOpenText,
-  Calendar,
   ChevronDown,
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -59,7 +58,7 @@ export const StudentProfile = React.memo(() => {
 
   if (isStudentLoading)
     return (
-      <div className="min-h-screen p-4 md:p-6 lg:p-8">
+      <div className="p-4 md:p-6 lg:p-8">
         <div className="w-full mx-auto">
           <Skeleton className="h-10 w-24 mb-6" />
 
@@ -250,11 +249,6 @@ export const StudentProfile = React.memo(() => {
       title: "BOOK STATUS",
       status: student?.payment?.bookStatus?.replaceAll("_", " ") ?? "N/A",
     },
-    {
-      icon: Calendar,
-      title: "DATEBOOK",
-      status: student?.currentStudentStatus?.replaceAll("_", " ") ?? "N/A",
-    },
   ];
 
   const remarkData: {
@@ -287,54 +281,72 @@ export const StudentProfile = React.memo(() => {
   }
 
   return (
-    <div className="min-h-screen">
-      <div className="w-full mx-auto">
+    <div className="bg-gray-50 h-full">
+      <div className="w-full mx-auto p-4 md:p-6 lg:p-8">
         <Button
           variant="ghost"
           onClick={() => navigate(-1)}
-          className="mb-6 hover:bg-gray-200 cursor-pointer"
+          className="mb-6 hover:bg-gray-200 focus-visible:ring-2 focus-visible:ring-offset-2 transition-colors"
+          aria-label="Go back to previous page"
         >
-          <ArrowLeft className="w-5 h-5 mr-2" />
+          <ArrowLeft className="w-5 h-5 mr-2" aria-hidden="true" />
           Back
         </Button>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
           <div className="col-span-1 flex flex-col gap-6">
             <Card className="rounded-md border border-gray-300 shadow-xs">
               <CardContent className="gap-4 flex flex-col">
                 <div className="flex flex-col items-center justify-center gap-2">
-                  <Avatar className="bg-green-50 rounded-full w-40 h-40 aspect-square ">
-                    <AvatarImage src={studentData?.profileImage} />
+                  <Avatar className="bg-green-50 rounded-full w-40 h-40 aspect-square">
+                    <AvatarImage
+                      src={studentData?.profileImage}
+                      alt={`Profile picture of ${studentData?.fullName}`}
+                      loading="lazy"
+                    />
                     <AvatarFallback className="text-4xl font-medium">
                       {getInitials(studentData?.fullName)}
                     </AvatarFallback>
                   </Avatar>
                   <div className="mt-2">
-                    <h3 className="text-2xl font-medium text-center">
+                    <h1 className="text-2xl font-medium text-center">
                       {studentData?.fullName}
-                    </h3>
+                    </h1>
                     <p className="text-muted-foreground text-center font-medium">
                       {studentData?.academicQualification}
                     </p>
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <Mail className="shrink-0" />
-                  <p>{studentData?.email}</p>
+                  <Mail className="shrink-0 mt-0.5" aria-hidden="true" />
+                  <p className="break-words min-w-0">
+                    <span className="sr-only">Email: </span>
+                    {studentData?.email}
+                  </p>
                 </div>
                 <div className="flex gap-2">
-                  <Phone className="shrink-0" />
-                  <p>{studentData?.contactNumber}</p>
+                  <Phone className="shrink-0 mt-0.5" aria-hidden="true" />
+                  <p className="break-words min-w-0">
+                    <span className="sr-only">Phone: </span>
+                    {studentData?.contactNumber}
+                  </p>
                 </div>
                 <div className="flex gap-2">
-                  <MapPin className="shrink-0" />
-                  <p>{studentData?.address}</p>
+                  <MapPin className="shrink-0 mt-0.5" aria-hidden="true" />
+                  <p className="break-words min-w-0">
+                    <span className="sr-only">Address: </span>
+                    {studentData?.address}
+                  </p>
                 </div>
               </CardContent>
             </Card>
             <Card className="rounded-md border border-gray-300 shadow-xs gap-4">
               <CardHeader className="flex gap-2 items-center">
-                <IoEarth size={24} className="text-primary" />
+                <IoEarth
+                  size={24}
+                  className="text-primary"
+                  aria-hidden="true"
+                />
                 <CardTitle className="text-xl font-medium">
                   Study Preference
                 </CardTitle>
@@ -360,12 +372,16 @@ export const StudentProfile = React.memo(() => {
           <div className="col-span-2 flex flex-col gap-6">
             <Card className="rounded-md border border-gray-300 shadow-xs">
               <CardHeader className="flex gap-2 items-center">
-                <GraduationCap className="text-blue-500" size={28} />
+                <GraduationCap
+                  className="text-blue-500"
+                  size={28}
+                  aria-hidden="true"
+                />
                 <CardTitle className="text-xl font-medium">
                   Academic Information
                 </CardTitle>
               </CardHeader>
-              <CardContent className="grid grid-cols-3 gap-x-2 gap-y-6">
+              <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-2 gap-y-6">
                 <div className="flex flex-col">
                   <p className="text-muted-foreground font-medium">
                     Academic Qualification:
@@ -406,12 +422,12 @@ export const StudentProfile = React.memo(() => {
             </Card>
             <Card className="rounded-md border border-gray-300 shadow-xs">
               <CardHeader className="flex gap-2 items-center">
-                <Info className="text-blue-500" size={28} />
+                <Info className="text-blue-500" size={28} aria-hidden="true" />
                 <CardTitle className="text-xl font-medium">
                   Other Information
                 </CardTitle>
               </CardHeader>
-              <CardContent className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2">
+              <CardContent className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {otherInfoCardData.map((item) => (
                   <OtherInfoCard
                     icon={item.icon}
@@ -436,17 +452,20 @@ export const StudentProfile = React.memo(() => {
                 )}
               </CardContent>
 
-              <CardFooter className="mt-4">
-                <Button
-                  onClick={() => setCurrentIndex(currentIndex + 3)}
-                  variant={"outline"}
-                  size={"icon-lg"}
-                  className={`rounded-full mx-auto ${currentIndex + 3 >= remarkData.length ? "" : "animate-bounce"}`}
-                  disabled={currentIndex + 3 >= remarkData.length}
-                >
-                  <ChevronDown className="" />
-                </Button>
-              </CardFooter>
+              {student?.remark && student.remark.length > 3 ? (
+                <CardFooter className="mt-4">
+                  <Button
+                    onClick={() => setCurrentIndex(currentIndex + 3)}
+                    variant={"outline"}
+                    size={"icon-lg"}
+                    className={`rounded-full mx-auto focus-visible:ring-2 focus-visible:ring-offset-2 transition-transform ${currentIndex + 3 >= remarkData.length ? "" : "hover:scale-105"}`}
+                    disabled={currentIndex + 3 >= remarkData.length}
+                    aria-label={`Load ${Math.min(3, remarkData.length - (currentIndex + 3))} more remarks`}
+                  >
+                    <ChevronDown className="h-4 w-4" aria-hidden="true" />
+                  </Button>
+                </CardFooter>
+              ) : null}
             </Card>
           </div>
         </div>
@@ -469,99 +488,102 @@ const OtherInfoCard = ({ icon: ICON, title, status }: otherInfoCardProps) => {
     switch (str.toLowerCase()) {
       case "paid in full":
         return (
-          <p className="text-yellow-500 font-normal lg:font-medium md:text-md">
+          <p className="text-yellow-600 font-normal lg:font-medium text-sm lg:text-base break-words">
             {str}
           </p>
         );
       case "not paid":
         return (
-          <p className="text-red-500 font-normal lg:font-medium md:text-md">
+          <p className="text-red-600 font-normal lg:font-medium text-sm lg:text-base break-words">
             {str}
           </p>
         );
       case "partial paid":
         return (
-          <p className="text-orange-500 font-normal lg:font-medium md:text-md">
+          <p className="text-orange-600 font-normal lg:font-medium text-sm lg:text-base break-words">
             {str}
           </p>
         );
       case "book taken":
         return (
-          <p className="text-green-500 font-normal lg:font-medium md:text-md">
+          <p className="text-green-600 font-normal lg:font-medium text-sm lg:text-base break-words">
             {str}
           </p>
         );
       case "book not taken":
         return (
-          <p className="text-red-500 font-normal lg:font-medium md:text-md">
+          <p className="text-red-600 font-normal lg:font-medium text-sm lg:text-base break-words">
             {str}
           </p>
         );
       case "pending":
         return (
-          <p className="text-orange-500 font-normal lg:font-medium md:text-md">
+          <p className="text-orange-600 font-normal lg:font-medium text-sm lg:text-base break-words">
             {str}
           </p>
         );
       case "rejected":
         return (
-          <p className="text-red-500 font-normal lg:font-medium md:text-md">
+          <p className="text-red-600 font-normal lg:font-medium text-sm lg:text-base break-words">
             {str}
           </p>
         );
       case "not sent":
         return (
-          <p className="text-gray-500 font-normal lg:font-medium md:text-md">
+          <p className="text-gray-600 font-normal lg:font-medium text-sm lg:text-base break-words">
             {str}
           </p>
         );
       case "not received":
         return (
-          <p className="text-gray-500 font-normal lg:font-medium md:text-md">
+          <p className="text-gray-600 font-normal lg:font-medium text-sm lg:text-base break-words">
             {str}
           </p>
         );
       case "not accepted":
         return (
-          <p className="text-gray-500 font-normal lg:font-medium md:text-md">
+          <p className="text-gray-600 font-normal lg:font-medium text-sm lg:text-base break-words">
             {str}
           </p>
         );
       case "sent":
         return (
-          <p className="text-blue-500 font-normal lg:font-medium md:text-md">
+          <p className="text-blue-600 font-normal lg:font-medium text-sm lg:text-base break-words">
             {str}
           </p>
         );
       case "received":
         return (
-          <p className="text-green-500 font-normal lg:font-medium md:text-md">
+          <p className="text-green-600 font-normal lg:font-medium text-sm lg:text-base break-words">
             {str}
           </p>
         );
       case "accepted":
         return (
-          <p className="text-blue-500 font-normal lg:font-medium md:text-md">
+          <p className="text-blue-600 font-normal lg:font-medium text-sm lg:text-base break-words">
             {str}
           </p>
         );
       default:
         return (
-          <p className="text-gray-500 font-normal lg:font-medium md:text-md">
+          <p className="text-gray-600 font-normal lg:font-medium text-sm lg:text-base break-words">
             {str}
           </p>
         );
     }
   };
   return (
-    <Card className="p-2 gap-0">
+    <Card className="p-2 gap-0 hover:shadow-md transition-shadow">
       <CardHeader className="flex items-center justify-start gap-2 p-0">
-        <ICON className="text-muted-foreground w-6 h-6 shrink-0" />
-        <CardTitle className="font-medium text-sm lg:text-base">
+        <ICON
+          className="text-muted-foreground w-5 lg:w-6 h-5 lg:h-6 shrink-0"
+          aria-hidden="true"
+        />
+        <CardTitle className="font-medium text-sm lg:text-base break-words min-w-0">
           {title}
         </CardTitle>
       </CardHeader>
-      <CardContent className="p-2 font-medium md:text-sm lg:text-base ">
+      <CardContent className="p-2 font-medium">
         {statusColor(status)}
       </CardContent>
     </Card>

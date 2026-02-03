@@ -32,6 +32,11 @@ interface ProgramData {
   absent?: number;
 }
 
+interface Perioddata {
+  absent: number;
+  present: number;
+}
+
 interface ReportChartProps {
   data: ProgramData | null;
   title?: string;
@@ -54,14 +59,15 @@ const ReportChart: React.FC<ReportChartProps> = ({
   isError = false,
 }) => {
   // ✅ Safe transform of data
+  console.log("Raw data for ReportChart:", data);
   const chartData = useMemo(() => {
     // Simple daily present/absent format coming from period daily
     if (
       data?.labels &&
       Array.isArray(data.labels) &&
       data.labels.length === 2 &&
-      data.labels[0]?.toLowerCase() === 'present' &&
-      data.labels[1]?.toLowerCase() === 'absent' &&
+      data.labels[0]?.toLowerCase() === "present" &&
+      data.labels[1]?.toLowerCase() === "absent" &&
       Array.isArray(data.datasets) &&
       data.datasets.length === 1
     ) {
@@ -69,8 +75,8 @@ const ReportChart: React.FC<ReportChartProps> = ({
       const present = ds.data?.[0] ?? 0;
       const absent = ds.data?.[1] ?? 0;
       return [
-        { category: 'Present', value: present, color: COLORS.present },
-        { category: 'Absent', value: absent, color: COLORS.absent },
+        { category: "Present", value: present, color: COLORS.present },
+        { category: "Absent", value: absent, color: COLORS.absent },
       ];
     }
 
@@ -112,9 +118,10 @@ const ReportChart: React.FC<ReportChartProps> = ({
     return (
       Array.isArray(data?.labels) &&
       data!.labels!.length === 2 &&
-      (data!.labels![0] || '').toLowerCase() === 'present' &&
-      (data!.labels![1] || '').toLowerCase() === 'absent' &&
-      Array.isArray(data?.datasets) && data!.datasets!.length === 1
+      (data!.labels![0] || "").toLowerCase() === "present" &&
+      (data!.labels![1] || "").toLowerCase() === "absent" &&
+      Array.isArray(data?.datasets) &&
+      data!.datasets!.length === 1
     );
   }, [data]);
   const hasValidData = useMemo(() => chartData.length > 0, [chartData]);
@@ -242,7 +249,10 @@ const ReportChart: React.FC<ReportChartProps> = ({
                   fontSize: "13px",
                 }}
                 formatter={(value: number, name: string, props: any) => {
-                  return [`${value} students`, props?.payload?.category || name];
+                  return [
+                    `${value} students`,
+                    props?.payload?.category || name,
+                  ];
                 }}
               />
               <Bar dataKey="value" radius={[6, 6, 0, 0]}>

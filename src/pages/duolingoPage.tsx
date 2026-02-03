@@ -19,7 +19,7 @@ const DuolingoPage: React.FC = () => {
   });
 
   const { data, isPending } = useGetStudentsByLanguage(
-    "DUOLINGO",
+    "Duolingo",
     filter.page,
     filter.limit,
     filter.search,

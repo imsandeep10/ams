@@ -23,7 +23,7 @@ import type { ReportPeriodType } from "@/shared/types/reportTypes";
 import { useCurrentUser } from "@/lib/api/useUser";
 import { Role } from "@/shared/interface/studentResponse";
 
-const YEARS = [2023, 2024, 2025];
+const YEARS = [2023, 2024, 2025, 2026];
 const MONTHS = Array.from({ length: 12 }, (_, i) => i + 1);
 
 export const Report = React.memo(() => {
@@ -107,6 +107,8 @@ export const Report = React.memo(() => {
       month: selectedMonth,
     });
   };
+
+  console.log(attendenceOverview);
 
   return (
     <div className="p-5 space-y-5">

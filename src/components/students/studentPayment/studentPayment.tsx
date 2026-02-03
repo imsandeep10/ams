@@ -62,6 +62,7 @@ const StudentPayment = () => {
       studentId: studentData!.id,
       paymentStatus: data.paymentStatus ?? "NOT_PAID",
       remarks: data.remarks,
+      paymentMethod: data.paymentMethod!,
       paymentAmount: data.amount,
       bookStatus: data.book ?? "NO_BOOK_TAKEN",
     });
