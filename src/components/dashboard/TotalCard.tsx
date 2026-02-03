@@ -28,42 +28,42 @@ export const TotalCard = React.memo(({ selectedDate }: TotalCardProps) => {
   };
 
   const cards = useMemo<CardData[]>(() => {
-    if (!stats) return [];
+    // if (!stats) return [];
 
     // For SuperAdmin: show all cards
     if (newCurrentUser?.role === "superAdmin") {
       return [
         {
           subtitle: "Total Enrolled Students",
-          total: stats.totalEnrolled,
+          total: stats?.totalEnrolled ?? 0,
         },
         {
           subtitle: "Total Present Today",
-          total: stats.totalPresentToday,
+          total: stats?.totalPresentToday ?? 0,
         },
         {
           subtitle: "Total Absent Today",
-          total: stats.totalAbsentToday,
+          total: stats?.totalAbsentToday ?? 0,
         },
         {
           subtitle: "IELTS Present",
-          total: stats.ielts,
+          total: stats?.ielts ?? 0,
         },
         {
           subtitle: "PTE Present",
-          total: stats.pte,
+          total: stats?.pte ?? 0,
         },
         {
           subtitle: "SAT Present",
-          total: stats.sat,
+          total: stats?.sat ?? 0,
         },
         {
           subtitle: "Duolingo Present",
-          total: stats.duolingo,
+          total: stats?.duolingo ?? 0,
         },
         {
           subtitle: "Total Mock Tests Attended",
-          total: stats.total,
+          total: stats?.total ?? 0,
         },
       ];
     }
@@ -73,19 +73,19 @@ export const TotalCard = React.memo(({ selectedDate }: TotalCardProps) => {
       return [
         {
           subtitle: "Total IELTS Enrolled",
-          total: stats.totalEnrolled,
+          total: stats?.totalEnrolled ?? 0,
         },
         {
           subtitle: "IELTS Present Today",
-          total: stats.totalPresentToday,
+          total: stats?.totalPresentToday ?? 0,
         },
         {
           subtitle: "IELTS Absent Today",
-          total: stats.totalAbsentToday,
+          total: stats?.totalAbsentToday ?? 0,
         },
         {
           subtitle: "Total Mocktest attendees",
-          total: stats.total,
+          total: stats?.total ?? 0,
         },
       ];
     }
@@ -95,19 +95,19 @@ export const TotalCard = React.memo(({ selectedDate }: TotalCardProps) => {
       return [
         {
           subtitle: "Total PTE Enrolled",
-          total: stats.totalEnrolled,
+          total: stats?.totalEnrolled ?? 0,
         },
         {
           subtitle: "PTE Present Today",
-          total: stats.totalPresentToday,
+          total: stats?.totalPresentToday ?? 0,
         },
         {
           subtitle: "PTE Absent Today",
-          total: stats.totalAbsentToday,
+          total: stats?.totalAbsentToday ?? 0,
         },
         {
           subtitle: "Total Mocktest attendees",
-          total: stats.total,
+          total: stats?.total ?? 0,
         },
       ];
     }
@@ -117,19 +117,19 @@ export const TotalCard = React.memo(({ selectedDate }: TotalCardProps) => {
       return [
         {
           subtitle: "Total SAT Enrolled",
-          total: stats.totalEnrolled,
+          total: stats?.totalEnrolled ?? 0,
         },
         {
           subtitle: "SAT Present Today",
-          total: stats.totalPresentToday,
+          total: stats?.totalPresentToday ?? 0,
         },
         {
           subtitle: "SAT Absent Today",
-          total: stats.totalAbsentToday,
+          total: stats?.totalAbsentToday ?? 0,
         },
         {
           subtitle: "Total Mocktest attendees",
-          total: stats.total,
+          total: stats?.total ?? 0,
         },
       ];
     }
@@ -139,19 +139,19 @@ export const TotalCard = React.memo(({ selectedDate }: TotalCardProps) => {
       return [
         {
           subtitle: "Total Duolingo Enrolled",
-          total: stats.totalEnrolled,
+          total: stats?.totalEnrolled ?? 0,
         },
         {
           subtitle: "Duolingo Present Today",
-          total: stats.totalPresentToday,
+          total: stats?.totalPresentToday ?? 0,
         },
         {
           subtitle: "Duolingo Absent Today",
-          total: stats.totalAbsentToday,
+          total: stats?.totalAbsentToday ?? 0,
         },
         {
           subtitle: "Total Mocktest attendees",
-          total: stats.total,
+          total: stats?.total ?? 0,
         },
       ];
     }
@@ -160,15 +160,15 @@ export const TotalCard = React.memo(({ selectedDate }: TotalCardProps) => {
     return [
       {
         subtitle: "Total Enrolled Students",
-        total: stats.totalEnrolled,
+        total: stats?.totalEnrolled ?? 0,
       },
       {
         subtitle: "Total Present Today",
-        total: stats.totalPresentToday,
+        total: stats?.totalPresentToday ?? 0,
       },
       {
         subtitle: "Total Absent Today",
-        total: stats.totalAbsentToday,
+        total: stats?.totalAbsentToday ?? 0,
       },
     ];
   }, [stats, newCurrentUser?.role]);

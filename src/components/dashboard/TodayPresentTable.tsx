@@ -1,13 +1,18 @@
-import type { ColumnDef } from '@tanstack/react-table';
-import DashboardTable from './DashboardTable';
-import { useMemo, useState } from 'react';
-import type { PresentStudent } from '@/lib/api/dashboard';
-import { useTodayPresentStudents } from '@/lib/api/dashboard';
+import type { ColumnDef } from "@tanstack/react-table";
+import DashboardTable from "./DashboardTable";
+import { useMemo, useState } from "react";
+import type { PresentStudent } from "@/lib/api/dashboard";
+import { useTodayPresentStudents } from "@/lib/api/dashboard";
 
 type Props = { selectedDate?: Date };
 
 export default function TodayPresentTable({ selectedDate }: Props) {
-  const { data = [], isLoading, error, isError } = useTodayPresentStudents(selectedDate);
+  const {
+    data = [],
+    isLoading,
+    error,
+    isError,
+  } = useTodayPresentStudents(selectedDate);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
 
@@ -18,13 +23,13 @@ export default function TodayPresentTable({ selectedDate }: Props) {
 
   const columns = useMemo<ColumnDef<PresentStudent>[]>(
     () => [
-      { accessorKey: 'fullName', header: 'Full Name' },
-      { accessorKey: 'email', header: 'Email' },
-      { accessorKey: 'phoneNumber', header: 'Phone' },
-      { accessorKey: 'language', header: 'Language' },
-      { accessorKey: 'status', header: 'Status' },
+      { accessorKey: "fullName", header: "Full Name" },
+      { accessorKey: "email", header: "Email" },
+      { accessorKey: "phoneNumber", header: "Phone" },
+      { accessorKey: "language", header: "Language" },
+      { accessorKey: "status", header: "Status" },
     ],
-    []
+    [],
   );
 
   const total = data.length;
@@ -35,14 +40,6 @@ export default function TodayPresentTable({ selectedDate }: Props) {
 
   const emptyFallback = !isLoading && total === 0;
 
-  if (isError) {
-    return (
-      <div className="w-full p-4 text-center text-red-600">
-        Error loading data: {error instanceof Error ? error.message : 'Unknown error'}
-      </div>
-    );
-  }
-
   return (
     <div className="w-full">
       <DashboardTable
@@ -52,7 +49,7 @@ export default function TodayPresentTable({ selectedDate }: Props) {
         onPageChange={setPage}
         onPageSizeChange={handlePageSizeChange}
         isLoading={isLoading}
-        emptyMessage={emptyFallback ? 'No one is Present' : undefined}
+        emptyMessage={emptyFallback ? "No one is Present" : undefined}
       />
     </div>
   );
