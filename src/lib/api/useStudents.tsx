@@ -178,7 +178,7 @@ export const useGetAllStudents = (
       const params: Record<string, any> = {};
 
       if (student) {
-        params.student = student;
+        params.term = student;
       }
       if (language) {
         params.language = language;
