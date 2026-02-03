@@ -97,7 +97,6 @@ function CreateAdminFormComponent({ mode }: props) {
     mode: "onBlur",
   });
 
-  console.log(adminData?.data);
   // Populate form with admin data when in edit mode (single effect, no duplicates)
   useEffect(() => {
     if (
@@ -107,11 +106,11 @@ function CreateAdminFormComponent({ mode }: props) {
       !isFormInitialized
     ) {
       // Use static VALID_ROLES array with proper type assertion
-      const adminRole: (typeof VALID_ROLES)[number] =
-        adminData?.data.role &&
-        VALID_ROLES.includes(adminData?.data.role as any)
-          ? (adminData?.data.role as (typeof VALID_ROLES)[number])
-          : "satAdmin";
+      // const adminRole: (typeof VALID_ROLES)[number] =
+      //   adminData?.data.role &&
+      //   VALID_ROLES.includes(adminData?.data.role as any)
+      //     ? (adminData?.data.role as (typeof VALID_ROLES)[number])
+      //     : "satAdmin";
 
       // Use form.reset() to properly populate all fields and reset form state
       form.reset({
@@ -119,7 +118,7 @@ function CreateAdminFormComponent({ mode }: props) {
         email: adminData?.data.email || "",
         phoneNumber: adminData?.data.phoneNumber || "",
         address: adminData?.data.address || "",
-        role: adminRole,
+        // role: adminRole,
         profileImageId: adminData?.data.profileImageId || "",
         password: "",
       });
@@ -176,15 +175,13 @@ function CreateAdminFormComponent({ mode }: props) {
   const onSubmit = useCallback(
     async (values: CreateAdminFormData) => {
       try {
-        // For edit mode, remove password if it's empty
-        const submitData =
-          mode === "edit" ? { ...values, password: undefined } : values;
-
         if (mode === "edit" && id) {
+          const { role, password, ...submitData } = values;
+
           await updateAdmin({ id, data: submitData });
           toast.success("Admin updated successfully!");
         } else {
-          await createAdmins(submitData);
+          await createAdmins(values);
           toast.success("Admin created successfully!");
         }
         // Navigate after successful submission

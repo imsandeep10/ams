@@ -91,12 +91,23 @@ export const useGetStudentsByLanguage = (
         totalPages: number;
       };
     }> => {
-      const res = await api.get(
-        `/api/students/language/${language}?term=${student}`,
-        {
-          params: { page, limit },
-        },
-      );
+      const params: Record<string, any> = {};
+      if (student) {
+        params.student = student;
+      }
+      if (language) {
+        params.language = language;
+      }
+      if (page) {
+        params.page = page;
+      }
+      if (limit) {
+        params.limit = limit;
+      }
+
+      const res = await api.get(`/api/students/language/${language}`, {
+        params,
+      });
       if (!res?.data?.students) {
         throw new Error("Failed to fetch students");
       }
@@ -136,6 +147,7 @@ export const useGetStudentsByLanguage = (
 export const useGetAllStudents = (
   page: number = 1,
   limit: number = 10,
+  student?: string,
   language?: string,
   preferredCountry?: string,
   faculty?: string,
@@ -147,6 +159,7 @@ export const useGetAllStudents = (
       "all-students",
       page,
       limit,
+      student,
       language,
       preferredCountry,
       faculty,
@@ -162,16 +175,34 @@ export const useGetAllStudents = (
         totalPages: number;
       };
     }> => {
+      const params: Record<string, any> = {};
+
+      if (student) {
+        params.student = student;
+      }
+      if (language) {
+        params.language = language;
+      }
+      if (preferredCountry) {
+        params.preferredCountry = preferredCountry;
+      }
+      if (faculty) {
+        params.faculty = faculty;
+      }
+      if (yearOfCompletion) {
+        params.yearOfCompletion = yearOfCompletion;
+      }
+      if (includeQrCode) {
+        params.includeQrCode = includeQrCode;
+      }
+      if (page) {
+        params.page = page;
+      }
+      if (limit) {
+        params.limit = limit;
+      }
       const res = await api.get(`/api/students/filter`, {
-        params: {
-          page,
-          limit,
-          language,
-          preferredCountry,
-          faculty,
-          yearOfCompletion,
-          includeQrCode,
-        },
+        params,
       });
       if (!res?.data?.students) {
         throw new Error("Failed to fetch students");

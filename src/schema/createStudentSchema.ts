@@ -8,8 +8,8 @@ export const createStudentFormSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
   phoneNumber: z
     .string()
-    .min(10, { message: "Phone number must be at least 7 digits" })
-    .max(15, { message: "Phone number cannot exceed 15 digits" }),
+    .min(10, { message: "Phone number must be at least 10 digits" })
+    .max(10, { message: "Phone number must be at most 10 digits" }),
   address: z.string().min(1, "Address is required"),
   profileImageId: z.string().optional(),
   gpaOrPercentage: z
@@ -28,15 +28,15 @@ export const createStudentFormSchema = z.object({
           "GPA must be between 0.0 and 4.0 or Percentage must be between 0 and 100",
       },
     ),
-  preferredCountry: z.string().min(1, "Preferred country is required"),
-  faculty: z.string().min(1, "Faculty is required"),
-  classTime: z.string().min(1, "Class time is required"),
-  language: z.string().min(1, "Language is required"),
+  preferredCountry: z.string().optional(),
+  faculty: z.string().optional(),
+  classTime: z.string().optional(),
+  language: z.enum(["Duolingo", "IELTS", "PTE", "SAT"], {
+    message: "Language is required",
+  }),
   interestedCourse: z.string().optional(),
-  academicQualification: z
-    .string()
-    .min(1, "Academic qualification is required"),
-  yearOfCompletion: z.string().min(1, "Year of completion is required"),
+  academicQualification: z.string().optional(),
+  yearOfCompletion: z.string().optional(),
 });
 
 export type CreateStudentFormData = z.infer<typeof createStudentFormSchema>;

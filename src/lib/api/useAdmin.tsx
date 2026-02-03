@@ -1,4 +1,7 @@
-import type { CreateAdminFormData } from "@/schema/createAdminSchema";
+import type {
+  CreateAdminFormData,
+  EditAdminFormData,
+} from "@/schema/createAdminSchema";
 import type { CreateAdminResponse } from "@/shared/types/createAdminTypes";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
@@ -8,7 +11,7 @@ import type { UserResponse } from "@/shared/interface/studentResponse";
 
 type UpdateAdminPayload = {
   id: string;
-  data: CreateAdminFormData;
+  data: EditAdminFormData;
 };
 export const useCreateAdmins = () => {
   const queryClient = useQueryClient();

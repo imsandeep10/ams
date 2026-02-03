@@ -69,7 +69,9 @@ function CreateStudentFormComponent({ mode }: props) {
       preferredCountry: "",
       faculty: "",
       classTime: "",
-      language: pathLanguage || "",
+      language: Languages.includes(pathLanguage as any)
+        ? (pathLanguage as "Duolingo" | "IELTS" | "PTE" | "SAT")
+        : undefined,
       interestedCourse: "",
       academicQualification: "",
       yearOfCompletion: "",
@@ -93,7 +95,7 @@ function CreateStudentFormComponent({ mode }: props) {
         preferredCountry: StudentData.preferredCountry || "",
         faculty: StudentData.faculty || "",
         classTime: StudentData.classTime || "",
-        language: StudentData.language || "",
+        language: StudentData.language || null,
         interestedCourse: StudentData.interestedCourse || "",
         academicQualification: StudentData.academicQualification || "",
         yearOfCompletion: StudentData.yearOfCompletion || "",
@@ -130,7 +132,7 @@ function CreateStudentFormComponent({ mode }: props) {
         throw error;
       }
     },
-    [uploadImage, form]
+    [uploadImage, form],
   );
 
   const onSubmit = useCallback(
@@ -152,7 +154,7 @@ function CreateStudentFormComponent({ mode }: props) {
         toast.error(error?.response?.data?.message);
       }
     },
-    [createStudents, updateStudent, mode, id, router, pathLanguage]
+    [createStudents, updateStudent, mode, id, router, pathLanguage],
   );
 
   if (isLoading && mode === "edit") {
@@ -230,7 +232,9 @@ function CreateStudentFormComponent({ mode }: props) {
             name="fullName"
             render={({ field }) => (
               <FormItem>
-                <Label>Full Name</Label>
+                <Label>
+                  Full Name<span className="text-red-500">*</span>
+                </Label>
                 <FormControl>
                   <Input
                     placeholder="John Doe"
@@ -248,7 +252,9 @@ function CreateStudentFormComponent({ mode }: props) {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <Label>Email</Label>
+                <Label>
+                  Email<span className="text-red-500">*</span>
+                </Label>
                 <FormControl>
                   <Input
                     type="email"
@@ -267,7 +273,9 @@ function CreateStudentFormComponent({ mode }: props) {
             name="phoneNumber"
             render={({ field }) => (
               <FormItem>
-                <Label>Phone Number</Label>
+                <Label>
+                  Phone Number<span className="text-red-500">*</span>
+                </Label>
                 <FormControl>
                   <Input
                     type="tel"
@@ -286,7 +294,9 @@ function CreateStudentFormComponent({ mode }: props) {
             name="address"
             render={({ field }) => (
               <FormItem>
-                <Label>Address</Label>
+                <Label>
+                  Address<span className="text-red-500">*</span>
+                </Label>
                 <FormControl>
                   <Input
                     placeholder="Enter your address"
@@ -482,9 +492,14 @@ function CreateStudentFormComponent({ mode }: props) {
             name="language"
             render={({ field }) => (
               <FormItem>
-                <Label>Language</Label>
+                <Label>
+                  Language<span className="text-red-500">*</span>
+                </Label>
                 <FormControl>
-                  <Select onValueChange={field.onChange} value={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value ?? ""}
+                  >
                     <SelectTrigger className="w-full transition-colors focus:ring-2">
                       <SelectValue placeholder="Select Language" />
                     </SelectTrigger>
@@ -533,10 +548,10 @@ function CreateStudentFormComponent({ mode }: props) {
                   ? "Updating..."
                   : "Submitting..."
                 : isUploading
-                ? "Uploading..."
-                : mode === "edit"
-                ? "Update Student"
-                : "Submit"}
+                  ? "Uploading..."
+                  : mode === "edit"
+                    ? "Update Student"
+                    : "Submit"}
             </Button>
           </div>
         </form>

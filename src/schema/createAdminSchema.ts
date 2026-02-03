@@ -17,12 +17,20 @@ export const createAdminSchema = z.object({
     .or(z.literal("")),
   address: z.string().min(1, "Address is required"),
   profileImageId: z.string().optional(),
-  role: z.enum(["satAdmin", "duolingoAdmin", "ieltsAdmin", "pteAdmin","accountant"], {
-    message: "Please select a role",
-  }),
+  role: z.enum(
+    ["satAdmin", "duolingoAdmin", "ieltsAdmin", "pteAdmin", "accountant"],
+    {
+      message: "Please select a role",
+    },
+  ),
 });
 
 // Schema for edit mode (without password)
-export const editAdminSchema = createAdminSchema.omit({ password: true });
+export const editAdminSchema = createAdminSchema.omit({
+  password: true,
+  role: true,
+});
+
+export type EditAdminFormData = z.infer<typeof editAdminSchema>;
 
 export type CreateAdminFormData = z.infer<typeof createAdminSchema>;

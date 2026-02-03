@@ -34,6 +34,7 @@ const AllStudentsPage: React.FC = () => {
   const { data, isPending } = useGetAllStudents(
     filter.page,
     filter.limit,
+    filter.search,
     filter.language,
     filter.preferredCountry,
     filter.yearOfCompletion,

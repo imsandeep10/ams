@@ -82,7 +82,11 @@ function CreateAdminFormComponent({ mode }: props) {
       ];
       const adminRole =
         adminData.data.role && validRoles.includes(adminData.data.role)
-          ? (adminData.data.role as "satAdmin" | "duolingoAdmin" | "ieltsAdmin" | "pteAdmin")
+          ? (adminData.data.role as
+              | "satAdmin"
+              | "duolingoAdmin"
+              | "ieltsAdmin"
+              | "pteAdmin")
           : "satAdmin";
 
       const formValues = {
@@ -113,6 +117,15 @@ function CreateAdminFormComponent({ mode }: props) {
   // Alternative approach - set values individually
   useEffect(() => {
     if (mode === "edit" && adminData && !isLoading && !isFormInitialized) {
+      // Set values individually to avoid reset issues
+      form.setValue("fullName", adminData.data.fullName || "");
+      form.setValue("email", adminData.data.email || "");
+      form.setValue("phoneNumber", adminData.data.phoneNumber || "");
+      form.setValue("address", adminData.data.address || "");
+      form.setValue("profileImageId", adminData.data.profileImageId || "");
+      form.setValue("password", "");
+
+      // Set role value properly
       const validRoles = [
         "satAdmin",
         "duolingoAdmin",
@@ -121,20 +134,13 @@ function CreateAdminFormComponent({ mode }: props) {
       ];
       const adminRole =
         adminData.data.role && validRoles.includes(adminData.data.role)
-          ? adminData.data.role
+          ? (adminData.data.role as
+              | "satAdmin"
+              | "duolingoAdmin"
+              | "ieltsAdmin"
+              | "pteAdmin")
           : "satAdmin";
-
-      // Set values individually to avoid reset issues
-      form.setValue("fullName", adminData.data.fullName || "");
-      form.setValue("email", adminData.data.email || "");
-      form.setValue("phoneNumber", adminData.data.phoneNumber || "");
-      form.setValue("address", adminData.data.address || "");
-      form.setValue(
-        "role",
-        adminRole as "satAdmin" | "duolingoAdmin" | "ieltsAdmin" | "pteAdmin",
-      );
-      form.setValue("profileImageId", adminData.data.profileImageId || "");
-      form.setValue("password", "");
+      form.setValue("role", adminRole);
 
       setIsFormInitialized(true);
 
@@ -189,11 +195,12 @@ function CreateAdminFormComponent({ mode }: props) {
   const onSubmit = useCallback(
     async (values: CreateAdminFormData) => {
       try {
-        // For edit mode, remove password if it's empty
+        // For edit mode, remove password if it's empty, but keep role
         const submitData =
           mode === "edit" ? { ...values, password: undefined } : values;
 
         if (mode === "edit" && id) {
+          console.log("Updating admin with ID:", id, submitData);
           await updateAdmin({ id, data: submitData });
           toast.success("Admin updated successfully!");
         } else {
