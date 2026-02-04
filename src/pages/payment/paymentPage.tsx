@@ -23,8 +23,8 @@ const Payment: React.FC = React.memo(() => {
   const { data: paymentData, isPending } = useGetAllPayments(
     filter.page,
     filter.limit,
-    filter.search,
     filter.paymentStatus,
+    filter.search,
   );
 
   const filterPaymentStatus = [
@@ -100,12 +100,12 @@ const Payment: React.FC = React.memo(() => {
     <div>
       <DataTable
         columns={PaymentColumn}
-        data={paymentData || []}
+        data={paymentData?.students || []}
         isPaymentFilter={true}
         pageCount={paymentData?.pagination?.totalPages || 1}
         pageIndex={paymentData?.pagination?.page || 0}
         pageSize={paymentData?.pagination?.limit || 10}
-        totalRows={paymentData.length || 0}
+        totalRows={paymentData?.pagination?.total || 0}
         onPaginationChange={handlePaginationChange}
         isAddButton={false}
         onSearch={handleSearch}

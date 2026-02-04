@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   type ColumnDef,
   type ColumnFiltersState,
@@ -119,9 +119,19 @@ export function DataTable<TData, TValue>({
     to: new Date(),
   });
 
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
   const navigate = useNavigate();
 
   const { mutate: exportData, isPending: isExporting } = useExportMockTests();
+
+  // Focus search input when data reloads
+  useEffect(() => {
+    if (searchInputRef.current && searchInputData) {
+      searchInputRef.current.focus();
+    }
+  }, [data, searchInputData]);
+
   const table = useReactTable({
     data,
     columns,
@@ -195,10 +205,11 @@ export function DataTable<TData, TValue>({
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             <Input
+              ref={searchInputRef}
               placeholder="Search students..."
               defaultValue={searchInputData}
               onChange={(event) => onSearch(String(event.target.value))}
-              className="pl-10 max-w-sm"
+              className="pl-10 max-w-sm "
             />
           </div>
         </div>

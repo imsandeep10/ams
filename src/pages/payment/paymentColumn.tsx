@@ -5,7 +5,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useCurrentUser } from "@/lib/api/useUser";
-import { Role } from "@/shared/interface/studentResponse";
+import { Role, type StudentResponse } from "@/shared/interface/studentResponse";
 import type { Payment } from "@/shared/types/paymentTypes";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Activity, Eye, MessageSquareMore, Wallet } from "lucide-react";
@@ -126,7 +126,7 @@ const StatusBadge = React.memo<{ status: string | undefined }>(({ status }) => {
 
 StatusBadge.displayName = "StatusBadge";
 
-export const PaymentColumn: ColumnDef<Payment>[] = [
+export const PaymentColumn: ColumnDef<StudentResponse>[] = [
   {
     id: "fullName",
     header: "Full Name",

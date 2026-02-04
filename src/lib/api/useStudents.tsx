@@ -235,15 +235,16 @@ export const useGetAllStudents = (
 };
 
 export const useGetStudentById = (id: string) => {
-  return useQuery({
+  return useQuery<StudentResponse>({
     queryKey: ["student", id],
-    queryFn: async ({ queryKey }) => {
-      const [, studentId] = queryKey;
-      const res = await api.get(`/api/student/${studentId}`);
-      if (!res || !res.data) {
-        throw new Error("Student Not Found");
+    queryFn: async (): Promise<StudentResponse> => {
+      try {
+        const res = await api.get(`/api/student/${id}`);
+        return res.data.student;
+      } catch (err: AxiosError | any) {
+        toast.error(err);
+        throw err;
       }
-      return res.data.student as StudentResponse;
     },
     enabled: !!id, // only fetch if id exists
   });

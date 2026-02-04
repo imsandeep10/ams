@@ -59,10 +59,20 @@ export interface PaymentResponse {
   bookStatus: "NO_BOOK_TAKEN" | "TWO_BOOKS_TAKEN" | "ALL_BOOKS_TAKEN";
   createdAt: string;
   id: string;
-  paymentAmount: string;
+  paymentAmount: number;
   paymentMethod: "CASH" | "ONLINE" | null;
-  paymentStatus: "PAID" | "FULL_PAID" | "PARTIAL_PAID" | "NOT_PAID";
+  paymentStatus: "FULL_PAID" | "PARTIAL_PAID" | "NOT_PAID";
   remarks: string | null;
   studentId: string;
   updatedAt: string;
 }
+
+export const BookStatus = [
+  "NO_BOOK_TAKEN",
+  "TWO_BOOKS_TAKEN",
+  "ALL_BOOKS_TAKEN",
+];
+
+export const PaymentMethod = ["CASH", "ONLINE"];
+
+export const PaymentStatus = ["FULL_PAID", "PARTIAL_PAID", "NOT_PAID"];
