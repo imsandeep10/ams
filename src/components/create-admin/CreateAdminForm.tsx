@@ -132,7 +132,7 @@ function CreateAdminFormComponent({ mode }: props) {
     }
   }, [adminData, isLoading, mode, isFormInitialized]);
 
-  const { isSubmitting, isDirty } = form.formState;
+  const { isSubmitting } = form.formState;
 
   const handleImageUpload = useCallback(
     async (file: File) => {

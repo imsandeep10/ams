@@ -38,7 +38,7 @@ const AllStudentsPage: React.FC = () => {
     filter.language,
     filter.preferredCountry,
     filter.yearOfCompletion,
-    filter.includeQrCode ? "true" : undefined,
+    filter.includeQrCode || undefined,
   );
 
   const updateSearchParams = (updates: Partial<typeof filter>) => {

@@ -7,12 +7,7 @@ import { useTodayPresentStudents } from "@/lib/api/dashboard";
 type Props = { selectedDate?: Date };
 
 export default function TodayPresentTable({ selectedDate }: Props) {
-  const {
-    data = [],
-    isLoading,
-    error,
-    isError,
-  } = useTodayPresentStudents(selectedDate);
+  const { data = [], isLoading } = useTodayPresentStudents(selectedDate);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
 

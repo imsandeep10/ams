@@ -32,10 +32,10 @@ interface ProgramData {
   absent?: number;
 }
 
-interface Perioddata {
-  absent: number;
-  present: number;
-}
+// interface Perioddata {
+//   absent: number;
+//   present: number;
+// }
 
 interface ReportChartProps {
   data: ProgramData | null;

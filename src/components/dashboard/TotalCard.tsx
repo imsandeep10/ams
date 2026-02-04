@@ -198,7 +198,7 @@ export const TotalCard = React.memo(({ selectedDate }: TotalCardProps) => {
         {cards.map((item, index) => (
           <div
             key={index}
-            className={`border flex flex-col bg-primary p-6 py-8 rounded-md hover:shadow-md transition-shadow ${
+            className={`border flex flex-col justify-between bg-primary p-6 py-8 rounded-md hover:shadow-md transition-shadow ${
               newCurrentUser?.role === "superAdmin" &&
               item.subtitle === "Total Enrolled Students"
                 ? "cursor-pointer hover:bg-primary/90"

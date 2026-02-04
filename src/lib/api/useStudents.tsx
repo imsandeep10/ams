@@ -93,7 +93,7 @@ export const useGetStudentsByLanguage = (
     }> => {
       const params: Record<string, any> = {};
       if (student) {
-        params.student = student;
+        params.term = student;
       }
       if (language) {
         params.language = language;
@@ -150,7 +150,6 @@ export const useGetAllStudents = (
   student?: string,
   language?: string,
   preferredCountry?: string,
-  faculty?: string,
   yearOfCompletion?: string,
   includeQrCode?: boolean,
 ) => {
@@ -162,7 +161,6 @@ export const useGetAllStudents = (
       student,
       language,
       preferredCountry,
-      faculty,
       yearOfCompletion,
       includeQrCode,
     ],
@@ -185,9 +183,6 @@ export const useGetAllStudents = (
       }
       if (preferredCountry) {
         params.preferredCountry = preferredCountry;
-      }
-      if (faculty) {
-        params.faculty = faculty;
       }
       if (yearOfCompletion) {
         params.yearOfCompletion = yearOfCompletion;

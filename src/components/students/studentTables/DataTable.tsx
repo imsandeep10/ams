@@ -57,8 +57,6 @@ import {
 import { useExportMockTests } from "@/lib/api/useMockRegister";
 import { Calendar } from "@/components/ui/calendar";
 import type { DateRange } from "react-day-picker";
-import { useCurrentUser } from "@/lib/api/useUser";
-import { Role } from "@/shared/interface/studentResponse";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
