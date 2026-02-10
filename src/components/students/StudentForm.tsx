@@ -53,9 +53,9 @@ function CreateStudentFormComponent({ mode }: props) {
 
   const [uploadError, setUploadError] = useState<string>("");
   const navigate = useNavigate();
-  const router = useNavigate();
   const [searchParam] = useSearchParams();
-  const pathLanguage = searchParam.get("language");
+
+  const pathLanguage = searchParam.get("language") || "";
 
   const form = useForm<CreateStudentFormData>({
     resolver: zodResolver(createStudentFormSchema),
@@ -150,13 +150,13 @@ function CreateStudentFormComponent({ mode }: props) {
         }
 
         if (res) {
-          router(`/${pathLanguage}`);
+          navigate(-1);
         }
       } catch (error: any) {
         toast.error(error?.response?.data?.message);
       }
     },
-    [createStudents, updateStudent, mode, id, router, pathLanguage],
+    [createStudents, updateStudent, mode, id, navigate],
   );
 
   if (isLoading && mode === "edit") {
@@ -502,6 +502,7 @@ function CreateStudentFormComponent({ mode }: props) {
                   <Select
                     onValueChange={field.onChange}
                     value={field.value ?? ""}
+                    disabled={mode === "edit" && !!field.value}
                   >
                     <SelectTrigger className="w-full transition-colors focus:ring-2">
                       <SelectValue placeholder="Select Language" />

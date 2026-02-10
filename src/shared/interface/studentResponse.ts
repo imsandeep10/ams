@@ -61,7 +61,7 @@ export interface PaymentResponse {
   id: string;
   paymentAmount: number;
   paymentMethod: "CASH" | "ONLINE" | null;
-  paymentStatus: "FULL_PAID" | "PARTIAL_PAID" | "NOT_PAID";
+  paymentStatus: PaymentStatus;
   remarks: string | null;
   studentId: string;
   updatedAt: string;
@@ -75,4 +75,9 @@ export const BookStatus = [
 
 export const PaymentMethod = ["CASH", "ONLINE"];
 
-export const PaymentStatus = ["FULL_PAID", "PARTIAL_PAID", "NOT_PAID"];
+export const PaymentStatus = {
+  FULL_PAID: "FULL_PAID",
+  PARTIAL_PAID: "PARTIAL_PAID",
+  NOT_PAID: "NOT_PAID",
+} as const;
+export type PaymentStatus = (typeof PaymentStatus)[keyof typeof PaymentStatus];

@@ -43,7 +43,7 @@ export const useGetStaticQRCode = () => {
             "ngrok-skip-browser-warning": "true",
             "x-internal-access": import.meta.env.VITE_INTERNAL_ACCESS_KEY,
           },
-        }
+        },
       );
 
       if (!res?.data) {
@@ -77,7 +77,7 @@ export const useGetStudentRegistrationQRCode = () => {
             "ngrok-skip-browser-warning": "true",
             "x-internal-access": import.meta.env.VITE_INTERNAL_ACCESS_KEY,
           },
-        }
+        },
       );
 
       if (!res?.data) {
@@ -111,7 +111,7 @@ export const useGetMockTestRegistrationQRCode = () => {
             "ngrok-skip-browser-warning": "true",
             "x-internal-access": import.meta.env.VITE_INTERNAL_ACCESS_KEY,
           },
-        }
+        },
       );
 
       if (!res?.data) {
@@ -123,7 +123,7 @@ export const useGetMockTestRegistrationQRCode = () => {
     // Cache for 1 hour since static QR codes don't change
     staleTime: 60 * 60 * 1000,
     // Retry on failure
-    retry: 3,
+    retry: 1,
     retryDelay: 1000,
   });
 };
@@ -182,7 +182,7 @@ export const useMarkAttendance = () => {
 
       const res = await api.post<AttendanceResponse>(
         "/api/attendance/mark",
-        payload
+        payload,
       );
 
       if (!res?.data) {

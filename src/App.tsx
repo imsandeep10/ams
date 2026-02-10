@@ -160,6 +160,7 @@ const router = createBrowserRouter([
               { path: "dashboard", element: <DashboardPageRoute /> },
               { path: "students", element: <DuolingoPageRoute /> },
               { path: "students/edit/:id", element: <EditStudentRoute /> },
+              { path: "students/create", element: <CreateStudentRoute /> },
               {
                 path: "students/send-email",
                 element: <StudentFollowUpRoute />,
@@ -206,7 +207,7 @@ const router = createBrowserRouter([
               },
               { path: "dashboard", element: <DashboardPageRoute /> },
               { path: "students", element: <AllStudentPageRoute /> },
-              { path: "students/create", element: <CreateStudentRoute /> },
+              // { path: "students/create", element: <CreateStudentRoute /> },
               {
                 path: "students/send-email",
                 element: <StudentFollowUpRoute />,
@@ -222,12 +223,16 @@ const router = createBrowserRouter([
             ),
           },
           {
-            path: "report",
-            element: <ReportRoute />,
+            path: "students/create",
+            element: (
+              <RoleProtected allowedRoles={["superAdmin"]}>
+                <CreateStudentRoute />
+              </RoleProtected>
+            ),
           },
           {
-            path: "create-student",
-            element: <CreateStudentRoute />,
+            path: "report",
+            element: <ReportRoute />,
           },
           {
             path: "edit-student/:id",

@@ -8,11 +8,7 @@ import { type PaymentFormData, paymentSchema } from "@/schema/paymentSchema";
 import { useGetStudentById } from "@/lib/api/useStudents";
 import { usePatchPayment } from "@/lib/api/usePayment";
 import { StudentPaymentForm } from "./studentPayment.Form";
-import {
-  BookStatus,
-  PaymentMethod,
-  PaymentStatus,
-} from "@/shared/interface/studentResponse";
+import { BookStatus, PaymentMethod } from "@/shared/interface/studentResponse";
 
 export const StudentPaymentContainer = () => {
   const { id } = useParams();
@@ -31,14 +27,7 @@ export const StudentPaymentContainer = () => {
       )
         ? (studentData?.payment?.paymentMethod! as "CASH" | "ONLINE")
         : undefined,
-      paymentStatus: PaymentStatus.includes(
-        studentData?.payment?.paymentStatus! as any,
-      )
-        ? (studentData?.payment?.paymentStatus! as
-            | "FULL_PAID"
-            | "PARTIAL_PAID"
-            | "NOT_PAID")
-        : undefined,
+      paymentStatus: "NOT_PAID",
       book: BookStatus.includes(studentData?.payment?.bookStatus! as any)
         ? (studentData?.payment?.bookStatus! as
             | "NO_BOOK_TAKEN"

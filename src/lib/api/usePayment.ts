@@ -6,9 +6,11 @@ import type { StudentResponse } from "@/shared/interface/studentResponse";
 export const useGetPaymentById = (userId: string) => {
   return useQuery({
     queryKey: ["payment", userId],
-    queryFn: async () => {
+    queryFn: async (): Promise<StudentResponse | undefined> => {
       try {
-        const response = await api.get(`/api/payment/${userId}`);
+        const response = await api.get<StudentResponse>(
+          `/api/payment/${userId}`,
+        );
         return response.data;
       } catch (err: any) {
         console.error("Error fetching payment data:", err);
@@ -37,7 +39,6 @@ export const useGetAllPayments = (
   paymentStatus?: string,
   student?: string,
 ) => {
-  console.log(student);
   return useQuery({
     queryKey: ["allPayments", page, limit, student, paymentStatus],
     queryFn: async () => {
@@ -85,6 +86,7 @@ export const usePatchPayment = () => {
     onSuccess: (_, data) => {
       queryClient.invalidateQueries({ queryKey: ["allPayments"] });
       queryClient.invalidateQueries({ queryKey: ["student", data.studentId] });
+      queryClient.invalidateQueries({ queryKey: ["payment", data.studentId] });
     },
     onError: (error) => {
       console.error("Error in payment mutation:", error);

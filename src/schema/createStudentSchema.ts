@@ -10,7 +10,10 @@ export const createStudentFormSchema = z.object({
     .string()
     .min(10, { message: "Phone number must be at least 10 digits" })
     .max(10, { message: "Phone number must be at most 10 digits" }),
-  address: z.string().min(1, "Address is required"),
+  address: z
+    .string()
+    .min(1, "Address is required")
+    .regex(/^[^0-9].*/, "Address cannot start with a number"),
   profileImageId: z.string().optional(),
   gpaOrPercentage: z
     .string()

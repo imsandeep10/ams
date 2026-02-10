@@ -58,8 +58,6 @@ const ReportChart: React.FC<ReportChartProps> = ({
   isLoading = false,
   isError = false,
 }) => {
-  // ✅ Safe transform of data
-  console.log("Raw data for ReportChart:", data);
   const chartData = useMemo(() => {
     // Simple daily present/absent format coming from period daily
     if (

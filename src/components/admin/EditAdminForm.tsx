@@ -35,7 +35,6 @@ const getInitials = (name: string): string => {
 function EditAdminFormComponent() {
   const { mutateAsync: uploadImage, isPending: isUploading } = useUploadImage();
   const { mutateAsync: updateAdmin } = useUpdateAdmin();
-  const [uploadError, setUploadError] = useState<string>("");
   const [previewImage, setPreviewImage] = useState<string>("");
   const [isFormInitialized, setIsFormInitialized] = useState(false);
   const navigate = useNavigate();
@@ -81,7 +80,6 @@ function EditAdminFormComponent() {
   const handleImageUpload = useCallback(
     async (file: File) => {
       try {
-        setUploadError("");
         const previewUrl = URL.createObjectURL(file);
         setPreviewImage(previewUrl);
 
@@ -91,12 +89,11 @@ function EditAdminFormComponent() {
           shouldValidate: true,
         });
         return res.id;
-      } catch (error) {
-        const errorMsg =
-          error instanceof Error
-            ? error.message
-            : "Failed to upload image. Please try again.";
-        setUploadError(errorMsg);
+      } catch (error: any) {
+        toast.error(
+          error.response.data?.message ||
+            "Image upload failed. Please try again.",
+        );
         form.setValue("profileImageId", "", { shouldValidate: true });
         setPreviewImage("");
         throw error;
@@ -354,11 +351,11 @@ function EditAdminFormComponent() {
                           Uploading image…
                         </p>
                       )}
-                      {uploadError && (
+                      {/* {uploadError && (
                         <p className="text-sm text-red-600 mt-2">
                           {uploadError}
                         </p>
-                      )}
+                      )} */}
                       <FormMessage />
                     </FormItem>
                   )}

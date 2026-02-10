@@ -108,8 +108,6 @@ export const Report = React.memo(() => {
     });
   };
 
-  console.log(attendenceOverview);
-
   return (
     <div className="p-5 space-y-5">
       {/* Role-based Header */}

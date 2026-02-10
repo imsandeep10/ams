@@ -59,7 +59,7 @@ const bookPage: React.FC = () => {
         columns={BookColumn}
         data={data || []}
         pageCount={data?.pagination?.totalPages || 1}
-        pageIndex={initialPage - 1}
+        pageIndex={initialPage}
         pageSize={initialPageSize}
         totalRows={data.length || 0}
         onPaginationChange={handlePaginationChange}

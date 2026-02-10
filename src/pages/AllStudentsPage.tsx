@@ -114,7 +114,7 @@ const AllStudentsPage: React.FC = () => {
         columns={columns}
         data={data?.students || []}
         pageCount={data?.pagination.totalPages || 1}
-        pageIndex={initialPage - 1}
+        pageIndex={initialPage}
         pageSize={initialPageSize}
         totalRows={data?.students.length || 0}
         onPaginationChange={handlePaginationChange}

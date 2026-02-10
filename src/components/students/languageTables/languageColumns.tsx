@@ -82,7 +82,6 @@ const ActionButtons = React.memo<ActionButtonsProps>(
 
     const isAdmin = currentUserData?.data.role === Role.SUPER_ADMIN;
     const isAccountant = currentUserData?.data.role === Role.ACCOUNTANT;
-    const isIeltsAdmin = currentUserData?.data.role === Role.IELTS_ADMIN;
     return (
       <div className="flex items-center gap-2">
         <Tooltip>
@@ -160,23 +159,21 @@ const ActionButtons = React.memo<ActionButtonsProps>(
             </Tooltip>
           ))}
 
-        {!isIeltsAdmin && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant={"ghost"}
-                size={"sm"}
-                className="h-8 w-8 p-0 text-[#1DC794] hover:bg-[#e9fff8] hover:text-[#003d2b]  cursor-pointer"
-                onClick={() => handleNavigation(`/student-remark/${studentId}`)}
-              >
-                <MessageSquareMore />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Remark</p>
-            </TooltipContent>
-          </Tooltip>
-        )}
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant={"ghost"}
+              size={"sm"}
+              className="h-8 w-8 p-0 text-[#1DC794] hover:bg-[#e9fff8] hover:text-[#003d2b]  cursor-pointer"
+              onClick={() => handleNavigation(`/student-remark/${studentId}`)}
+            >
+              <MessageSquareMore />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Remark</p>
+          </TooltipContent>
+        </Tooltip>
 
         {!isAccountant && (
           <Tooltip>

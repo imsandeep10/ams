@@ -6,7 +6,6 @@ import {
 } from "@/components/ui/tooltip";
 import { useCurrentUser } from "@/lib/api/useUser";
 import { Role, type StudentResponse } from "@/shared/interface/studentResponse";
-import type { Payment } from "@/shared/types/paymentTypes";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Activity, Eye, MessageSquareMore, Wallet } from "lucide-react";
 import React from "react";
@@ -139,8 +138,8 @@ export const PaymentColumn: ColumnDef<StudentResponse>[] = [
     accessorKey: "paymentDate",
     cell: ({ row }) => (
       <p>
-        {row.original.payment?.createdAt
-          ? new Date(row.original.payment.createdAt).toLocaleDateString()
+        {row.original.payment?.updatedAt
+          ? new Date(row.original.payment.updatedAt).toLocaleDateString()
           : "N/A"}
       </p>
     ),

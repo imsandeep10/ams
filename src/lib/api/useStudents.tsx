@@ -19,6 +19,7 @@ interface AttendanceParams {
 export const useCreateStudents = () => {
   const queryClient = useQueryClient();
   return useMutation<CreateStudentResponse, AxiosError, CreateStudentFormData>({
+    mutationKey: ["student"],
     mutationFn: async (data: CreateStudentFormData) => {
       const res = await api.post<CreateStudentResponse>(
         "/api/student/initiate",
@@ -44,10 +45,10 @@ export const useDeleteStudent = () => {
       const res = await api.delete(`/api/student/${id}`);
       return res.data;
     },
-    onSuccess: () => {
+    onSuccess: (_, id) => {
       toast.success("Student Deleted successfully!");
       queryClient.invalidateQueries({ queryKey: ["students"] });
-      queryClient.invalidateQueries({ queryKey: ["student"] });
+      queryClient.invalidateQueries({ queryKey: ["student", id] });
     },
     onError: (error: AxiosError) => {
       toast.error(`Error deleting student: ${error.message}`);
@@ -63,10 +64,10 @@ export const useUpdateStudent = () => {
       const res = await api.patch(`/api/student/${id}`, data);
       return res.data;
     },
-    onSuccess: () => {
+    onSuccess: ({ id }) => {
       toast.success("Student updated successfully!");
       queryClient.invalidateQueries({ queryKey: ["students"] });
-      queryClient.invalidateQueries({ queryKey: ["student"] });
+      queryClient.invalidateQueries({ queryKey: ["student", id] });
     },
     onError: (error: AxiosError) => {
       toast.error(`Error updating student: ${error.message}`);
@@ -81,7 +82,7 @@ export const useGetStudentsByLanguage = (
   student?: string,
 ) => {
   return useQuery({
-    queryKey: ["students", language, page, limit, student],
+    queryKey: ["students", language, page, limit, student?.trim()],
     queryFn: async (): Promise<{
       students: Student[];
       pagination: {
@@ -92,8 +93,8 @@ export const useGetStudentsByLanguage = (
       };
     }> => {
       const params: Record<string, any> = {};
-      if (student) {
-        params.term = student;
+      if (student?.trim()) {
+        params.term = student.trim();
       }
       if (language) {
         params.language = language;
@@ -158,7 +159,7 @@ export const useGetAllStudents = (
       "all-students",
       page,
       limit,
-      student,
+      student?.trim(),
       language,
       preferredCountry,
       yearOfCompletion,
@@ -175,8 +176,8 @@ export const useGetAllStudents = (
     }> => {
       const params: Record<string, any> = {};
 
-      if (student) {
-        params.term = student;
+      if (student?.trim()) {
+        params.term = student.trim();
       }
       if (language) {
         params.language = language;
@@ -325,5 +326,28 @@ export const useStudentSearch = (
       options?.enabled !== undefined
         ? options.enabled
         : query.trim().length >= 2,
+  });
+};
+
+export const useMarkAttendance = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (studentId: string) => {
+      const res = await api.post(
+        `/api/attendance/mark-student-present/${studentId}`,
+      );
+      return res.data;
+    },
+    onSuccess: ({ id }) => {
+      toast.success("Attendance marked successfully!");
+      queryClient.invalidateQueries({ queryKey: ["student", id] });
+    },
+    onError: (error: AxiosError) => {
+      if (error.response?.status === 400) {
+        toast.error(`Attendance has already been marked for today.`);
+      } else {
+        toast.error(`Error marking attendance: ${error.message}`);
+      }
+    },
   });
 };

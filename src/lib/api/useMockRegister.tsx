@@ -17,11 +17,14 @@ export const useMockRegister = () => {
     },
     onSuccess: () => {
       //  refresh related queries after registration
-      toast.success("you registered mock test form successfully");
+      toast.success("You registered mock test form successfully");
       queryClient.invalidateQueries({ queryKey: ["mock-tests"] });
     },
     onError: (error: AxiosError) => {
-      toast.error(`Mock test registration failed: ${error.message}`);
+      console.log("error", error);
+      toast.error(
+        `Mock test registration failed: ${(error.response?.data as any)?.message || error.message}`,
+      );
     },
   });
 };
@@ -142,7 +145,7 @@ export const useExportMockTests = () => {
             Accept:
               "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/octet-stream",
           },
-        }
+        },
       );
 
       // Verify response is a blob
@@ -156,7 +159,7 @@ export const useExportMockTests = () => {
       link.href = url;
       link.setAttribute(
         "download",
-        `mock-tests-${new Date().toISOString().split("T")[0]}.xlsx`
+        `mock-tests-${new Date().toISOString().split("T")[0]}.xlsx`,
       );
       document.body.appendChild(link);
       link.click();

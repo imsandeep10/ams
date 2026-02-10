@@ -200,7 +200,6 @@
 //           mode === "edit" ? { ...values, password: undefined } : values;
 
 //         if (mode === "edit" && id) {
-//           console.log("Updating admin with ID:", id, submitData);
 //           await updateAdmin({ id, data: submitData });
 //           toast.success("Admin updated successfully!");
 //         } else {
