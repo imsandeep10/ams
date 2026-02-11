@@ -23,7 +23,10 @@ import type { ReportPeriodType } from "@/shared/types/reportTypes";
 import { useCurrentUser } from "@/lib/api/useUser";
 import { Role } from "@/shared/interface/studentResponse";
 
-const YEARS = [2023, 2024, 2025, 2026];
+const currentYear = new Date().getFullYear();
+const initialYear = 2024;
+const YEARS: number[] = [];
+
 const MONTHS = Array.from({ length: 12 }, (_, i) => i + 1);
 
 export const Report = React.memo(() => {
@@ -35,6 +38,12 @@ export const Report = React.memo(() => {
     currentDate.getMonth() + 1,
   );
   const [periodType, setPeriodType] = useState<ReportPeriodType>("monthly");
+
+  for (let year = initialYear; year <= currentYear + 2; year++) {
+    if (!YEARS.includes(year)) {
+      YEARS.push(year);
+    }
+  }
 
   const programName = useMemo(() => {
     switch (currentUser?.data.role) {
@@ -110,18 +119,6 @@ export const Report = React.memo(() => {
 
   return (
     <div className="p-5 space-y-5">
-      {/* Role-based Header */}
-      {/* {currentUser?.role !== "superAdmin" && (
-        <div className="bg-blue-50 border border-blue-200 rounded-md p-4">
-          <div className="flex items-center gap-2">
-            <div className="h-2 w-2 rounded-full bg-blue-500"></div>
-            <p className="text-sm font-medium text-blue-900">
-              Viewing {programName} Program Reports
-            </p>
-          </div>
-        </div>
-      )} */}
-
       {/* Filters */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">

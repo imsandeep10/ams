@@ -32,11 +32,6 @@ interface ProgramData {
   absent?: number;
 }
 
-// interface Perioddata {
-//   absent: number;
-//   present: number;
-// }
-
 interface ReportChartProps {
   data: ProgramData | null;
   title?: string;
@@ -49,6 +44,31 @@ const COLORS = {
   present: "#10b981", // green
   absent: "#ef4444", // red
   total: "#3b82f6", // blue
+};
+
+// Enhanced color palette for yearly/legacy reports with solid, vibrant colors
+const CHART_COLOR_PALETTE = [
+  "#10b981", // emerald-500
+  "#ef4444", // red-500
+  "#3b82f6", // blue-500
+  "#8b5cf6", // violet-500
+  "#06b6d4", // cyan-500
+  "#84cc16", // lime-500
+  "#f59e0b", // amber-500
+  "#ec4899", // pink-500
+  "#14b8a6", // teal-500
+  "#f97316", // orange-500
+];
+
+// Function to ensure color has solid opacity
+const ensureSolidColor = (color: string): string => {
+  // Remove any existing alpha/opacity
+  if (color.startsWith("rgba")) {
+    const rgbPart = color.match(/rgba\((\d+,\s*\d+,\s*\d+)/);
+    return rgbPart ? `rgb(${rgbPart[1]})` : color;
+  }
+  // If it's already a solid hex or rgb, return as is
+  return color;
 };
 
 const ReportChart: React.FC<ReportChartProps> = ({
@@ -238,13 +258,14 @@ const ReportChart: React.FC<ReportChartProps> = ({
                 }}
               />
               <Tooltip
-                cursor={{ fill: "rgba(0,0,0,0.05)" }}
+                cursor={{ fill: "rgba(0,0,0,0.03)" }}
                 contentStyle={{
                   backgroundColor: "#fff",
                   borderRadius: 8,
-                  border: "1px solid #eee",
-                  boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+                  border: "1px solid #ddd",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
                   fontSize: "13px",
+                  fontWeight: 500,
                 }}
                 formatter={(value: number, name: string, props: any) => {
                   return [
@@ -284,13 +305,14 @@ const ReportChart: React.FC<ReportChartProps> = ({
                 style={{ fontSize: "12px" }}
               />
               <Tooltip
-                cursor={{ fill: "rgba(0,0,0,0.05)" }}
+                cursor={{ fill: "rgba(0,0,0,0.03)" }}
                 contentStyle={{
                   backgroundColor: "#fff",
                   borderRadius: 8,
-                  border: "1px solid #eee",
-                  boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+                  border: "1px solid #ddd",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
                   fontSize: "13px",
+                  fontWeight: 500,
                 }}
               />
               <Legend
@@ -299,11 +321,16 @@ const ReportChart: React.FC<ReportChartProps> = ({
                 iconType="circle"
                 wrapperStyle={{ fontSize: "13px" }}
               />
-              {data?.datasets?.map((dataset) => (
+              {data?.datasets?.map((dataset, datasetIndex) => (
                 <Bar
                   key={dataset.label}
                   dataKey={dataset.label}
-                  fill={dataset.backgroundColor || "#3B82F6"}
+                  fill={
+                    ensureSolidColor(dataset.backgroundColor || "") ||
+                    CHART_COLOR_PALETTE[
+                      datasetIndex % CHART_COLOR_PALETTE.length
+                    ]
+                  }
                   radius={[4, 4, 0, 0]}
                 />
               ))}

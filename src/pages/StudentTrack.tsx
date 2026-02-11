@@ -62,7 +62,8 @@ import { useSendResultScore } from "@/lib/api/useEmail";
 import { DialogDescription } from "@radix-ui/react-dialog";
 import { StatsCard } from "@/components/recordCards/Card";
 import { Progress } from "@/components/ui/progress";
-import { PaymentStatus } from "@/shared/interface/studentResponse";
+import { PaymentStatus, Role } from "@/shared/interface/studentResponse";
+import { useCurrentUser } from "@/lib/api/useUser";
 
 export const StudentTrack = React.memo(() => {
   const { id } = useParams<{ id: string }>();
@@ -80,6 +81,7 @@ export const StudentTrack = React.memo(() => {
     Number(month),
   );
 
+  const { data: currentUser } = useCurrentUser();
   const { data: paymentData } = useGetPaymentById(id!);
   const { mutate: updateStudent } = useUpdateStudent();
   const { data: studentProgress } = useStudentProgress(id!);
@@ -88,6 +90,7 @@ export const StudentTrack = React.memo(() => {
   const { mutate: sendResultScore, isPending: isSendingResult } =
     useSendResultScore();
 
+  const isAccountant = currentUser?.data.role === Role.ACCOUNTANT;
   const form = useForm<SendResultScoreData>({
     defaultValues: {
       email: currentStudent?.user.email || "",
@@ -437,6 +440,7 @@ export const StudentTrack = React.memo(() => {
                       <Select
                         value={currentStudent?.currentApplicationStatus || ""}
                         onValueChange={handleCurrentApplicationStatusChange}
+                        disabled={isAccountant}
                       >
                         <SelectTrigger className="w-[200px] text-[#1B2E5E] bg-[#F1F8FF] border-[#BADEFF] focus:border-none">
                           <SelectValue placeholder="Select" />
@@ -470,6 +474,7 @@ export const StudentTrack = React.memo(() => {
                       <Select
                         value={currentStudent?.currentStudentStatus || ""}
                         onValueChange={handleCurrentStudentStatusChange}
+                        disabled={isAccountant}
                       >
                         <SelectTrigger className="w-[180px] text-[#0E2A10] bg-[#F1FFF5] border-[#BAFFD3] focus:border-none">
                           <SelectValue placeholder="Select" />

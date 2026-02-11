@@ -64,10 +64,10 @@ export const useUpdateStudent = () => {
       const res = await api.patch(`/api/student/${id}`, data);
       return res.data;
     },
-    onSuccess: ({ id }) => {
+    onSuccess: (_, data) => {
       toast.success("Student updated successfully!");
       queryClient.invalidateQueries({ queryKey: ["students"] });
-      queryClient.invalidateQueries({ queryKey: ["student", id] });
+      queryClient.invalidateQueries({ queryKey: ["student", data.id] });
     },
     onError: (error: AxiosError) => {
       toast.error(`Error updating student: ${error.message}`);
