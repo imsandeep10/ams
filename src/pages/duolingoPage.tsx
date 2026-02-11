@@ -62,7 +62,7 @@ const DuolingoPage: React.FC = () => {
         isMessaging={true}
         data={data?.students || []}
         pageCount={data?.pagination.totalPages || 1}
-        pageIndex={initialPage - 1}
+        pageIndex={initialPage}
         pageSize={initialPageSize}
         totalRows={data?.pagination.total || 0}
         onPaginationChange={handlePaginationChange}

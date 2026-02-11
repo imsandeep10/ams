@@ -3,15 +3,22 @@ import { z } from "zod";
 export const createAdminSchema = z.object({
   fullName: z
     .string()
+    .min(1, { message: "Full name is required" })
     .min(2, { message: "Full name must be at least 2 characters long" })
     .max(50),
-  email: z.string().email({ message: "Invalid email address" }),
+  email: z
+    .string()
+    .email({ message: "Invalid email address" })
+    .min(1, { message: "Email is required" }),
   phoneNumber: z
     .string()
+    .min(1, { message: "Phone number is required" })
+    .regex(/^\+?[0-9\s\-()]+$/, { message: "Invalid phone number format" })
     .min(10, { message: "Phone number must contain at least 10 digits" })
     .max(15, { message: "Phone number must not exceed 15 digits" }),
   password: z
     .string()
+    .min(1, { message: "Password is required" })
     .min(8, { message: "Password must be at least 8 characters" })
     .optional()
     .or(z.literal("")),

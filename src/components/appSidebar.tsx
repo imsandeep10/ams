@@ -143,7 +143,7 @@ const AppSidebar = ({ roleProp }: { roleProp?: string }) => {
   return (
     <div className="min-h-0">
       <Sidebar collapsed={collapsed}>
-        <SidebarContent className="bg-primary text-white flex flex-col justify-between">
+        <SidebarContent className="bg-primary text-white flex flex-col justify-between overflow-y-scroll scrollbar-hide">
           <div>
             <div className="flex items-center justify-between px-4 py-5">
               <SidebarGroupLabel

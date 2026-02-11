@@ -62,6 +62,8 @@ import { useSendResultScore } from "@/lib/api/useEmail";
 import { DialogDescription } from "@radix-ui/react-dialog";
 import { StatsCard } from "@/components/recordCards/Card";
 import { Progress } from "@/components/ui/progress";
+import { PaymentStatus, Role } from "@/shared/interface/studentResponse";
+import { useCurrentUser } from "@/lib/api/useUser";
 
 export const StudentTrack = React.memo(() => {
   const { id } = useParams<{ id: string }>();
@@ -79,6 +81,7 @@ export const StudentTrack = React.memo(() => {
     Number(month),
   );
 
+  const { data: currentUser } = useCurrentUser();
   const { data: paymentData } = useGetPaymentById(id!);
   const { mutate: updateStudent } = useUpdateStudent();
   const { data: studentProgress } = useStudentProgress(id!);
@@ -87,6 +90,7 @@ export const StudentTrack = React.memo(() => {
   const { mutate: sendResultScore, isPending: isSendingResult } =
     useSendResultScore();
 
+  const isAccountant = currentUser?.data.role === Role.ACCOUNTANT;
   const form = useForm<SendResultScoreData>({
     defaultValues: {
       email: currentStudent?.user.email || "",
@@ -124,7 +128,7 @@ export const StudentTrack = React.memo(() => {
   const progressBarSteps = [
     {
       label: "3 Days Attendance",
-      isCompleted: studentProgress?.percentageForAttendance >= 1.35,
+      isCompleted: studentProgress?.percentageForAttendance >= 6.67,
     },
     {
       label: "45 Days Attendance",
@@ -200,7 +204,7 @@ export const StudentTrack = React.memo(() => {
                 </div>
               </div>
             </div>
-            <div className="py-4 mt-4 lg:ml-32 xl:ml-40 space-y-4">
+            <div className="py-4 mt-4 space-y-4">
               <div className="flex justify-between">
                 <Skeleton className="h-6 w-48" />
                 <Skeleton className="h-6 w-12" />
@@ -351,11 +355,11 @@ export const StudentTrack = React.memo(() => {
                       <div className="flex items-center gap-2">
                         <CalendarIcon className="h-4 w-4" />
                         Joined: {attendanceRecord.student.joinDate}
-                        <div className="flex items-center gap-2">
+                        {/* <div className="flex items-center gap-2">
                           <CalendarIcon className="h-4 w-4" />
                           {attendanceRecord.period.monthName}{" "}
                           {attendanceRecord.period.year}
-                        </div>
+                        </div> */}
                       </div>
                       <div className="flex flex-wrap items-center gap-2 md:flex-row sm:justify-center xl:justify-start">
                         <Dialog>
@@ -400,7 +404,7 @@ export const StudentTrack = React.memo(() => {
                 </div>
                 {/* second section */}
                 <div className="flex flex-col  gap-6 py-2 xl:mt-0 px-2 rounded-lg justify-evenly">
-                  <div className="flex flex-col xl:flex-row gap-4">
+                  <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-4">
                     <div className="flex flex-col md:flex-row items-start md:items-center justify-between xl:justify-start gap-4">
                       <label
                         htmlFor="Payment"
@@ -409,11 +413,13 @@ export const StudentTrack = React.memo(() => {
                         Payment:
                       </label>
                       <div>
-                        {paymentData?.payment === "FULL_PAID" ? (
+                        {paymentData?.payment.paymentStatus ===
+                        PaymentStatus.FULL_PAID ? (
                           <span className="px-4 py-2 rounded-md bg-green-100 text-green-800 font-medium">
                             Paid
                           </span>
-                        ) : paymentData?.payment === "PARTIAL_PAID" ? (
+                        ) : paymentData?.payment.paymentStatus ===
+                          PaymentStatus.PARTIAL_PAID ? (
                           <span className="px-4 py-2 rounded-md bg-yellow-100 text-yellow-800 font-medium">
                             Partial
                           </span>
@@ -434,6 +440,7 @@ export const StudentTrack = React.memo(() => {
                       <Select
                         value={currentStudent?.currentApplicationStatus || ""}
                         onValueChange={handleCurrentApplicationStatusChange}
+                        disabled={isAccountant}
                       >
                         <SelectTrigger className="w-[200px] text-[#1B2E5E] bg-[#F1F8FF] border-[#BADEFF] focus:border-none">
                           <SelectValue placeholder="Select" />
@@ -457,9 +464,7 @@ export const StudentTrack = React.memo(() => {
                         </SelectContent>
                       </Select>
                     </div>
-                  </div>
-                  <div>
-                    <div className="flex flex-col md:flex-row items-start md:items-center justify-between xl:justify-start gap-4">
+                    <div className="flex flex-col md:flex-row items-start md:items-center justify-between xl:justify-start gap-4 lg:col-span-2">
                       <label
                         htmlFor="CurrentStudentStatus"
                         className="font-medium text-[#1B5E20] min-w-[40px]"
@@ -469,6 +474,7 @@ export const StudentTrack = React.memo(() => {
                       <Select
                         value={currentStudent?.currentStudentStatus || ""}
                         onValueChange={handleCurrentStudentStatusChange}
+                        disabled={isAccountant}
                       >
                         <SelectTrigger className="w-[180px] text-[#0E2A10] bg-[#F1FFF5] border-[#BAFFD3] focus:border-none">
                           <SelectValue placeholder="Select" />
@@ -495,7 +501,7 @@ export const StudentTrack = React.memo(() => {
                 </div>
               </div>
               {/* progress bar  */}
-              <div className="py-4 mt-4 xl:ml-40">
+              <div className="py-4 mt-4 lg:mx-10">
                 {/* header */}
                 <div className="flex justify-between mb-3">
                   <h3 className="text-[#494e55] font-semibold">

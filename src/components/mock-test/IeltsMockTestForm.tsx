@@ -157,9 +157,6 @@ export default function IeltsMockTestForm({
           reset();
         }, 3000);
       },
-      onError: () => {
-        toast.error("Registration failed. Please try again.");
-      },
     });
   };
 

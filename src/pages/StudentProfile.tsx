@@ -22,15 +22,17 @@ import {
 } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useGetStudentById } from "@/lib/api/useStudents";
+import { useGetStudentById, useMarkAttendance } from "@/lib/api/useStudents";
 import { IoEarth } from "react-icons/io5";
-import { LiaMoneyBillWaveAltSolid } from "react-icons/lia";
+import { LiaCheckDoubleSolid, LiaMoneyBillWaveAltSolid } from "react-icons/lia";
 import RemarkCard from "@/components/remarks/remarkCard";
 
 export const StudentProfile = React.memo(() => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const navigate = useNavigate();
   const { id } = useParams();
+
+  const { mutate: markAttendance } = useMarkAttendance();
 
   const {
     data: student,
@@ -53,6 +55,7 @@ export const StudentProfile = React.memo(() => {
         interestedCourse: student?.interestedCourse || "N/A",
         profileImage: student?.user?.profileImage?.url || "profile.svg",
         address: student?.user?.address || "N/A",
+        // score: student?. || "N/A",
       }
     : null;
 
@@ -368,6 +371,16 @@ export const StudentProfile = React.memo(() => {
                 </div>
               </CardContent>
             </Card>
+            <Button
+              variant={"outline"}
+              className="h-auto"
+              onClick={() => {
+                markAttendance(student?.user.id);
+              }}
+            >
+              <LiaCheckDoubleSolid />
+              Mark as Attended
+            </Button>
           </div>
           <div className="col-span-2 flex flex-col gap-6">
             <Card className="rounded-md border border-gray-300 shadow-xs">
@@ -411,12 +424,6 @@ export const StudentProfile = React.memo(() => {
                     Interested Course:
                   </p>
                   <p className="font-medium">{studentData?.interestedCourse}</p>
-                </div>
-                <div className="flex flex-col">
-                  <p className="text-muted-foreground font-medium">
-                    Overall PTE/IELTS Score:
-                  </p>
-                  <p className="font-medium">{studentData?.language}</p>
                 </div>
               </CardContent>
             </Card>

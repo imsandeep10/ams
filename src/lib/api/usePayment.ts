@@ -2,12 +2,15 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import api from "../axiosInstance";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import type { StudentResponse } from "@/shared/interface/studentResponse";
 export const useGetPaymentById = (userId: string) => {
   return useQuery({
     queryKey: ["payment", userId],
-    queryFn: async () => {
+    queryFn: async (): Promise<StudentResponse | undefined> => {
       try {
-        const response = await api.get(`/api/payment/${userId}`);
+        const response = await api.get<StudentResponse>(
+          `/api/payment/${userId}`,
+        );
         return response.data;
       } catch (err: any) {
         console.error("Error fetching payment data:", err);
@@ -19,6 +22,17 @@ export const useGetPaymentById = (userId: string) => {
   });
 };
 
+interface GetAllPaymentsParams {
+  message: string;
+  pagination: {
+    page: number;
+    limit: number;
+    totalPages: number;
+    total: number;
+  };
+  students: StudentResponse[];
+}
+
 export const useGetAllPayments = (
   page: number = 1,
   limit: number = 10,
@@ -28,9 +42,15 @@ export const useGetAllPayments = (
   return useQuery({
     queryKey: ["allPayments", page, limit, student, paymentStatus],
     queryFn: async () => {
+      const params: Record<string, string | number> = {};
+      if (student) params.term = student;
+      if (paymentStatus) params.filter = paymentStatus;
+      params.page = page;
+      params.limit = limit;
+
       try {
-        const response = await api.get(`/api/payment?term=${student || ""}`, {
-          params: { page, limit, term: paymentStatus },
+        const response = await api.get<GetAllPaymentsParams>(`/api/payment`, {
+          params,
         });
         return response.data;
       } catch (err: any) {
@@ -63,8 +83,10 @@ export const usePatchPayment = () => {
         console.error("Error updating payment data:", err);
       }
     },
-    onSuccess: () => {
+    onSuccess: (_, data) => {
       queryClient.invalidateQueries({ queryKey: ["allPayments"] });
+      queryClient.invalidateQueries({ queryKey: ["student", data.studentId] });
+      queryClient.invalidateQueries({ queryKey: ["payment", data.studentId] });
     },
     onError: (error) => {
       console.error("Error in payment mutation:", error);

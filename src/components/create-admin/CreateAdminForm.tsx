@@ -132,7 +132,7 @@ function CreateAdminFormComponent({ mode }: props) {
     }
   }, [adminData, isLoading, mode, isFormInitialized]);
 
-  const { isSubmitting, isDirty } = form.formState;
+  const { isSubmitting } = form.formState;
 
   const handleImageUpload = useCallback(
     async (file: File) => {
@@ -174,18 +174,14 @@ function CreateAdminFormComponent({ mode }: props) {
 
   const onSubmit = useCallback(
     async (values: CreateAdminFormData) => {
-      console.log("Form values:", values);
-      console.log("Mode:", mode, "ID:", id);
       try {
         if (mode === "edit" && id) {
           // For edit mode, remove both password and role as backend doesn't need them
           const { password, role, ...submitData } = values;
 
-          console.log("Submitting edit data:", submitData);
           await updateAdmin({ id, data: submitData });
           toast.success("Admin updated successfully!");
         } else {
-          console.log("Submitting create data:", values);
           await createAdmins(values);
           toast.success("Admin created successfully!");
         }
@@ -442,9 +438,6 @@ function CreateAdminFormComponent({ mode }: props) {
               type="submit"
               className="w-full py-3 font-medium transition-all duration-200 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
               disabled={isSubmitting || isUploading}
-              onClick={() => {
-                console.log("Submitting form...");
-              }}
             >
               {isSubmitting
                 ? mode === "edit"

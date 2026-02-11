@@ -1,8 +1,21 @@
 import React from "react";
 import { useGetStudentRegistrationQRCode } from "@/lib/api/useQRCode";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2, RefreshCw, QrCode, Link2, Download, UserPlus } from "lucide-react";
+import {
+  Loader2,
+  RefreshCw,
+  QrCode,
+  Link2,
+  Download,
+  UserPlus,
+} from "lucide-react";
 import { toast } from "sonner";
 
 interface StudentRegistrationQRCodeProps {
@@ -13,14 +26,16 @@ interface StudentRegistrationQRCodeProps {
   };
 }
 
-const StudentRegistrationQRCode: React.FC<StudentRegistrationQRCodeProps> = ({ data: propData }) => {
+const StudentRegistrationQRCode: React.FC<StudentRegistrationQRCodeProps> = ({
+  data: propData,
+}) => {
   const [showModal, setShowModal] = React.useState(false);
-  const { 
-    data: fetchedData, 
-    isLoading, 
-    error, 
+  const {
+    data: fetchedData,
+    isLoading,
+    error,
     refetch,
-    isRefetching 
+    isRefetching,
   } = useGetStudentRegistrationQRCode();
 
   // Use prop data if provided, otherwise use fetched data
@@ -34,7 +49,7 @@ const StudentRegistrationQRCode: React.FC<StudentRegistrationQRCodeProps> = ({ d
   const handleDownload = () => {
     if (!data?.qrCodeDataUrl) return;
 
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = data.qrCodeDataUrl;
     link.download = `student-registration-qr-code.png`;
     document.body.appendChild(link);
@@ -54,14 +69,15 @@ const StudentRegistrationQRCode: React.FC<StudentRegistrationQRCodeProps> = ({ d
     }
   };
 
-
   if (isLoading) {
     return (
       <Card className="w-full max-w-md mx-auto">
         <CardContent className="flex items-center justify-center p-8">
           <div className="flex flex-col items-center space-y-4">
             <Loader2 className="h-8 w-8 animate-spin text-purple-600" />
-            <p className="text-sm text-gray-600">Generating registration QR code...</p>
+            <p className="text-sm text-gray-600">
+              Generating registration QR code...
+            </p>
           </div>
         </CardContent>
       </Card>
@@ -81,8 +97,8 @@ const StudentRegistrationQRCode: React.FC<StudentRegistrationQRCodeProps> = ({ d
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Button 
-            onClick={handleRefresh} 
+          <Button
+            onClick={handleRefresh}
             className="w-full"
             variant="outline"
             disabled={isRefetching}
@@ -130,15 +146,16 @@ const StudentRegistrationQRCode: React.FC<StudentRegistrationQRCodeProps> = ({ d
             )}
           </Button>
         </CardTitle>
-        <CardDescription>
-          Print this QR code for new students to self-register. Students scan and fill their details to create account.
+        <CardDescription className="h-14">
+          Print this QR code for new students to self-register. Students scan
+          and fill their details to create account.
         </CardDescription>
       </CardHeader>
-      
+
       <CardContent className="space-y-4">
         {/* QR Code Image */}
         <div className="flex justify-center">
-          <div 
+          <div
             className="p-4 bg-white border-2 border-purple-200 rounded-lg cursor-pointer hover:border-purple-400 transition-colors"
             onClick={() => setShowModal(true)}
           >
@@ -152,11 +169,11 @@ const StudentRegistrationQRCode: React.FC<StudentRegistrationQRCodeProps> = ({ d
 
         {/* Modal for enlarged QR Code */}
         {showModal && (
-          <div 
+          <div
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
             onClick={() => setShowModal(false)}
           >
-            <div 
+            <div
               className="relative bg-white p-8 rounded-lg shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
@@ -164,8 +181,18 @@ const StudentRegistrationQRCode: React.FC<StudentRegistrationQRCodeProps> = ({ d
                 onClick={() => setShowModal(false)}
                 className="absolute -top-3 -right-3 bg-white rounded-full p-2 shadow-lg hover:bg-gray-100 transition-colors"
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </button>
               <img
@@ -173,17 +200,20 @@ const StudentRegistrationQRCode: React.FC<StudentRegistrationQRCodeProps> = ({ d
                 alt="Student Registration QR Code - Enlarged"
                 className="w-96 h-96 object-contain"
               />
-              <p className="text-center mt-4 text-sm text-gray-600">Student Registration QR Code</p>
+              <p className="text-center mt-4 text-sm text-gray-600">
+                Student Registration QR Code
+              </p>
             </div>
           </div>
         )}
 
         {/* QR Code Details */}
-        <div className="space-y-3">
-          
+        <div className="space-y-4">
           {/* Instructions */}
           <div className="bg-purple-50 p-3 rounded-lg border border-purple-200">
-            <p className="text-sm text-purple-700 font-medium mb-1">📝 Self-Registration Instructions:</p>
+            <p className="text-sm text-purple-700 font-medium mb-1">
+              📝 Self-Registration Instructions:
+            </p>
             <ol className="text-xs text-purple-600 space-y-1">
               <li>1. Download and print this QR code</li>
               <li>2. Display at reception or entrance</li>
@@ -192,6 +222,13 @@ const StudentRegistrationQRCode: React.FC<StudentRegistrationQRCodeProps> = ({ d
               <li>5. Account created with default password</li>
               <li>6. Admin can verify and approve later</li>
             </ol>
+          </div>
+
+          <div className="bg-amber-50 p-2 rounded border border-amber-200">
+            <p className="text-xs text-amber-700">
+              <strong>⚠️ Note:</strong> Ensure students provide valid contact
+              details during registration.
+            </p>
           </div>
 
           <div className="text-xs text-gray-500 break-all">
@@ -224,6 +261,5 @@ const StudentRegistrationQRCode: React.FC<StudentRegistrationQRCodeProps> = ({ d
     </Card>
   );
 };
-
 
 export default StudentRegistrationQRCode;

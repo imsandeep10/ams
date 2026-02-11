@@ -90,7 +90,7 @@ export const TotalCard = React.memo(({ selectedDate }: TotalCardProps) => {
       ];
     }
 
-    // For PTE Admin: show only PTE-related cards
+    // For PTE Admin: show only PTE-related cards 
     if (newCurrentUser?.role === Role.PTE_ADMIN) {
       return [
         {
@@ -104,10 +104,6 @@ export const TotalCard = React.memo(({ selectedDate }: TotalCardProps) => {
         {
           subtitle: "PTE Absent Today",
           total: stats?.totalAbsentToday ?? 0,
-        },
-        {
-          subtitle: "Total Mocktest attendees",
-          total: stats?.total ?? 0,
         },
       ];
     }
@@ -127,10 +123,6 @@ export const TotalCard = React.memo(({ selectedDate }: TotalCardProps) => {
           subtitle: "SAT Absent Today",
           total: stats?.totalAbsentToday ?? 0,
         },
-        {
-          subtitle: "Total Mocktest attendees",
-          total: stats?.total ?? 0,
-        },
       ];
     }
 
@@ -148,10 +140,6 @@ export const TotalCard = React.memo(({ selectedDate }: TotalCardProps) => {
         {
           subtitle: "Duolingo Absent Today",
           total: stats?.totalAbsentToday ?? 0,
-        },
-        {
-          subtitle: "Total Mocktest attendees",
-          total: stats?.total ?? 0,
         },
       ];
     }
@@ -198,7 +186,7 @@ export const TotalCard = React.memo(({ selectedDate }: TotalCardProps) => {
         {cards.map((item, index) => (
           <div
             key={index}
-            className={`border flex flex-col bg-primary p-6 py-8 rounded-md hover:shadow-md transition-shadow ${
+            className={`border flex flex-col justify-between bg-primary p-6 py-8 rounded-md hover:shadow-md transition-shadow ${
               newCurrentUser?.role === "superAdmin" &&
               item.subtitle === "Total Enrolled Students"
                 ? "cursor-pointer hover:bg-primary/90"

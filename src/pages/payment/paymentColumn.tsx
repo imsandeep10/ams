@@ -5,8 +5,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useCurrentUser } from "@/lib/api/useUser";
-import { Role } from "@/shared/interface/studentResponse";
-import type { Payment } from "@/shared/types/paymentTypes";
+import { Role, type StudentResponse } from "@/shared/interface/studentResponse";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Activity, Eye, MessageSquareMore, Wallet } from "lucide-react";
 import React from "react";
@@ -126,7 +125,7 @@ const StatusBadge = React.memo<{ status: string | undefined }>(({ status }) => {
 
 StatusBadge.displayName = "StatusBadge";
 
-export const PaymentColumn: ColumnDef<Payment>[] = [
+export const PaymentColumn: ColumnDef<StudentResponse>[] = [
   {
     id: "fullName",
     header: "Full Name",
@@ -139,8 +138,8 @@ export const PaymentColumn: ColumnDef<Payment>[] = [
     accessorKey: "paymentDate",
     cell: ({ row }) => (
       <p>
-        {row.original.payment?.createdAt
-          ? new Date(row.original.payment.createdAt).toLocaleDateString()
+        {row.original.payment?.updatedAt
+          ? new Date(row.original.payment.updatedAt).toLocaleDateString()
           : "N/A"}
       </p>
     ),

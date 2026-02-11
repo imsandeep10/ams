@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   type ColumnDef,
   type ColumnFiltersState,
@@ -57,8 +57,6 @@ import {
 import { useExportMockTests } from "@/lib/api/useMockRegister";
 import { Calendar } from "@/components/ui/calendar";
 import type { DateRange } from "react-day-picker";
-import { useCurrentUser } from "@/lib/api/useUser";
-import { Role } from "@/shared/interface/studentResponse";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -90,7 +88,7 @@ export function DataTable<TData, TValue>({
   columns,
   data,
   pageCount = 1,
-  pageIndex: externalPageIndex = 0,
+  pageIndex: externalPageIndex = 1,
   pageSize: externalPageSize = 10,
   totalRows = 0,
   onPaginationChange,
@@ -113,7 +111,7 @@ export function DataTable<TData, TValue>({
   const [globalFilter, setGlobalFilter] = useState("");
   const [pageIndex, setPageIndex] = useState(externalPageIndex);
   const [pageSize, setPageSize] = useState(externalPageSize);
-  const pathname = window.location.pathname.split("/").filter(Boolean);
+
   const isServerSidePagination = !!onPaginationChange;
 
   const [dateRange, setDateRange] = useState<DateRange | undefined>({
@@ -121,9 +119,28 @@ export function DataTable<TData, TValue>({
     to: new Date(),
   });
 
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
   const navigate = useNavigate();
 
   const { mutate: exportData, isPending: isExporting } = useExportMockTests();
+
+  // Focus search input when data reloads
+  useEffect(() => {
+    if (searchInputRef.current && searchInputData) {
+      searchInputRef.current.focus();
+    }
+  }, [data, searchInputData]);
+
+  // Keep local pagination in sync with server-provided values
+  useEffect(() => {
+    setPageIndex(externalPageIndex);
+  }, [externalPageIndex]);
+
+  useEffect(() => {
+    setPageSize(externalPageSize);
+  }, [externalPageSize]);
+
   const table = useReactTable({
     data,
     columns,
@@ -132,7 +149,9 @@ export function DataTable<TData, TValue>({
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
+    getPaginationRowModel: isServerSidePagination
+      ? undefined
+      : getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
@@ -146,7 +165,7 @@ export function DataTable<TData, TValue>({
       rowSelection,
       globalFilter,
       pagination: {
-        pageIndex: pageIndex,
+        pageIndex: isServerSidePagination ? pageIndex - 1 : pageIndex,
         pageSize: pageSize,
       },
     },
@@ -164,20 +183,20 @@ export function DataTable<TData, TValue>({
 
   // Handle page navigation
   const handlePreviousPage = () => {
-    const newPageIndex = pageIndex - 1;
-    setPageIndex(newPageIndex);
     if (isServerSidePagination && onPaginationChange) {
-      onPaginationChange(newPageIndex + 1, pageSize); // Server uses 1-based page indexing
+      const nextPage = Math.max(1, pageIndex - 1);
+      setPageIndex(nextPage);
+      onPaginationChange(nextPage, pageSize);
     } else {
       table.previousPage();
     }
   };
 
   const handleNextPage = () => {
-    const newPageIndex = pageIndex + 1;
-    setPageIndex(newPageIndex);
     if (isServerSidePagination && onPaginationChange) {
-      onPaginationChange(newPageIndex + 1, pageSize); // Server uses 1-based page indexing
+      const nextPage = Math.min(pageCount, pageIndex + 1);
+      setPageIndex(nextPage);
+      onPaginationChange(nextPage, pageSize);
     } else {
       table.nextPage();
     }
@@ -197,10 +216,11 @@ export function DataTable<TData, TValue>({
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             <Input
+              ref={searchInputRef}
               placeholder="Search students..."
               defaultValue={searchInputData}
               onChange={(event) => onSearch(String(event.target.value))}
-              className="pl-10 max-w-sm"
+              className="pl-10 max-w-sm "
             />
           </div>
         </div>
@@ -288,7 +308,7 @@ export function DataTable<TData, TValue>({
                 if (addLink) {
                   navigate(addLink);
                 } else {
-                  navigate(`/create-student?language=${pathname[0]}`);
+                  navigate(`create`);
                 }
               }}
             >
@@ -364,16 +384,12 @@ export function DataTable<TData, TValue>({
           <p className="text-sm text-muted-foreground">
             Showing{" "}
             <span className="font-medium">
-              {isServerSidePagination
-                ? pageIndex * pageSize + 1
-                : table.getState().pagination.pageIndex *
-                    table.getState().pagination.pageSize +
-                  1}
+              {pageIndex === 1 ? 1 : pageIndex * pageSize - pageSize + 1}
             </span>{" "}
             to{" "}
             <span className="font-medium">
               {isServerSidePagination
-                ? Math.min((pageIndex + 1) * pageSize, totalRows)
+                ? Math.min(pageIndex * pageSize, totalRows)
                 : Math.min(
                     (table.getState().pagination.pageIndex + 1) *
                       table.getState().pagination.pageSize,
@@ -396,9 +412,10 @@ export function DataTable<TData, TValue>({
               Rows per page:
             </span>
             <Select
+              value={pageSize.toString()}
               onValueChange={(value) => handlePageSizeChange(Number(value))}
             >
-              <SelectTrigger>
+              <SelectTrigger className="data-[placeholder]:text-foreground">
                 <SelectValue placeholder={pageSize.toString()} />
               </SelectTrigger>
               <SelectContent>
@@ -414,7 +431,7 @@ export function DataTable<TData, TValue>({
           <div className="flex items-center gap-2">
             {isServerSidePagination && (
               <span className="text-sm text-muted-foreground">
-                Page {pageIndex + 1} of {pageCount}
+                Page {pageIndex} of {pageCount}
               </span>
             )}
             <Button
@@ -423,7 +440,7 @@ export function DataTable<TData, TValue>({
               onClick={handlePreviousPage}
               disabled={
                 isServerSidePagination
-                  ? pageIndex === 0
+                  ? pageIndex === 1
                   : !table.getCanPreviousPage()
               }
             >
@@ -435,7 +452,7 @@ export function DataTable<TData, TValue>({
               onClick={handleNextPage}
               disabled={
                 isServerSidePagination
-                  ? pageIndex >= pageCount - 1
+                  ? pageIndex >= pageCount
                   : !table.getCanNextPage()
               }
             >

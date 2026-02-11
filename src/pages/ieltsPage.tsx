@@ -2,6 +2,8 @@ import { DataTableSkeleton } from "@/components/common/DataTableSkeleton";
 import { LangugaeColumns } from "@/components/students/languageTables/languageColumns";
 import { DataTable } from "@/components/students/studentTables/DataTable";
 import { useGetStudentsByLanguage } from "@/lib/api/useStudents";
+import { useCurrentUser } from "@/lib/api/useUser";
+import { Role } from "@/shared/interface/studentResponse";
 import { debounce } from "@tanstack/react-pacer";
 import React, { useState } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -17,6 +19,7 @@ const IeltsPage: React.FC = () => {
     limit: initialPageSize,
     search: initialSearch,
   });
+  const { data: currentUser } = useCurrentUser();
   const { data, isPending } = useGetStudentsByLanguage(
     "IELTS",
     filter.page,
@@ -60,12 +63,13 @@ const IeltsPage: React.FC = () => {
         isMessaging={true}
         data={data?.students || []}
         pageCount={data?.pagination.totalPages || 1}
-        pageIndex={initialPage - 1}
+        pageIndex={initialPage}
         pageSize={initialPageSize}
         totalRows={data?.pagination.total || 0}
         onPaginationChange={handlePaginationChange}
         onSearch={handleSearch}
         searchInputData={filter.search}
+        isAddButton={currentUser?.data.role !== Role.ACCOUNTANT}
       />
     </div>
   );
