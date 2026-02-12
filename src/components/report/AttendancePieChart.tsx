@@ -1,5 +1,12 @@
 import React, { useMemo } from "react";
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from "recharts";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+} from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 
 interface AttendancePieChartProps {
@@ -11,7 +18,7 @@ interface AttendancePieChartProps {
   height?: number;
 }
 
-const defaultColors = ["#1b5fcc", "#F43F5E"]; // Blue for Present, Red for Absent
+const defaultColors = ["#10b981", "#F43F5E"];
 
 export const AttendancePieChart: React.FC<AttendancePieChartProps> = ({
   title = "Attendance Overview",
@@ -38,7 +45,6 @@ export const AttendancePieChart: React.FC<AttendancePieChartProps> = ({
     }));
   }, [labels, values, computedPercentages, colors]);
 
-
   return (
     <Card className="w-full shadow-md border border-gray-200 bg-white">
       <CardHeader>
@@ -61,7 +67,8 @@ export const AttendancePieChart: React.FC<AttendancePieChartProps> = ({
                 endAngle={450}
                 label={(entry: any) => {
                   const value = Number(entry?.value ?? 0);
-                  const pct = total > 0 ? ((value / total) * 100).toFixed(2) : '0.00';
+                  const pct =
+                    total > 0 ? ((value / total) * 100).toFixed(2) : "0.00";
                   return `${entry?.name}: ${pct}%`;
                 }}
               >
@@ -72,14 +79,18 @@ export const AttendancePieChart: React.FC<AttendancePieChartProps> = ({
               <Tooltip
                 formatter={(value: number, name: string) => {
                   const v = Number(value ?? 0);
-                  const pct = total > 0 ? ((v / total) * 100).toFixed(2) : '0.00';
+                  const pct =
+                    total > 0 ? ((v / total) * 100).toFixed(2) : "0.00";
                   return [`${v} (${pct}%)`, name];
                 }}
               />
-              <Legend verticalAlign="bottom" height={36} wrapperStyle={{ fontSize: "13px" }} />
+              <Legend
+                verticalAlign="bottom"
+                height={36}
+                wrapperStyle={{ fontSize: "13px" }}
+              />
             </PieChart>
           </ResponsiveContainer>
-          
         </div>
       </CardContent>
     </Card>

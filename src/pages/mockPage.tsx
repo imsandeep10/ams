@@ -10,7 +10,11 @@ const MockPage: React.FC = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [searchInputData, setSearchInputData] = useState("");
-  const { data, isPending } = upcomingMockTest(page, pageSize);
+  const { data, isPending, error } = upcomingMockTest(
+    page,
+    pageSize,
+    searchInputData,
+  );
 
   const handlePaginationChange = (newPage: number, newPageSize: number) => {
     setPage(newPage);
@@ -84,7 +88,7 @@ const MockPage: React.FC = () => {
         columns={columnsMockTest}
         data={data?.data || []}
         pageCount={data?.pagination.totalPages || 1}
-        pageIndex={page - 1}
+        pageIndex={page}
         pageSize={pageSize}
         totalRows={data?.pagination.total || 0}
         onPaginationChange={handlePaginationChange}
@@ -94,6 +98,7 @@ const MockPage: React.FC = () => {
         isDateFilter={true}
         onSearch={(search: string) => setSearchInputData(search)}
         searchInputData={searchInputData}
+        errorMessage={error?.message || "No result found"}
       />
     </div>
   );

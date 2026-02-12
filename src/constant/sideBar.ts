@@ -93,11 +93,6 @@ export const roleSidebars: Record<string, SidBartypes[]> = {
     { title: "Students", url: "/ielts/students", icon: Users },
     { title: "Report", url: "/ielts/report", icon: FileText },
     { title: "Mock", url: "/ielts/mock-data-table", icon: BookCheck },
-    {
-      title: "Book Table",
-      url: "/book-data-table",
-      icon: BookOpen,
-    },
   ],
   duolingoAdmin: [
     { title: "Dashboard", url: "/duolingo/dashboard", icon: LayoutDashboard },
@@ -120,6 +115,11 @@ export const roleSidebars: Record<string, SidBartypes[]> = {
       title: "Payment",
       url: "/payment",
       icon: BadgeDollarSign,
+    },
+    {
+      title: "Book Table",
+      url: "/book-data-table",
+      icon: BookOpen,
     },
   ],
 };

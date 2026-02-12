@@ -75,9 +75,13 @@ export const useDeleteMock = () => {
   });
 };
 
-export const upcomingMockTest = (page: number = 1, limit: number = 10) => {
+export const upcomingMockTest = (
+  page: number = 1,
+  limit: number = 10,
+  search?: string,
+) => {
   return useQuery({
-    queryKey: ["mock-tests", "upcoming", page, limit],
+    queryKey: ["mock-tests", "upcoming", page, limit, search],
     queryFn: async (): Promise<{
       data: createMockRegisterRespoonse[];
       pagination: {
@@ -93,8 +97,10 @@ export const upcomingMockTest = (page: number = 1, limit: number = 10) => {
         totalWriting: number;
       };
     }> => {
+      const params: Record<string, any> = { page, limit };
+      if (search?.trim()) params.term = search.trim();
       const res = await api.get(`/api/mock-test/upcoming`, {
-        params: { page, limit },
+        params,
       });
       if (!res?.data) {
         throw new Error("Failed to fetch mock test Data");

@@ -18,7 +18,7 @@ const bookPage: React.FC = () => {
     search: intialSearch,
   });
 
-  const { data, isPending } = useGetBook(
+  const { data, isPending, error } = useGetBook(
     filter.page,
     filter.limit,
     filter.search,
@@ -49,6 +49,8 @@ const bookPage: React.FC = () => {
       wait: 500,
     },
   );
+
+  // Loading state
   if (isPending) {
     return <DataTableSkeleton rows={8} />;
   }
@@ -57,17 +59,16 @@ const bookPage: React.FC = () => {
     <div className="container mx-auto py-2">
       <DataTable
         columns={BookColumn}
-        data={data || []}
+        data={data?.students || []}
         pageCount={data?.pagination?.totalPages || 1}
         pageIndex={initialPage}
         pageSize={initialPageSize}
-        totalRows={data.length || 0}
+        totalRows={data?.pagination?.total || 0}
         onPaginationChange={handlePaginationChange}
-        addLink=""
-        addLabel=""
         isAddButton={false}
         onSearch={handleSearch}
         searchInputData={filter.search}
+        errorMessage={error?.message || "No result found"}
       />
     </div>
   );
