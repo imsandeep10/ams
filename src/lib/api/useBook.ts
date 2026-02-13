@@ -24,11 +24,12 @@ export const getAllBooksData = async ({
 }) => {
   try {
     const params: Record<string, any> = {};
+    3;
     if (search) params.search = search;
     if (page) params.page = page;
     if (limit) params.limit = limit;
 
-    const res = await api.get(`/api/payment/all`, { params });
+    const res = await api.get(`/api/payment`, { params });
     if (!res || !res.data) {
       throw new Error("Failed to fetch all books data");
     }

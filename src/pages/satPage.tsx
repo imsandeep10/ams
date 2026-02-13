@@ -5,6 +5,8 @@ import { useGetStudentsByLanguage } from "@/lib/api/useStudents";
 import { LangugaeColumns } from "@/components/students/languageTables/languageColumns";
 import { useSearchParams } from "react-router-dom";
 import { debounce } from "@tanstack/react-pacer";
+import { Role } from "@/shared/interface/studentResponse";
+import { useCurrentUser } from "@/lib/api/useUser";
 
 const SatPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -12,6 +14,7 @@ const SatPage: React.FC = () => {
   const initialPageSize = Number(searchParams.get("limit")) || 10;
   const initialSearch = searchParams.get("student") || "";
 
+  const { data: currentUser } = useCurrentUser();
   const [filter, setFilter] = useState({
     page: initialPage,
     limit: initialPageSize,
@@ -66,6 +69,8 @@ const SatPage: React.FC = () => {
         onPaginationChange={handlePaginationChange}
         onSearch={handleSearch}
         searchInputData={filter.search}
+        isAddButton={currentUser?.data.role !== Role.ACCOUNTANT}
+        addLink={"create?language=SAT"}
       />
     </div>
   );

@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import api from "@/lib/axiosInstance";
+import { toYMD } from "@/hooks/toYMD";
 
 export type PresentStudent = {
   fullName: string;
@@ -20,23 +21,15 @@ export type DashboardStats = {
   totalAbsentToday: number;
 };
 
-function toYMD(date?: Date): string | undefined {
-  if (!date) return undefined;
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, "0");
-  const d = String(date.getDate()).padStart(2, "0");
-  return `${y}-${m}-${d}`;
-}
-
 async function fetchPresentStudentsByDate(
-  date?: Date
+  date?: Date,
 ): Promise<PresentStudent[]> {
   const ymd = toYMD(date);
   const response = await api.get<PresentStudent[]>(
     "/api/dashboard/today/present",
     {
       params: ymd ? { date: ymd } : undefined,
-    }
+    },
   );
   const data = response.data ?? [];
   return data;
@@ -52,7 +45,7 @@ async function fetchDashboardStats(date?: Date): Promise<DashboardStats> {
 
 export function useTodayPresentStudents(date?: Date) {
   return useQuery({
-    queryKey: ["dashboard", "presentByDate", toYMD(date)],
+    queryKey: ["dashboard", toYMD(date)],
     queryFn: () => fetchPresentStudentsByDate(date),
     staleTime: 60_000, // 1 minute cache
     gcTime: 5 * 60_000, // 5 minutes

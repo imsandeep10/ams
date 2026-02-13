@@ -70,6 +70,7 @@ const IeltsPage: React.FC = () => {
         onSearch={handleSearch}
         searchInputData={filter.search}
         isAddButton={currentUser?.data.role !== Role.ACCOUNTANT}
+        addLink={"create?language=IELTS"}
       />
     </div>
   );

@@ -28,18 +28,31 @@ import {
 interface TrackDataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  hasNextPage?: boolean;
+  hasPreviousPage?: boolean;
+  limit: number;
+  page: number;
+  totalRecords: number;
+  handlePrev?: (page: number) => void;
+  handleNext?: (page: number) => void;
 }
 
 export function TrackDataTable<TData, TValue>({
   columns,
   data,
+  limit,
+  page,
+  totalRecords,
+  hasNextPage,
+  hasPreviousPage,
+  handlePrev,
+  handleNext,
 }: TrackDataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
   const [globalFilter, setGlobalFilter] = useState("");
-
 
   const table = useReactTable({
     data,
@@ -89,7 +102,7 @@ export function TrackDataTable<TData, TValue>({
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                     </TableHead>
                   );
@@ -109,7 +122,7 @@ export function TrackDataTable<TData, TValue>({
                     <TableCell key={cell.id} className="py-4">
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}
@@ -134,24 +147,11 @@ export function TrackDataTable<TData, TValue>({
         <div className="flex items-center space-x-2">
           <p className="text-sm text-muted-foreground">
             Showing{" "}
+            <span className="font-medium">{page * limit - limit + 1}</span> to{" "}
             <span className="font-medium">
-              {table.getState().pagination.pageIndex *
-                table.getState().pagination.pageSize +
-                1}
+              {Math.min(page * limit, totalRecords)}
             </span>{" "}
-            to{" "}
-            <span className="font-medium">
-              {Math.min(
-                (table.getState().pagination.pageIndex + 1) *
-                  table.getState().pagination.pageSize,
-                table.getFilteredRowModel().rows.length
-              )}
-            </span>{" "}
-            of{" "}
-            <span className="font-medium">
-              {table.getFilteredRowModel().rows.length}
-            </span>{" "}
-            results
+            of <span className="font-medium">{totalRecords}</span> results
           </p>
         </div>
 
@@ -160,16 +160,16 @@ export function TrackDataTable<TData, TValue>({
             <Button
               variant="outline"
               size="sm"
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
+              onClick={() => handlePrev && handlePrev(page - 1)}
+              disabled={!hasPreviousPage}
             >
               Previous
             </Button>
             <Button
               variant="outline"
               size="sm"
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
+              onClick={() => handleNext && handleNext(page + 1)}
+              disabled={!hasNextPage}
             >
               Next
             </Button>

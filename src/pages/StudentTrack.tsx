@@ -74,11 +74,13 @@ export const StudentTrack = React.memo(() => {
   const [month, setMonth] = useState(currentMonth.toString());
   const navigate = useNavigate();
   const [progress, setProgress] = React.useState(0);
+  const [page, setPage] = useState(1);
 
   const { data: attendanceRecord, isPending } = useGetStudentAttendanceTrack(
     id!,
     Number(year),
     Number(month),
+    page,
   );
 
   const { data: currentUser } = useCurrentUser();
@@ -171,6 +173,14 @@ export const StudentTrack = React.memo(() => {
 
   const handleCurrentStudentStatusChange = (value: string) => {
     updateStudent({ id: id!, data: { currentStudentStatus: value } as any });
+  };
+
+  const handlePreviousPage = () => {
+    setPage((prev) => Math.max(prev - 1, 1));
+  };
+
+  const handleNextPage = () => {
+    setPage((prev) => prev + 1);
   };
 
   if (isPending) {
@@ -391,11 +401,13 @@ export const StudentTrack = React.memo(() => {
                             </Link>
 
                             {/* Dialog for marks email */}
-                            <SendScoreEmailDialog
-                              form={form}
-                              handleSubmit={handleSubmit}
-                              isSending={isSendingResult}
-                            />
+                            {currentStudent?.language === "IELTS" && (
+                              <SendScoreEmailDialog
+                                form={form}
+                                handleSubmit={handleSubmit}
+                                isSending={isSendingResult}
+                              />
+                            )}
                           </DialogContent>
                         </Dialog>
                       </div>
@@ -642,6 +654,13 @@ export const StudentTrack = React.memo(() => {
             <TrackDataTable
               columns={trackColumns}
               data={attendanceRecord.dailyRecords}
+              limit={attendanceRecord.pagination.limit}
+              page={attendanceRecord.pagination.page}
+              totalRecords={attendanceRecord.pagination.totalRecords}
+              hasNextPage={attendanceRecord.pagination.hasNextPage}
+              hasPreviousPage={attendanceRecord.pagination.hasPreviousPage}
+              handleNext={handleNextPage}
+              handlePrev={handlePreviousPage}
             />
           ) : (
             <div className="text-center py-8 text-gray-500">

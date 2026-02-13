@@ -2,6 +2,8 @@ import { DataTableSkeleton } from "@/components/common/DataTableSkeleton";
 import { LangugaeColumns } from "@/components/students/languageTables/languageColumns";
 import { DataTable } from "@/components/students/studentTables/DataTable";
 import { useGetStudentsByLanguage } from "@/lib/api/useStudents";
+import { useCurrentUser } from "@/lib/api/useUser";
+import { Role } from "@/shared/interface/studentResponse";
 import { debounce } from "@tanstack/react-pacer";
 import React, { useState } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -18,6 +20,7 @@ const DuolingoPage: React.FC = () => {
     search: initialSearch,
   });
 
+  const { data: currentUser } = useCurrentUser();
   const { data, isPending } = useGetStudentsByLanguage(
     "Duolingo",
     filter.page,
@@ -68,6 +71,8 @@ const DuolingoPage: React.FC = () => {
         onPaginationChange={handlePaginationChange}
         onSearch={handleSearch}
         searchInputData={filter.search}
+        addLink={"create?language=Duolingo"}
+        isAddButton={currentUser?.data.role !== Role.ACCOUNTANT}
       />
     </div>
   );

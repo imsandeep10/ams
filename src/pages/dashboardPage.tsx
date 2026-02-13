@@ -7,10 +7,12 @@ import MockTestRegistrationQRCode from "@/components/dashboard/MockTestRegistrat
 import TodayPresentTable from "@/components/dashboard/TodayPresentTable";
 import { useCurrentUser } from "@/lib/api/useUser";
 import { Role } from "@/shared/interface/studentResponse";
+import { useStore } from "@/shared/store";
 
 const DashboardPage = React.memo(() => {
-  const [date, setDate] = React.useState<Date | undefined>(new Date());
+  // const [date, setDate] = React.useState<Date | undefined>(new Date());
   const { data: currentUser } = useCurrentUser();
+  const { selectedDate, setSelectedDate } = useStore();
 
   const isSuperAdmin = currentUser?.data.role === Role.SUPER_ADMIN;
   const isAccountant = currentUser?.data.role === Role.ACCOUNTANT;
@@ -21,7 +23,7 @@ const DashboardPage = React.memo(() => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         {/* Left Column - Stats and Bar Chart */}
         <div className="lg:col-span-2 space-y-6">
-          <TotalCard selectedDate={date} />
+          <TotalCard selectedDate={selectedDate} />
         </div>
 
         {/* Right Column - Gauge and Calendar */}
@@ -29,8 +31,9 @@ const DashboardPage = React.memo(() => {
           <div className="flex justify-center lg:justify-start">
             <Calendar
               mode="single"
-              selected={date}
-              onSelect={setDate}
+              required
+              selected={selectedDate}
+              onSelect={setSelectedDate}
               className="rounded-lg border shadow-sm w-full"
             />
           </div>
@@ -39,7 +42,7 @@ const DashboardPage = React.memo(() => {
 
       {/* Bottom Section - Data Table */}
       <div className="w-full">
-        <TodayPresentTable selectedDate={date} />
+        <TodayPresentTable selectedDate={selectedDate} />
       </div>
 
       {/* QR Codes Section - Three QR Codes in a Row */}

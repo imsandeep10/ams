@@ -502,7 +502,7 @@ function CreateStudentFormComponent({ mode }: props) {
                   <Select
                     onValueChange={field.onChange}
                     value={field.value ?? ""}
-                    disabled={mode === "edit" && !!field.value}
+                    disabled={true}
                   >
                     <SelectTrigger className="w-full transition-colors focus:ring-2">
                       <SelectValue placeholder="Select Language" />

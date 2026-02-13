@@ -3,17 +3,20 @@ import { z } from "zod";
 export const createStudentFormSchema = z.object({
   fullName: z
     .string()
+    .min(1, { message: "Full name is required" })
     .min(2, { message: "Full name must be at least 2 characters long" })
-    .max(50),
+    .max(50, { message: "Full name must be at most 50 characters long" }),
   email: z.string().email({ message: "Invalid email address" }),
   phoneNumber: z
     .string()
+    .min(1, { message: "Phone number is required" })
+    .regex(/^\d+$/, { message: "Phone number must contain only digits" })
     .min(10, { message: "Phone number must be at least 10 digits" })
     .max(10, { message: "Phone number must be at most 10 digits" }),
   address: z
     .string()
-    .min(1, "Address is required")
-    .regex(/^[^0-9].*/, "Address cannot start with a number"),
+    .min(1, { message: "Address is required" })
+    .regex(/^[^0-9].*/, { message: "Address cannot start with a number" }),
   profileImageId: z.string().optional(),
   gpaOrPercentage: z
     .string()
