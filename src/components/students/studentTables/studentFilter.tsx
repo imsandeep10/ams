@@ -136,8 +136,8 @@ export const StudentFilter: React.FC<StudentFilterProps> = ({
               </SelectTrigger>
               <SelectContent className="w-full">
                 {Countries.map((country) => (
-                  <SelectItem key={country} value={country}>
-                    {country}
+                  <SelectItem key={country.value} value={country.value}>
+                    {country.label}
                   </SelectItem>
                 ))}
               </SelectContent>

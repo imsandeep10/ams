@@ -1,5 +1,3 @@
-import type { StudentResponse } from "../interface/studentResponse";
-
 export type studentTrackTypes = {
   studentId: string;
   name: string;

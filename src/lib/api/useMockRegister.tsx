@@ -21,7 +21,6 @@ export const useMockRegister = () => {
       queryClient.invalidateQueries({ queryKey: ["mock-tests"] });
     },
     onError: (error: AxiosError) => {
-      console.log("error", error);
       toast.error(
         `Mock test registration failed: ${(error.response?.data as any)?.message || error.message}`,
       );
@@ -122,6 +121,10 @@ export const upcomingMockTest = (
         },
       };
     },
+    retry: 0,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+    networkMode: "online",
   });
 };
 

@@ -325,8 +325,8 @@ function StudentRegister({ mode }: props) {
                       </SelectTrigger>
                       <SelectContent>
                         {qualificationYear.map((year) => (
-                          <SelectItem key={year} value={year}>
-                            {year}
+                          <SelectItem key={year.value} value={year.value}>
+                            {year.label}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -373,8 +373,8 @@ function StudentRegister({ mode }: props) {
                       </SelectTrigger>
                       <SelectContent>
                         {Countries.map((country) => (
-                          <SelectItem key={country} value={country}>
-                            {country}
+                          <SelectItem key={country.value} value={country.value}>
+                            {country.label}
                           </SelectItem>
                         ))}
                       </SelectContent>

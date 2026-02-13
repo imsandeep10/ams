@@ -1,7 +1,6 @@
 import { useDashboardStats } from "@/lib/api/dashboard";
 import { useCurrentUser } from "@/lib/api/useUser";
 import { Role } from "@/shared/interface/studentResponse";
-import { useStore } from "@/shared/store";
 import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -15,7 +14,6 @@ type TotalCardProps = { selectedDate?: Date };
 
 export const TotalCard = React.memo(({ selectedDate }: TotalCardProps) => {
   const { data: stats, isLoading } = useDashboardStats(selectedDate);
-  const setSelectedDate = useStore((state) => state.setSelectedDate);
 
   const { data: currentUser } = useCurrentUser();
   const newCurrentUser = currentUser?.data;
@@ -63,10 +61,6 @@ export const TotalCard = React.memo(({ selectedDate }: TotalCardProps) => {
         {
           subtitle: "Duolingo Present",
           total: stats?.duolingo ?? 0,
-        },
-        {
-          subtitle: "Total Mock Tests Attended",
-          total: stats?.total ?? 0,
         },
       ];
     }

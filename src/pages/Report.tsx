@@ -105,9 +105,6 @@ export const Report = React.memo(() => {
     periodType,
   });
 
-  console.log("Period Report Data:", periodReportData);
-  console.log("Attendance Overview Data:", attendenceOverview);
-
   const growthChartData = useMemo(
     () => studentGrowthData?.data?.growth || [],
     [studentGrowthData],

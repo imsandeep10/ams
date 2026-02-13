@@ -78,7 +78,6 @@ const ReportChart: React.FC<ReportChartProps> = ({
   isLoading = false,
   isError = false,
 }) => {
-  console.log("ReportChart data:", data);
   const chartData = useMemo(() => {
     // Simple daily present/absent format coming from period daily
     if (
