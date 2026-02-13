@@ -21,7 +21,6 @@ export const useMockRegister = () => {
       queryClient.invalidateQueries({ queryKey: ["mock-tests"] });
     },
     onError: (error: AxiosError) => {
-      console.log("error", error);
       toast.error(
         `Mock test registration failed: ${(error.response?.data as any)?.message || error.message}`,
       );
@@ -75,9 +74,13 @@ export const useDeleteMock = () => {
   });
 };
 
-export const upcomingMockTest = (page: number = 1, limit: number = 10) => {
+export const upcomingMockTest = (
+  page: number = 1,
+  limit: number = 10,
+  search?: string,
+) => {
   return useQuery({
-    queryKey: ["mock-tests", "upcoming", page, limit],
+    queryKey: ["mock-tests", "upcoming", page, limit, search],
     queryFn: async (): Promise<{
       data: createMockRegisterRespoonse[];
       pagination: {
@@ -93,8 +96,10 @@ export const upcomingMockTest = (page: number = 1, limit: number = 10) => {
         totalWriting: number;
       };
     }> => {
+      const params: Record<string, any> = { page, limit };
+      if (search?.trim()) params.term = search.trim();
       const res = await api.get(`/api/mock-test/upcoming`, {
-        params: { page, limit },
+        params,
       });
       if (!res?.data) {
         throw new Error("Failed to fetch mock test Data");
@@ -116,6 +121,10 @@ export const upcomingMockTest = (page: number = 1, limit: number = 10) => {
         },
       };
     },
+    retry: 0,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+    networkMode: "online",
   });
 };
 

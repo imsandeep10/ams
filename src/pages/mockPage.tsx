@@ -5,18 +5,28 @@ import { upcomingMockTest } from "@/lib/api/useMockRegister";
 import React, { useState } from "react";
 import { CalendarIcon, CheckCircle } from "lucide-react";
 import { StatsCard } from "@/components/recordCards/Card";
+import { useDebouncedCallback } from "@tanstack/react-pacer";
 
 const MockPage: React.FC = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [searchInputData, setSearchInputData] = useState("");
-  const { data, isPending } = upcomingMockTest(page, pageSize);
+  const { data, isPending } = upcomingMockTest(page, pageSize, searchInputData);
 
   const handlePaginationChange = (newPage: number, newPageSize: number) => {
     setPage(newPage);
     setPageSize(newPageSize);
   };
 
+  const handleSearch = useDebouncedCallback(
+    (search: string) => {
+      setSearchInputData(search);
+      setPage(1); // Reset to first page on new search
+    },
+    {
+      wait: 500,
+    },
+  );
   if (isPending) {
     return (
       <>
@@ -66,25 +76,25 @@ const MockPage: React.FC = () => {
   return (
     <div className="container mx-auto py-2">
       {/* stats cards */}
-      {data && data.data.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-4">
-          {statsData.map((stat) => (
-            <StatsCard
-              key={stat.title}
-              title={stat.title}
-              icon={stat.icon}
-              value={stat.value}
-              borderColor={stat.borderColor}
-              textColor={stat.textColor}
-            />
-          ))}
-        </div>
-      )}
+      {/* {data && data.data.length > 0 && ( */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-4">
+        {statsData.map((stat) => (
+          <StatsCard
+            key={stat.title}
+            title={stat.title}
+            icon={stat.icon}
+            value={stat.value}
+            borderColor={stat.borderColor}
+            textColor={stat.textColor}
+          />
+        ))}
+      </div>
+      {/* )} */}
       <DataTable
         columns={columnsMockTest}
         data={data?.data || []}
         pageCount={data?.pagination.totalPages || 1}
-        pageIndex={page - 1}
+        pageIndex={page}
         pageSize={pageSize}
         totalRows={data?.pagination.total || 0}
         onPaginationChange={handlePaginationChange}
@@ -92,8 +102,9 @@ const MockPage: React.FC = () => {
         addLabel="Add Mock Test"
         isExport={true}
         isDateFilter={true}
-        onSearch={(search: string) => setSearchInputData(search)}
+        onSearch={handleSearch}
         searchInputData={searchInputData}
+        errorMessage={"No result found"}
       />
     </div>
   );

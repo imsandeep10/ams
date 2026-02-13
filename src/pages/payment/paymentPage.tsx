@@ -47,7 +47,6 @@ const Payment: React.FC = React.memo(() => {
   ];
 
   const handlePaginationChange = (newPage: number, newPageSize: number) => {
-    console.log("Pagination changed:", { newPage, newPageSize });
     setFilter({
       page: newPage,
       limit: newPageSize,
@@ -93,7 +92,7 @@ const Payment: React.FC = React.memo(() => {
     });
   };
 
-  console.log(paymentData?.pagination);
+  paymentData?.pagination;
   if (isPending) {
     return <DataTableSkeleton />;
   }

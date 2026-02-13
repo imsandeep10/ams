@@ -2,6 +2,8 @@ import { DataTableSkeleton } from "@/components/common/DataTableSkeleton";
 import { LangugaeColumns } from "@/components/students/languageTables/languageColumns";
 import { DataTable } from "@/components/students/studentTables/DataTable";
 import { useGetStudentsByLanguage } from "@/lib/api/useStudents";
+import { useCurrentUser } from "@/lib/api/useUser";
+import { Role } from "@/shared/interface/studentResponse";
 import { debounce } from "@tanstack/react-pacer";
 import React, { useState } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -12,6 +14,7 @@ const PtePage: React.FC = () => {
   const initialPageSize = Number(searchParams.get("limit")) || 10;
   const initialSearch = searchParams.get("student") || "";
 
+  const { data: currentUser } = useCurrentUser();
   const [filter, setFilter] = useState({
     page: initialPage,
     limit: initialPageSize,
@@ -65,7 +68,9 @@ const PtePage: React.FC = () => {
         totalRows={data?.pagination.total || 0}
         onPaginationChange={handlePaginationChange}
         onSearch={handleSearch}
+        isAddButton={currentUser?.data.role !== Role.ACCOUNTANT}
         searchInputData={filter.search}
+        addLink={"create?language=PTE"}
       />
     </div>
   );

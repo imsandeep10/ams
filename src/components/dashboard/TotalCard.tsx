@@ -14,6 +14,7 @@ type TotalCardProps = { selectedDate?: Date };
 
 export const TotalCard = React.memo(({ selectedDate }: TotalCardProps) => {
   const { data: stats, isLoading } = useDashboardStats(selectedDate);
+
   const { data: currentUser } = useCurrentUser();
   const newCurrentUser = currentUser?.data;
   const navigate = useNavigate();
@@ -61,10 +62,6 @@ export const TotalCard = React.memo(({ selectedDate }: TotalCardProps) => {
           subtitle: "Duolingo Present",
           total: stats?.duolingo ?? 0,
         },
-        {
-          subtitle: "Total Mock Tests Attended",
-          total: stats?.total ?? 0,
-        },
       ];
     }
 
@@ -83,14 +80,14 @@ export const TotalCard = React.memo(({ selectedDate }: TotalCardProps) => {
           subtitle: "IELTS Absent Today",
           total: stats?.totalAbsentToday ?? 0,
         },
-        {
-          subtitle: "Total Mocktest attendees",
-          total: stats?.total ?? 0,
-        },
+        // {
+        //   subtitle: "Total Mocktest attendees",
+        //   total: stats?.total ?? 0,
+        // },
       ];
     }
 
-    // For PTE Admin: show only PTE-related cards 
+    // For PTE Admin: show only PTE-related cards
     if (newCurrentUser?.role === Role.PTE_ADMIN) {
       return [
         {

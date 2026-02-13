@@ -82,6 +82,7 @@ interface DataTableProps<TData, TValue> {
     value: string;
   }[];
   dataFilter?: React.ReactNode;
+  errorMessage?: string | null | undefined;
 }
 
 export function DataTable<TData, TValue>({
@@ -103,6 +104,7 @@ export function DataTable<TData, TValue>({
   onSearch,
   searchInputData,
   filterData,
+  errorMessage = "No result found",
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -370,7 +372,7 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results found.
+                  {errorMessage}
                 </TableCell>
               </TableRow>
             )}

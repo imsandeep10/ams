@@ -120,6 +120,7 @@ const AllStudentsPage: React.FC = () => {
         onPaginationChange={handlePaginationChange}
         onSearch={handleSearch}
         searchInputData={filter.search}
+        isAddButton={false}
       />
     </div>
   );

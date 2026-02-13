@@ -105,6 +105,38 @@ function CreateStudentFormComponent({ mode }: props) {
 
       form.reset(formData, { keepDefaultValues: false });
 
+      // Explicitly set the select field values after reset to ensure synchronization
+      if (formData.preferredCountry) {
+        setTimeout(() => {
+          form.setValue("preferredCountry", formData.preferredCountry, {
+            shouldValidate: false,
+            shouldDirty: false,
+          });
+        }, 0);
+      }
+
+      if (formData.academicQualification) {
+        setTimeout(() => {
+          form.setValue(
+            "academicQualification",
+            formData.academicQualification,
+            {
+              shouldValidate: false,
+              shouldDirty: false,
+            },
+          );
+        }, 0);
+      }
+
+      if (formData.yearOfCompletion) {
+        setTimeout(() => {
+          form.setValue("yearOfCompletion", formData.yearOfCompletion, {
+            shouldValidate: false,
+            shouldDirty: false,
+          });
+        }, 0);
+      }
+
       if (formData.profileImageId) {
         form.setValue("profileImageId", formData.profileImageId, {
           shouldValidate: false,
@@ -368,7 +400,12 @@ function CreateStudentFormComponent({ mode }: props) {
               <FormItem>
                 <Label>Academic Qualification</Label>
                 <FormControl>
-                  <Select onValueChange={field.onChange} value={field.value}>
+                  <Select
+                    key={`academicQualification-${StudentData?.academicQualification || "default"}`}
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    defaultValue={field.value}
+                  >
                     <SelectTrigger className="w-full transition-colors focus:ring-2">
                       <SelectValue placeholder="Select Qualification" />
                     </SelectTrigger>
@@ -393,14 +430,19 @@ function CreateStudentFormComponent({ mode }: props) {
               <FormItem>
                 <Label>Year of Completion</Label>
                 <FormControl>
-                  <Select onValueChange={field.onChange} value={field.value}>
+                  <Select
+                    key={`yearOfCompletion-${StudentData?.yearOfCompletion || "default"}`}
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    defaultValue={field.value}
+                  >
                     <SelectTrigger className="w-full transition-colors focus:ring-2">
                       <SelectValue placeholder="Select Year" />
                     </SelectTrigger>
                     <SelectContent>
                       {qualificationYear.map((year) => (
-                        <SelectItem key={year} value={year}>
-                          {year}
+                        <SelectItem key={year.value} value={year.value}>
+                          {year.label}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -437,14 +479,19 @@ function CreateStudentFormComponent({ mode }: props) {
               <FormItem>
                 <Label>Preferred Country</Label>
                 <FormControl>
-                  <Select onValueChange={field.onChange} value={field.value}>
+                  <Select
+                    key={`preferredCountry-${StudentData?.preferredCountry || "default"}`}
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    defaultValue={field.value}
+                  >
                     <SelectTrigger className="w-full transition-colors focus:ring-2">
                       <SelectValue placeholder="Select Country" />
                     </SelectTrigger>
                     <SelectContent>
                       {Countries.map((country) => (
-                        <SelectItem key={country} value={country}>
-                          {country}
+                        <SelectItem key={country.value} value={country.value}>
+                          {country.label}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -502,7 +549,7 @@ function CreateStudentFormComponent({ mode }: props) {
                   <Select
                     onValueChange={field.onChange}
                     value={field.value ?? ""}
-                    disabled={mode === "edit" && !!field.value}
+                    disabled={true}
                   >
                     <SelectTrigger className="w-full transition-colors focus:ring-2">
                       <SelectValue placeholder="Select Language" />

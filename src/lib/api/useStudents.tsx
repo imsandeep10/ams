@@ -6,6 +6,12 @@ import type { CreateStudentFormData } from "@/schema/createStudentSchema";
 import { toast } from "sonner";
 import type { Student } from "@/shared/types/studentTypes";
 import type { StudentResponse } from "@/shared/interface/studentResponse";
+import type {
+  StudentTrackErrorResponse,
+  StudentTrackResponse,
+} from "@/shared/types/studentTrackTypes";
+import { toYMD } from "@/hooks/toYMD";
+import { useStore } from "@/shared/store";
 
 type UpdateStudentPayload = {
   id: string;
@@ -39,6 +45,7 @@ export const useCreateStudents = () => {
 };
 
 export const useDeleteStudent = () => {
+  const { selectedDate } = useStore();
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
@@ -49,6 +56,9 @@ export const useDeleteStudent = () => {
       toast.success("Student Deleted successfully!");
       queryClient.invalidateQueries({ queryKey: ["students"] });
       queryClient.invalidateQueries({ queryKey: ["student", id] });
+      queryClient.invalidateQueries({
+        queryKey: ["dashboard", toYMD(selectedDate)],
+      });
     },
     onError: (error: AxiosError) => {
       toast.error(`Error deleting student: ${error.message}`);
@@ -277,13 +287,22 @@ export const useGetStudentAttendanceTrack = (
   studentId: string,
   year: number,
   month: number,
+  page?: number,
+  limit: number = 10,
 ) => {
   return useQuery({
-    queryKey: ["attendance", studentId, year, month],
-    queryFn: async () => {
+    queryKey: ["attendance", studentId, year, month, page, limit],
+    queryFn: async (): Promise<
+      StudentTrackResponse & StudentTrackErrorResponse
+    > => {
+      const params: Record<string, any> = { year, month };
+      if (page) params.page = page;
+      if (limit) params.limit = limit;
+
       try {
         const res = await api.get(
-          `/api/attendance-track/monthly/${studentId}?year=${year}&month=${month}`,
+          `/api/attendance-track/monthly/${studentId}`,
+          { params },
         );
         return res.data;
       } catch (err: any) {

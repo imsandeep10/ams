@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Filter, CalendarIcon } from "lucide-react";
+import { Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -19,14 +19,6 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { format } from "date-fns";
-import { cn } from "@/lib/utils";
 import { Languages, Countries } from "@/constant/Students";
 
 export interface StudentFilterValues {
@@ -144,8 +136,8 @@ export const StudentFilter: React.FC<StudentFilterProps> = ({
               </SelectTrigger>
               <SelectContent className="w-full">
                 {Countries.map((country) => (
-                  <SelectItem key={country} value={country}>
-                    {country}
+                  <SelectItem key={country.value} value={country.value}>
+                    {country.label}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -155,42 +147,26 @@ export const StudentFilter: React.FC<StudentFilterProps> = ({
           {/* Year of Completion Filter */}
           <div className="grid gap-2">
             <Label htmlFor="yearOfCompletion">Year of Completion</Label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={cn(
-                    "w-full justify-start text-left font-normal",
-                    !filters.yearOfCompletion && "text-muted-foreground",
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {filters.yearOfCompletion
-                    ? format(new Date(filters.yearOfCompletion), "yyyy-MM-dd")
-                    : "Select completion date"}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={
-                    filters.yearOfCompletion
-                      ? new Date(filters.yearOfCompletion)
-                      : undefined
-                  }
-                  onSelect={(date) =>
-                    handleFilterChange(
-                      "yearOfCompletion",
-                      date ? format(date, "yyyy-MM-dd") : undefined,
-                    )
-                  }
-                  disabled={(date) =>
-                    date > new Date() || date < new Date("1900-01-01")
-                  }
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
+            <Select
+              value={filters.yearOfCompletion || ""}
+              onValueChange={(value) =>
+                handleFilterChange("yearOfCompletion", value || undefined)
+              }
+            >
+              <SelectTrigger id="yearOfCompletion" className="w-full">
+                <SelectValue placeholder="Select Year" />
+              </SelectTrigger>
+              <SelectContent>
+                {Array.from({ length: 10 }, (_, i) => {
+                  const year = new Date().getFullYear() - 8 + i;
+                  return (
+                    <SelectItem key={year} value={year.toString()}>
+                      {year}
+                    </SelectItem>
+                  );
+                })}
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Include QR Code Filter */}
