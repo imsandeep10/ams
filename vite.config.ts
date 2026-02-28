@@ -11,16 +11,16 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  server: {
-    host: true,
-    proxy: {
-      "/api": {
-        target: "http://192.168.1.81:3001", // base url
-        changeOrigin: true,
-        secure: false,
-      },
-    },
-  },
+  // server: {
+  //   host: true,
+  //   proxy: {
+  //     "/api": {
+  //       target: "http://192.168.1.81:3001", // base url
+  //       changeOrigin: true,
+  //       secure: false,
+  //     },
+  //   },
+  // },
   preview: {
     host: "0.0.0.0", // ✅ Required for Render production preview
     port: parseInt(process.env.PORT || "4173"), // ✅ Use Render PORT dynamically
