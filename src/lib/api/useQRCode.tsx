@@ -36,14 +36,6 @@ export const useGetStaticQRCode = () => {
     queryFn: async (): Promise<StaticQRCodeType> => {
       const res = await api.get<StaticQRCodeType>(
         "/api/qr-code/static/attendance",
-        {
-          withCredentials: true,
-          headers: {
-            "content-type": "application/json",
-            "ngrok-skip-browser-warning": "true",
-            "x-internal-access": import.meta.env.VITE_INTERNAL_ACCESS_KEY,
-          },
-        },
       );
 
       if (!res?.data) {
@@ -70,14 +62,6 @@ export const useGetStudentRegistrationQRCode = () => {
     queryFn: async (): Promise<StaticQRCodeType> => {
       const res = await api.get<StaticQRCodeType>(
         "/api/qr-code/static/student-register",
-        {
-          withCredentials: true,
-          headers: {
-            "content-type": "application/json",
-            "ngrok-skip-browser-warning": "true",
-            "x-internal-access": import.meta.env.VITE_INTERNAL_ACCESS_KEY,
-          },
-        },
       );
 
       if (!res?.data) {
@@ -104,14 +88,6 @@ export const useGetMockTestRegistrationQRCode = () => {
     queryFn: async (): Promise<MockTestRegistrationQRCodeType> => {
       const res = await api.get<MockTestRegistrationQRCodeType>(
         "/api/qr-code/static/mock-test-register",
-        {
-          withCredentials: true,
-          headers: {
-            "content-type": "application/json",
-            "ngrok-skip-browser-warning": "true",
-            "x-internal-access": import.meta.env.VITE_INTERNAL_ACCESS_KEY,
-          },
-        },
       );
 
       if (!res?.data) {
@@ -136,13 +112,7 @@ export const useGetGlobalQRCode = () => {
   return useQuery<GlobalQRCodeType, AxiosError>({
     queryKey: ["globalQRCode"],
     queryFn: async (): Promise<GlobalQRCodeType> => {
-      const res = await api.get<GlobalQRCodeType>("/api/qr-code/global", {
-        withCredentials: true,
-        headers: {
-          "content-type": "application/json",
-          "x-internal-access": import.meta.env.VITE_INTERNAL_ACCESS_KEY,
-        },
-      });
+      const res = await api.get<GlobalQRCodeType>("/api/qr-code/global");
 
       if (!res?.data) {
         throw new Error("Failed to fetch global QR code");
