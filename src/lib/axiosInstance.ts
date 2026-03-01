@@ -1,18 +1,11 @@
 import axios from "axios";
-// const baseURL = import.meta.env.VITE_API_URL;
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_BASE_URL,
+  baseURL: import.meta.env.VITE_API_URL,
   timeout: 10000,
   withCredentials: true,
-  headers: {
-    "content-type": "application/json",
-    "ngrok-skip-browser-warning": "true", // only for development with ngrok tunnels
-    "x-internal-access": import.meta.env.VITE_INTERNAL_ACCESS_KEY,
-  },
 });
 
-// Refresh on 401
 api.interceptors.response.use(
   (res) => res,
   async (error) => {
@@ -22,7 +15,11 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        await axios.post(`/api/auth/ud`, {}, { withCredentials: true });
+        await axios.post(
+          `${import.meta.env.VITE_API_URL}/api/auth/ud`,
+          {},
+          { withCredentials: true }
+        );
 
         return api(originalRequest);
       } catch {
