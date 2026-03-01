@@ -1,6 +1,6 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import api from "../axiosInstance";
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import type {
   GlobalQRCodeType,
   StaticQRCodeType,
@@ -34,7 +34,7 @@ export const useGetStaticQRCode = () => {
   return useQuery<StaticQRCodeType, AxiosError>({
     queryKey: ["staticQRCode"],
     queryFn: async (): Promise<StaticQRCodeType> => {
-      const res = await axios.get<StaticQRCodeType>(
+      const res = await api.get<StaticQRCodeType>(
         "/api/qr-code/static/attendance",
         {
           withCredentials: true,
@@ -68,7 +68,7 @@ export const useGetStudentRegistrationQRCode = () => {
   return useQuery<StaticQRCodeType, AxiosError>({
     queryKey: ["studentRegistrationQRCode"],
     queryFn: async (): Promise<StaticQRCodeType> => {
-      const res = await axios.get<StaticQRCodeType>(
+      const res = await api.get<StaticQRCodeType>(
         "/api/qr-code/static/student-register",
         {
           withCredentials: true,
@@ -102,7 +102,7 @@ export const useGetMockTestRegistrationQRCode = () => {
   return useQuery<MockTestRegistrationQRCodeType, AxiosError>({
     queryKey: ["mockTestRegistrationQRCode"],
     queryFn: async (): Promise<MockTestRegistrationQRCodeType> => {
-      const res = await axios.get<MockTestRegistrationQRCodeType>(
+      const res = await api.get<MockTestRegistrationQRCodeType>(
         "/api/qr-code/static/mock-test-register",
         {
           withCredentials: true,
@@ -136,7 +136,7 @@ export const useGetGlobalQRCode = () => {
   return useQuery<GlobalQRCodeType, AxiosError>({
     queryKey: ["globalQRCode"],
     queryFn: async (): Promise<GlobalQRCodeType> => {
-      const res = await axios.get<GlobalQRCodeType>("/api/qr-code/global", {
+      const res = await api.get<GlobalQRCodeType>("/api/qr-code/global", {
         withCredentials: true,
         headers: {
           "content-type": "application/json",
